@@ -23,6 +23,7 @@
 		A967DB1A2BFE9F8C00AF9BE5 /* swiftgen.yml in Resources */ = {isa = PBXBuildFile; fileRef = A967DB192BFE9F8C00AF9BE5 /* swiftgen.yml */; };
 		A967DB1C2BFEA00100AF9BE5 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A967DB1B2BFEA00100AF9BE5 /* Colors.xcassets */; };
 		A967DB212BFEA21700AF9BE5 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = A967DB202BFEA21700AF9BE5 /* Colors.swift */; };
+		A967DB232BFEA2F000AF9BE5 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A967DB222BFEA2F000AF9BE5 /* CalendarView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +44,7 @@
 		A967DB192BFE9F8C00AF9BE5 /* swiftgen.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.yaml; path = swiftgen.yml; sourceTree = "<group>"; };
 		A967DB1B2BFEA00100AF9BE5 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
 		A967DB202BFEA21700AF9BE5 /* Colors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
+		A967DB222BFEA2F000AF9BE5 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +83,7 @@
 				A92313722BFBE20C00528706 /* TaskView.swift */,
 				A92313742BFBFE8C00528706 /* TemplateView.swift */,
 				A923135E2BFBDC0700528706 /* ContentView.swift */,
+				A967DB222BFEA2F000AF9BE5 /* CalendarView.swift */,
 			);
 			path = TaskManager;
 			sourceTree = "<group>";
@@ -205,6 +208,7 @@
 				A92313752BFBFE8C00528706 /* TemplateView.swift in Sources */,
 				A967DB182BFE94C900AF9BE5 /* CustomTabBar.swift in Sources */,
 				A967DB172BFE934C00AF9BE5 /* CustomTabBar+Offset.swift in Sources */,
+				A967DB232BFEA2F000AF9BE5 /* CalendarView.swift in Sources */,
 				A967DB152BFE92CB00AF9BE5 /* TabItemModel.swift in Sources */,
 				A967DB132BFE929100AF9BE5 /* CustomTabBarViewModel.swift in Sources */,
 				A92313732BFBE20C00528706 /* TaskView.swift in Sources */,

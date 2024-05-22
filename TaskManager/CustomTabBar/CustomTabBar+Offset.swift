@@ -9,7 +9,7 @@ import Foundation
 
 extension CustomTabBar {
     enum Offset {
-        static let pageSize: CGFloat = 50.0
+        static let pageSize: CGFloat = 60.0
         static let pageCornerRadius: CGFloat = pageSize / 2
         static let superViewBorderSpacing: CGFloat = 10.0
         static let pageSizeWithSpaces: CGFloat = pageSize + superViewBorderSpacing

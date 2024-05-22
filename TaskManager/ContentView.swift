@@ -11,7 +11,7 @@ import CoreData
 struct ContentView: View {
     @State private var selectedIndex = 0
     private let tabItems = [
-        TabItemModel(icon: "list.clipboard", view: AnyView(TemplateView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext))),
+        TabItemModel(icon: "list.clipboard", view: AnyView(CalendarView())),
         TabItemModel(icon: "calendar", view: AnyView(TaskView()))
     ]
 
@@ -29,6 +29,7 @@ struct ContentView: View {
             }
         }
         .edgesIgnoringSafeArea(.bottom)
+        .background(.white)
     }
 
     private func getCustomTabBar() -> CustomTabBar {
