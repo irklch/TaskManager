@@ -31,12 +31,12 @@ struct CustomTabBar: View {
 
     private func plusButton() -> some View {
         let roundedBackgroundView = RoundedRectangle(cornerRadius: Offset.superViewCornerRadius)
-            .fill(Color.blue)
+            .fill(.hex316AFD)
             .frame(height: Offset.pageSizeWithSpaces)
 
         let plusImage = Image(systemName: "plus")
             .font(.system(size: 25))
-            .foregroundColor(.white)
+            .foregroundColor(.hexF2F2F2)
             .frame(
                 width: Offset.pageSizeWithSpaces,
                 height: Offset.pageSizeWithSpaces)
@@ -55,7 +55,7 @@ struct CustomTabBar: View {
         let tabsCount: CGFloat = .init(viewModel.tabItems.count)
         let rectWidth: CGFloat = tabsCount * Offset.pageSizeWithSpaces + ((tabsCount-1) * Offset.pageLeadingPadding)
         return RoundedRectangle(cornerRadius: Offset.superViewCornerRadius)
-            .fill(Color.black)
+            .fill(.hex000101)
             .frame(
                 width: rectWidth,
                 height: Offset.pageSizeWithSpaces)
@@ -64,7 +64,7 @@ struct CustomTabBar: View {
     private func getTabButton(by index: Int) -> some View {
         let tabImage = Image(systemName: viewModel.tabItems[index].icon)
             .font(.system(size: 18))
-            .foregroundColor(.white)
+            .foregroundColor(.hexF2F2F2)
             .frame(
                 width: Offset.pageSize,
                 height: Offset.pageSize)
@@ -72,7 +72,7 @@ struct CustomTabBar: View {
                 ZStack {
                     if index == viewModel.selectedIndex {
                         RoundedRectangle(cornerRadius: Offset.pageCornerRadius)
-                            .fill(Color.blue)
+                            .fill(Color.hex316AFD)
                             .frame(height: Offset.pageSize)
                     } else {
                         RoundedRectangle(cornerRadius: Offset.pageCornerRadius)
