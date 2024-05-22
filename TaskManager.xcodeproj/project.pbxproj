@@ -13,10 +13,13 @@
 		A92313642BFBDC0900528706 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A92313632BFBDC0900528706 /* Preview Assets.xcassets */; };
 		A92313662BFBDC0900528706 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92313652BFBDC0900528706 /* Persistence.swift */; };
 		A92313692BFBDC0900528706 /* TaskManager.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A92313672BFBDC0900528706 /* TaskManager.xcdatamodeld */; };
-		A92313712BFBE1DA00528706 /* CustomTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92313702BFBE1DA00528706 /* CustomTabBar.swift */; };
 		A92313732BFBE20C00528706 /* TaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92313722BFBE20C00528706 /* TaskView.swift */; };
 		A92313752BFBFE8C00528706 /* TemplateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92313742BFBFE8C00528706 /* TemplateView.swift */; };
 		A92313772BFBFEAE00528706 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92313762BFBFEAE00528706 /* HomeView.swift */; };
+		A967DB132BFE929100AF9BE5 /* CustomTabBarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A967DB122BFE929100AF9BE5 /* CustomTabBarViewModel.swift */; };
+		A967DB152BFE92CB00AF9BE5 /* TabItemModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A967DB142BFE92CB00AF9BE5 /* TabItemModel.swift */; };
+		A967DB172BFE934C00AF9BE5 /* CustomTabBar+Offset.swift in Sources */ = {isa = PBXBuildFile; fileRef = A967DB162BFE934C00AF9BE5 /* CustomTabBar+Offset.swift */; };
+		A967DB182BFE94C900AF9BE5 /* CustomTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A967DB112BFE928500AF9BE5 /* CustomTabBar.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,10 +30,13 @@
 		A92313632BFBDC0900528706 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		A92313652BFBDC0900528706 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		A92313682BFBDC0900528706 /* TaskManager.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TaskManager.xcdatamodel; sourceTree = "<group>"; };
-		A92313702BFBE1DA00528706 /* CustomTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CustomTabBar.swift; path = ../../CustomTabBar.swift; sourceTree = "<group>"; };
 		A92313722BFBE20C00528706 /* TaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskView.swift; sourceTree = "<group>"; };
 		A92313742BFBFE8C00528706 /* TemplateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateView.swift; sourceTree = "<group>"; };
 		A92313762BFBFEAE00528706 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		A967DB112BFE928500AF9BE5 /* CustomTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBar.swift; sourceTree = "<group>"; };
+		A967DB122BFE929100AF9BE5 /* CustomTabBarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBarViewModel.swift; sourceTree = "<group>"; };
+		A967DB142BFE92CB00AF9BE5 /* TabItemModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabItemModel.swift; sourceTree = "<group>"; };
+		A967DB162BFE934C00AF9BE5 /* CustomTabBar+Offset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CustomTabBar+Offset.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,7 +70,7 @@
 			isa = PBXGroup;
 			children = (
 				A923136F2BFBE12000528706 /* SupportingFiles */,
-				A92313702BFBE1DA00528706 /* CustomTabBar.swift */,
+				A967DB102BFE928500AF9BE5 /* CustomTabBar */,
 				A92313762BFBFEAE00528706 /* HomeView.swift */,
 				A92313722BFBE20C00528706 /* TaskView.swift */,
 				A92313742BFBFE8C00528706 /* TemplateView.swift */,
@@ -91,6 +97,17 @@
 				A92313622BFBDC0900528706 /* Preview Content */,
 			);
 			path = SupportingFiles;
+			sourceTree = "<group>";
+		};
+		A967DB102BFE928500AF9BE5 /* CustomTabBar */ = {
+			isa = PBXGroup;
+			children = (
+				A967DB112BFE928500AF9BE5 /* CustomTabBar.swift */,
+				A967DB162BFE934C00AF9BE5 /* CustomTabBar+Offset.swift */,
+				A967DB122BFE929100AF9BE5 /* CustomTabBarViewModel.swift */,
+				A967DB142BFE92CB00AF9BE5 /* TabItemModel.swift */,
+			);
+			path = CustomTabBar;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -164,9 +181,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				A92313662BFBDC0900528706 /* Persistence.swift in Sources */,
-				A92313712BFBE1DA00528706 /* CustomTabBar.swift in Sources */,
 				A923135F2BFBDC0700528706 /* ContentView.swift in Sources */,
 				A92313752BFBFE8C00528706 /* TemplateView.swift in Sources */,
+				A967DB182BFE94C900AF9BE5 /* CustomTabBar.swift in Sources */,
+				A967DB172BFE934C00AF9BE5 /* CustomTabBar+Offset.swift in Sources */,
+				A967DB152BFE92CB00AF9BE5 /* TabItemModel.swift in Sources */,
+				A967DB132BFE929100AF9BE5 /* CustomTabBarViewModel.swift in Sources */,
 				A92313732BFBE20C00528706 /* TaskView.swift in Sources */,
 				A92313772BFBFEAE00528706 /* HomeView.swift in Sources */,
 				A92313692BFBDC0900528706 /* TaskManager.xcdatamodeld in Sources */,

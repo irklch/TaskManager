@@ -11,10 +11,8 @@ import CoreData
 struct ContentView: View {
     @State private var selectedIndex = 0
     private let tabItems = [
-        TabItem(icon: "list.clipboard", view: AnyView(TemplateView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext))),
-        TabItem(icon: "calendar", view: AnyView(TaskView())),
-        TabItem(icon: "calendar", view: AnyView(TaskView())),
-        TabItem(icon: "calendar", view: AnyView(TaskView())),
+        TabItemModel(icon: "list.clipboard", view: AnyView(TemplateView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext))),
+        TabItemModel(icon: "calendar", view: AnyView(TaskView()))
     ]
 
     var body: some View {
@@ -24,13 +22,20 @@ struct ContentView: View {
                 Spacer()
                 HStack {
                     Spacer()
-                    CustomTabBar(selectedIndex: $selectedIndex, tabItems: tabItems)
+                    getCustomTabBar()
                         .padding(.bottom, 16)
                         .padding(.trailing, 16)
                 }
             }
         }
         .edgesIgnoringSafeArea(.bottom)
+    }
+
+    private func getCustomTabBar() -> CustomTabBar {
+        let customTabBarViewModel: CustomTabBarViewModel = .init(
+            selectedIndex: $selectedIndex,
+            tabItems: tabItems)
+        return .init(viewModel: customTabBarViewModel)
     }
 }
 
