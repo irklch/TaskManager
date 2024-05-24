@@ -11,22 +11,18 @@ import CoreData
 struct ContentView: View {
     @State private var selectedIndex = 0
     private let tabItems = [
-        TabItemModel(icon: "list.clipboard", view: AnyView(CalendarView())),
-        TabItemModel(icon: "calendar", view: AnyView(TaskView()))
+        TabItemModel(icon: "calendar", view: AnyView(TaskScreenView())),
+        TabItemModel(icon: "list.clipboard", view: AnyView(CalendarView()))
     ]
 
     var body: some View {
-        ZStack {
+        ZStack(alignment: .bottomTrailing) {
             tabItems[selectedIndex].view
-            VStack {
-                Spacer()
-                HStack {
-                    Spacer()
-                    getCustomTabBar()
-                        .padding(.bottom, 16)
-                        .padding(.trailing, 16)
-                }
-            }
+
+            getCustomTabBar()
+                .padding(.bottom, 16)
+                .padding(.trailing, 16)
+
         }
         .edgesIgnoringSafeArea(.bottom)
         .background(.white)
