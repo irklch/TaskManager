@@ -16,8 +16,8 @@ struct TaskResultViewModel {
     let sideArrowViewModel: SideArrowViewModel
 
     init(
-        tasksCount: Int,
-        doneTasksCount: Int,
+        tasksCount: Double,
+        doneTasksCount: Double,
         resultType: ResultType
     ) {
         self.titleText = resultType.titleText
@@ -51,10 +51,13 @@ extension TaskResultViewModel {
         }
 
         func getSubtitleText(
-            doneCount: Int,
-            allCount: Int
+            doneCount: Double,
+            allCount: Double
         ) -> String {
-            let count = doneCount.description + "/" + allCount.description + " "
+            let count = doneCount.formatted().description 
+            + "/"
+            + allCount.formatted().description
+            + " "
             switch self {
             case .doneTasks:
                 return count + "Done"

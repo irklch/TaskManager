@@ -18,9 +18,9 @@ struct SideArrowView: View {
 
     var body: some View {
         ZStack(alignment: .center){
-            RoundedRectangle(cornerRadius: 40)
+            RoundedRectangle(cornerRadius: 54)
                 .fill(viewModel.backgroundColor)
-                .frame(width: 50, height: 50)
+                .frame(width: 54, height: 54)
             Image(systemName: "arrow.up.right")
                 .resizable()
                 .frame(width: 10, height: 10)

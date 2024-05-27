@@ -12,11 +12,11 @@ struct CustomProgressViewModel {
     let doneTasksColor: Color
 
     init(
-        tasksCount: Int,
-        doneTasksCount: Int,
+        tasksCount: Double,
+        doneTasksCount: Double,
         doneTasksColor: Color
     ) {
+        self.doneTasksPercent = doneTasksCount / tasksCount
         self.doneTasksColor = doneTasksColor
-        self.doneTasksPercent = Double(doneTasksCount) / Double(tasksCount)
     }
 }

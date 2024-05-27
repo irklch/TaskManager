@@ -28,9 +28,7 @@ struct TaskResultView: View {
                     .foregroundStyle(viewModel.resultType.textColor)
                     .padding(.bottom, 14)
                 CustomProgressView(viewModel: viewModel.progressViewModel)
-                    .padding(.bottom, 16)
             }
-            .frame(maxWidth: .infinity)
             .padding()
             .background(viewModel.resultType.backgroundColor)
             .cornerRadius(28)

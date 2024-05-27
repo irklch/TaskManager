@@ -25,9 +25,8 @@ struct CustomProgressView: View {
                     width: Offset.viewHeight,
                     height: Offset.viewHeight))
                 .fill(viewModel.doneTasksColor)
-                .frame(height: Offset.viewHeight)
+                .frame(width: colorWidth, height: Offset.viewHeight)
                 .padding(.trailing, 2)
-                .frame(width: colorWidth)
                 DiagonalStripesShape()
                     .stroke(style: 
                                 StrokeStyle(
@@ -43,6 +42,7 @@ struct CustomProgressView: View {
                         height: Offset.viewHeight)
             }
         }
+        .frame(height: Offset.viewHeight, alignment: .center)
     }
 }
 #Preview {
