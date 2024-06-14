@@ -8,136 +8,92 @@
 import SwiftUI
 
 struct CalendarView: View {
-    @State private var selectedDate = Date()
+    @State var selectedDateIndex: Int = 0
 
-    private let calendar: Calendar = .current
+    struct DateFormat: Hashable {
+        let index: Int
+        let number: String
+        let numberWithMonth: String
 
-    private var days: [String] {
-        let formatter = DateFormatter()
-        formatter.calendar = calendar
-        formatter.dateFormat = "EE"
-
-        var weekSymbols = formatter.shortWeekdaySymbols ?? []
-        let firstWeekdayIndex = calendar.firstWeekday - 1 // firstWeekday is 1-based index
-        let sortedWeekSymbols = Array(weekSymbols[firstWeekdayIndex..<weekSymbols.count] + weekSymbols[0..<firstWeekdayIndex])
-
-        return sortedWeekSymbols
-    }
-
-    private var monthDates: [Date] {
-        guard let monthInterval = calendar.dateInterval(of: .month, for: selectedDate),
-              let monthFirstWeek = calendar.dateInterval(of: .weekOfMonth, for: monthInterval.start) else {
-            return []
+        init(
+            index: Int
+        ) {
+            let today = Date()
+            let calendar = Calendar.current
+            let todateDay = calendar.date(byAdding: .day, value: index, to: today)!
+            let dateMonthFormatter = DateFormatter()
+            dateMonthFormatter.dateFormat = "dd MMMM"
+            let dayFormatter = DateFormatter()
+            dayFormatter.dateFormat = "dd"
+            self.number = dayFormatter.string(from: todateDay)
+            self.numberWithMonth = dateMonthFormatter.string(from: todateDay)
+            self.index = index
         }
-
-        let startDate = monthFirstWeek.start
-        let endDate = calendar.date(byAdding: .day, value: 42, to: startDate)!
-
-        return calendar.generateDates(
-            inside: DateInterval(start: startDate, end: endDate),
-            matching: DateComponents(hour: 0, minute: 0, second: 0),
-            matchingPolicy: .nextTime
-        )
     }
+
+    static func getDates(newIndex: Int) -> [DateFormat] {
+        return [
+            .init(index: newIndex-1),
+            .init(index: newIndex),
+            .init(index: newIndex+1),
+            .init(index: newIndex+2)
+        ]
+    }
+
+    @State var dates: [DateFormat] = getDates(newIndex: 0)
 
     var body: some View {
         VStack {
             HStack {
-                Button(action: previousMonth) {
+                Button(action: {
+                    dates = Self.getDates(newIndex: selectedDateIndex - 1)
+                    selectedDateIndex = selectedDateIndex - 1
+
+                }) {
                     Image(systemName: "chevron.left")
                 }
+                .tint(Color.hex000101)
                 Spacer()
-                Text(monthYearString(from: selectedDate))
-                    .font(.headline)
-                    .foregroundColor(.hex000101)
-                Spacer()
-                Button(action: nextMonth) {
+                ForEach(dates, id: \.self) { date in
+                    Button(action: {
+                        selectedDateIndex = date.index
+                    }) {
+                        if date.index == selectedDateIndex {
+                            Text(date.numberWithMonth)
+                                .font(.title3)
+                                .padding([.top, .bottom], 7)
+                                .padding([.leading, .trailing], 16)
+                                .background(RoundedRectangle(cornerRadius: 20.0)
+                                    .tint(Color.hex316AFD))
+                                .tint(Color.hexF2F2F2)
+
+                        } else {
+                            Text(date.number)
+                                .font(.title3)
+                                .tint(Color.hex000101)
+                        }
+                    }
+                    Spacer()
+                }
+                Button(action: {
+                    dates = Self.getDates(newIndex: selectedDateIndex + 1)
+                    selectedDateIndex = selectedDateIndex + 1
+                }) {
                     Image(systemName: "chevron.right")
                 }
+                .tint(Color.hex000101)
             }
-            .padding()
-
-            HStack {
-                ForEach(days, id: \.self) { day in
-                    Text(day)
-                        .fontWeight(.bold)
-                        .frame(maxWidth: .infinity)
-                        .foregroundColor(.hex000101)
-                }
+            .frame(maxWidth: .infinity)
+            .padding([.leading, .trailing], 16)
+            ScrollView {
             }
-
-            GeometryReader { geometry in
-                let width = geometry.size.width / 8
-                LazyVGrid(columns: Array(repeating: GridItem(.fixed(width)), count: 7), spacing: 0) {
-                    ForEach(monthDates, id: \.self) { date in
-                        Text(dateString(from: date))
-                            .foregroundColor(isSameMonth(date) ? isToday(date) ? .hexF2F2F2 : .hex000101 : .clear)
-                            .frame(width: width, height: width, alignment: .center)
-                            .background(isToday(date) ? .hex316AFD : Color.clear)
-                            .cornerRadius(width / 2)
-
-                    }
-                }
-            }
-        }
-    }
-
-    private func monthYearString(from date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "LLLL yyyy"
-        return formatter.string(from: date)
-    }
-
-    private func dateString(from date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "d"
-        return formatter.string(from: date)
-    }
-
-    private func isToday(_ date: Date) -> Bool {
-        calendar.isDateInToday(date)
-    }
-
-    private func isSameMonth(_ date: Date) -> Bool {
-        calendar.isDate(date, equalTo: selectedDate, toGranularity: .month)
-    }
-
-    private func previousMonth() {
-        if let newDate = calendar.date(byAdding: .month, value: -1, to: selectedDate) {
-            selectedDate = newDate
-        }
-    }
-
-    private func nextMonth() {
-        if let newDate = calendar.date(byAdding: .month, value: 1, to: selectedDate) {
-            selectedDate = newDate
+            .background(Color.hexF2F2F2)
+            .cornerRadius(20)
         }
     }
 }
+
 
 #Preview {
     ContentView()
-}
-
-extension Calendar {
-    func generateDates(
-        inside interval: DateInterval,
-        matching components: DateComponents,
-        matchingPolicy: MatchingPolicy
-    ) -> [Date] {
-        var dates: [Date] = []
-        dates.append(interval.start)
-
-        enumerateDates(startingAfter: interval.start, matching: components, matchingPolicy: matchingPolicy) { date, _, stop in
-            if let date = date {
-                if date < interval.end {
-                    dates.append(date)
-                } else {
-                    stop = true
-                }
-            }
-        }
-
-        return dates
-    }
 }
