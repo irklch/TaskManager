@@ -17,23 +17,15 @@ struct CustomTabBar: View {
     var body: some View {
         HStack {
             plusButton()
-//            ZStack(alignment: .center) {
-//                tabBarItemsBackground()
-//                HStack {
-//                    ForEach(viewModel.tabItems.indices, id: \.self) { index in
-//                        getTabButton(by: index)
-//                    }
-//                }
-//                .frame(height: 60)
-//            }
             HStack {
                 ForEach(viewModel.tabItems.indices, id: \.self) { index in
                     getTabButton(by: index)
-                        .padding(.top, 10)
                 }
-            }.padding([.leading, .trailing], 10)
+            }
+            .frame(height: Offset.pageSizeWithSpaces)
+            .padding([.leading, .trailing], 4)
             .background(Color.hex000101)
-            .cornerRadius(10)
+            .cornerRadius(Offset.superViewCornerRadius)
         }
     }
 
@@ -82,19 +74,33 @@ struct CustomTabBar: View {
                         RoundedRectangle(cornerRadius: Offset.pageCornerRadius)
                             .fill(Color.hex316AFD)
                             .frame(height: Offset.pageSize)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: Offset.pageCornerRadius)
+                                    .stroke(Color.hex000101, lineWidth: 1)
+                            )
                     } else {
                         RoundedRectangle(cornerRadius: Offset.pageCornerRadius)
-                            .stroke(Color.gray.opacity(0.7), lineWidth: 1)
+                            .fill(Color.hex000101)
                             .frame(height: Offset.pageSize)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: Offset.pageCornerRadius)
+                                    .stroke(Color.gray.opacity(0.7), lineWidth: 1)
+                            )
 
                     }
                 }
             )
+        
         return Button(action: {
             viewModel.selectedIndex = index
         }) {
             tabImage
         }
+        .padding(6)
+        .background(
+            RoundedRectangle(cornerRadius: Offset.pageCornerRadius + 6)
+                .fill(Color.hex000101)
+        )
         .padding(.leading, index == 0 ? 0 : Offset.pageLeadingPadding)
     }
 
