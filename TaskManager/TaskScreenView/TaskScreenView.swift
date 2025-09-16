@@ -7,10 +7,13 @@
 import SwiftUI
 
 struct TaskScreenView: View {
+    @State private var selectedFolder = "Все задачи"
+    @State private var showFolderPopup = false
+    
     var body: some View {
-        ScrollView(.vertical) {
+        ScrollView(.vertical, showsIndicators: false) {
                 VStack(alignment: .leading) {
-                Text("Chaos control")
+                Text("Задачи")
                     .font(.largeTitle)
                     .fontWeight(.light)
                     .padding(.leading, Offset.titlesLeadingOffset)
@@ -31,10 +34,21 @@ struct TaskScreenView: View {
                     Offset.screenBorderOffset)
 
                 VStack(alignment: .leading) {
-                    Text("All Tasks")
-                        .font(.title2)
-                        .padding(.leading, Offset.titlesLeadingOffset)
-                        .padding(.top, 20)
+                    Button(action: {
+                        showFolderPopup = true
+                    }) {
+                        HStack {
+                            Text(selectedFolder)
+                                .font(.title2)
+                                .foregroundColor(.hex316AFD)
+                            
+                            Image(systemName: "chevron.down")
+                                .foregroundColor(.hex316AFD)
+                                .font(.system(size: 16, weight: .medium))
+                        }
+                    }
+                    .padding(.leading, Offset.titlesLeadingOffset)
+                    .padding(.top, 20)
                     let sideArrowVM: SideArrowViewModel = .init(
                         backgroundColor: .hexF2F2F2,
                         arrowColor: .hex000101)
@@ -83,6 +97,13 @@ struct TaskScreenView: View {
             .padding(.bottom, 150)
         }
         .background(Color.hexF2F2F2)
+        .sheet(isPresented: $showFolderPopup) {
+            TaskFolderPopupView(
+                isPresented: $showFolderPopup,
+                selectedFolder: $selectedFolder,
+                folders: TaskFolderModel.sampleFolders
+            )
+        }
     }
 }
 

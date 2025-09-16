@@ -46,12 +46,13 @@ struct CalendarView: View {
         VStack {
             getCalendarLineHStack()
             Spacer(minLength: 24)
-            ScrollView {
+            ScrollView(showsIndicators: false) {
                 getDayVStack()
                 getDaliTaskHStack()
             }
             .background(Color.white)
             .cornerRadius(20)
+            .edgesIgnoringSafeArea(.bottom)
         }
         .background(Color.hexF2F2F2)
     }

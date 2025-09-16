@@ -9,33 +9,40 @@ import SwiftUI
 import CoreData
 
 struct ContentView: View {
-    @State private var selectedIndex = 1
+    @State private var selectedIndex = 0
     @State private var isTabBarVisible = true
     private var tabItems: [TabItemModel] {
         [
-            TabItemModel(icon: "list.clipboard", view: AnyView(TaskScreenView())),
-            TabItemModel(icon: "calendar", view: AnyView(CalendarView()))
+            TabItemModel(icon: "list.clipboard", title: "Задачи", view: AnyView(TaskScreenView())),
+            TabItemModel(icon: "calendar", title: "Календарь", view: AnyView(CalendarView()))
         ]
     }
 
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
-            tabItems[selectedIndex].view
-                .simultaneousGesture(
-                    DragGesture()
-                        .onChanged { value in
-                            // Используем относительное смещение жеста по вертикали (CGSize.height)
-                            let dy = value.translation.height
-                            // Скролл вниз (палец вверх, dy < 0) — скрыть таббар
-                            if dy < -50 && isTabBarVisible {
-                                isTabBarVisible = false
-                            }
-                            // Скролл вверх (палец вниз, dy > 0) — показать таббар
-                            else if dy > 50 && !isTabBarVisible {
-                                isTabBarVisible = true
-                            }
-                        }
-                )
+            TabView(selection: $selectedIndex) {
+                ForEach(tabItems.indices, id: \.self) { index in
+                    tabItems[index].view
+                        .tag(index)
+                        .simultaneousGesture(
+                            DragGesture()
+                                .onChanged { value in
+                                    // Используем относительное смещение жеста по вертикали (CGSize.height)
+                                    let dy = value.translation.height
+                                    // Скролл вниз (палец вверх, dy < 0) — скрыть таббар
+                                    if dy < -50 && isTabBarVisible {
+                                        isTabBarVisible = false
+                                    }
+                                    // Скролл вверх (палец вниз, dy > 0) — показать таббар
+                                    else if dy > 50 && !isTabBarVisible {
+                                        isTabBarVisible = true
+                                    }
+                                }
+                        )
+                }
+            }
+            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+            .animation(.easeInOut(duration: 0.3), value: selectedIndex)
 
             getCustomTabBar()
                 .padding(.bottom, 16)
@@ -43,7 +50,7 @@ struct ContentView: View {
                 .offset(y: isTabBarVisible ? 0 : 100)
                 .animation(.easeInOut(duration: 0.3), value: isTabBarVisible)
         }
-        .edgesIgnoringSafeArea(.bottom)
+        .edgesIgnoringSafeArea([.bottom, .top])
         .background(.white)
     }
 

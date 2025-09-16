@@ -22,6 +22,8 @@
 		A967DB1C2BFEA00100AF9BE5 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A967DB1B2BFEA00100AF9BE5 /* Colors.xcassets */; };
 		A967DB212BFEA21700AF9BE5 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = A967DB202BFEA21700AF9BE5 /* Colors.swift */; };
 		A967DB232BFEA2F000AF9BE5 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A967DB222BFEA2F000AF9BE5 /* CalendarView.swift */; };
+		A982F8AF2E7A060900377F26 /* TaskFolderPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A982F8AE2E7A060900377F26 /* TaskFolderPopupView.swift */; };
+		A982F8B02E7A060900377F26 /* TaskFolderModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A982F8AD2E7A060900377F26 /* TaskFolderModel.swift */; };
 		A9BE46C52C00CC50003A586E /* CustomProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9BE46C42C00CC50003A586E /* CustomProgressView.swift */; };
 		A9BE46C92C00E031003A586E /* CustomProgressViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9BE46C82C00E031003A586E /* CustomProgressViewModel.swift */; };
 		A9BE46CB2C00E054003A586E /* DiagonalStripesShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9BE46CA2C00E054003A586E /* DiagonalStripesShape.swift */; };
@@ -50,6 +52,8 @@
 		A967DB1B2BFEA00100AF9BE5 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
 		A967DB202BFEA21700AF9BE5 /* Colors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		A967DB222BFEA2F000AF9BE5 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
+		A982F8AD2E7A060900377F26 /* TaskFolderModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskFolderModel.swift; sourceTree = "<group>"; };
+		A982F8AE2E7A060900377F26 /* TaskFolderPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskFolderPopupView.swift; sourceTree = "<group>"; };
 		A9BE46C42C00CC50003A586E /* CustomProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomProgressView.swift; sourceTree = "<group>"; };
 		A9BE46C82C00E031003A586E /* CustomProgressViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomProgressViewModel.swift; sourceTree = "<group>"; };
 		A9BE46CA2C00E054003A586E /* DiagonalStripesShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiagonalStripesShape.swift; sourceTree = "<group>"; };
@@ -142,6 +146,15 @@
 			path = Assets;
 			sourceTree = "<group>";
 		};
+		A982F8A82E7A05E000377F26 /* TaskFolderPopupView */ = {
+			isa = PBXGroup;
+			children = (
+				A982F8AD2E7A060900377F26 /* TaskFolderModel.swift */,
+				A982F8AE2E7A060900377F26 /* TaskFolderPopupView.swift */,
+			);
+			path = TaskFolderPopupView;
+			sourceTree = "<group>";
+		};
 		A9BE46C32C00C968003A586E /* CalendarView */ = {
 			isa = PBXGroup;
 			children = (
@@ -153,6 +166,7 @@
 		A9BE46C62C00E016003A586E /* TaskScreenView */ = {
 			isa = PBXGroup;
 			children = (
+				A982F8A82E7A05E000377F26 /* TaskFolderPopupView */,
 				A9BE46C72C00E021003A586E /* CustomProgressView */,
 				A9BE46D02C00E10B003A586E /* TaskResultView */,
 				A9BE46D52C00E198003A586E /* TaskItemView */,
@@ -276,6 +290,8 @@
 				A923135F2BFBDC0700528706 /* ContentView.swift in Sources */,
 				A9BE46CB2C00E054003A586E /* DiagonalStripesShape.swift in Sources */,
 				A9BE46CD2C00E0EB003A586E /* CustomProgressView+Offset.swift in Sources */,
+				A982F8AF2E7A060900377F26 /* TaskFolderPopupView.swift in Sources */,
+				A982F8B02E7A060900377F26 /* TaskFolderModel.swift in Sources */,
 				A967DB182BFE94C900AF9BE5 /* CustomTabBar.swift in Sources */,
 				A967DB172BFE934C00AF9BE5 /* CustomTabBar+Offset.swift in Sources */,
 				A967DB232BFEA2F000AF9BE5 /* CalendarView.swift in Sources */,
