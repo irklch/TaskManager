@@ -150,6 +150,7 @@ struct TaskItemView: View {
                 .buttonStyle(NoHighlightButtonStyle())
 
                 Text(viewModel.isDone ? "Done" : "Tap to make it done")
+                    .foregroundStyle(.hex000101)
                     .font(.title3)
                     .padding(.leading, 4)
             }
@@ -163,6 +164,7 @@ struct TaskItemView: View {
         return GeometryReader(content: { geometry in
             HStack(alignment: .center) {
                 Text(model.percentText)
+                    .foregroundStyle(.hex000101)
                     .font(.system(size: 18))
 
                 let width = geometry.size.width / 1.5

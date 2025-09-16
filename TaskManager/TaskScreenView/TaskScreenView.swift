@@ -16,7 +16,9 @@ struct TaskScreenView: View {
                 Text("Задачи")
                     .font(.largeTitle)
                     .fontWeight(.light)
+                    .foregroundStyle(.hex000101)
                     .padding(.leading, Offset.titlesLeadingOffset)
+                    
 
                 HStack(spacing: Offset.screenBorderOffset) {
                     TaskResultView(viewModel: .init(

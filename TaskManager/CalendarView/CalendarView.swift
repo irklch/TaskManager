@@ -61,6 +61,7 @@ struct CalendarView: View {
         VStack(spacing: 16) {
             HStack(alignment: .firstTextBaseline, spacing: 16) {
                 Text("10:00")
+                    .foregroundStyle(.hex000101)
                 TaskItemView(viewModel: .init(
                     title: "Daily Meeting",
                     timeInterval: "10:00 - 10:45",
@@ -80,6 +81,7 @@ struct CalendarView: View {
 
             HStack(alignment: .firstTextBaseline, spacing: 16) {
                 Text("11:00")
+                    .foregroundStyle(.hex000101)
                 TaskItemView(viewModel: .init(
                     title: "Daily Meeting",
                     timeInterval: "10:00 - 10:45",
@@ -99,6 +101,7 @@ struct CalendarView: View {
 
             HStack(alignment: .firstTextBaseline, spacing: 16) {
                 Text("12:00")
+                    .foregroundStyle(.hex000101)
                 TaskItemView(viewModel: .init(
                     title: "Daily Meeting",
                     timeInterval: "10:00 - 10:45",
@@ -118,6 +121,7 @@ struct CalendarView: View {
 
             HStack(alignment: .firstTextBaseline, spacing: 16) {
                 Text("13:00")
+                    .foregroundStyle(.hex000101)
                 TaskItemView(viewModel: .init(
                     title: "Daily Meeting",
                     timeInterval: "10:00 - 10:45",
@@ -143,7 +147,7 @@ struct CalendarView: View {
     private func getDayVStack() -> some View {
         VStack(alignment: .leading, spacing: 0) {
             Text("Wednesday")
-                .foregroundStyle(.black)
+                .foregroundStyle(.hex000101)
                 .font(.system(size: 36, weight: .light))
 
             Text("6 meetings")
@@ -174,11 +178,11 @@ struct CalendarView: View {
                     if date.index == selectedDateIndex {
                         Text(date.numberWithMonth)
                             .font(.title3)
+                            .foregroundStyle(.hexF2F2F2)
                             .padding([.top, .bottom], 7)
                             .padding([.leading, .trailing], 16)
                             .background(RoundedRectangle(cornerRadius: 20.0)
                                 .tint(Color.hex316AFD))
-                            .tint(Color.hexF2F2F2)
 
                     } else {
                         Text(date.number)
