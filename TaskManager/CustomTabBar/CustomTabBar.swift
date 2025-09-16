@@ -23,9 +23,10 @@ struct CustomTabBar: View {
                 }
             }
             .frame(height: Offset.pageSizeWithSpaces)
-            .padding([.leading, .trailing], 4)
+            .padding([.leading, .trailing], 0)
             .background(Color.hex000101)
             .cornerRadius(Offset.superViewCornerRadius)
+            .animation(.easeInOut(duration: 0.3), value: viewModel.selectedIndex)
         }
     }
 
@@ -62,43 +63,73 @@ struct CustomTabBar: View {
     }
 
     private func getTabButton(by index: Int) -> some View {
-        let tabImage = Image(systemName: viewModel.tabItems[index].icon)
-            .font(.system(size: 18))
-            .foregroundColor(.hexF2F2F2)
-            .frame(
-                width: Offset.pageSize,
-                height: Offset.pageSize)
-            .background(
-                ZStack {
-                    if index == viewModel.selectedIndex {
-                        RoundedRectangle(cornerRadius: Offset.pageCornerRadius)
-                            .fill(Color.hex316AFD)
-                            .frame(height: Offset.pageSize)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: Offset.pageCornerRadius)
-                                    .stroke(Color.hex000101, lineWidth: 1)
-                            )
-                    } else {
-                        RoundedRectangle(cornerRadius: Offset.pageCornerRadius)
-                            .fill(Color.hex000101)
-                            .frame(height: Offset.pageSize)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: Offset.pageCornerRadius)
-                                    .stroke(Color.gray.opacity(0.7), lineWidth: 1)
-                            )
-
-                    }
+        let isSelected = index == viewModel.selectedIndex
+        
+        let tabContent = HStack(spacing: 0) {
+            if isSelected {
+                // Отступ от левого края до изображения
+                Spacer()
+                    .frame(width: 10)
+                
+                // Изображение
+                Image(systemName: viewModel.tabItems[index].icon)
+                    .font(.system(size: 18))
+                    .foregroundColor(.hexF2F2F2)
+                    .frame(width: 30, height: Offset.pageSize)
+                
+                // Отступ от изображения до текста
+                Spacer()
+                    .frame(width: 6)
+                
+                // Текст
+                Text(viewModel.tabItems[index].title)
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundColor(.hexF2F2F2)
+                    .transition(.opacity.combined(with: .scale))
+                
+                // Отступ от текста до правого края
+                Spacer()
+                    .frame(width: 10)
+            } else {
+                // В неактивном состоянии - только иконка по центру
+                Image(systemName: viewModel.tabItems[index].icon)
+                    .font(.system(size: 18))
+                    .foregroundColor(.hexF2F2F2)
+                    .frame(width: Offset.pageSize, height: Offset.pageSize)
+            }
+        }
+        .frame(width: isSelected ? nil : Offset.pageSize, height: Offset.pageSize)
+        .background(
+            ZStack {
+                if isSelected {
+                    RoundedRectangle(cornerRadius: Offset.pageCornerRadius)
+                        .fill(Color.hex316AFD)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: Offset.pageCornerRadius)
+                                .stroke(Color.hex000101, lineWidth: 1)
+                        )
+                } else {
+                    RoundedRectangle(cornerRadius: Offset.pageCornerRadius)
+                        .fill(Color.hex000101)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: Offset.pageCornerRadius)
+                                .stroke(Color.gray.opacity(0.7), lineWidth: 1)
+                        )
                 }
-            )
+            }
+        )
         
         return Button(action: {
-            viewModel.selectedIndex = index
+            withAnimation(.easeInOut(duration: 0.3)) {
+                viewModel.selectedIndex = index
+            }
         }) {
-            tabImage
+            tabContent
         }
+        .animation(.easeInOut(duration: 0.3), value: isSelected)
         .padding(6)
         .background(
-            RoundedRectangle(cornerRadius: Offset.pageCornerRadius + 6)
+            RoundedRectangle(cornerRadius: Offset.pageCornerRadius)
                 .fill(Color.hex000101)
         )
         .padding(.leading, index == 0 ? 0 : Offset.pageLeadingPadding)
