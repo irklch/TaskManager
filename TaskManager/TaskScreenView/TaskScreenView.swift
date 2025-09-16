@@ -9,7 +9,7 @@ import SwiftUI
 struct TaskScreenView: View {
     var body: some View {
         ScrollView(.vertical) {
-            VStack(alignment: .leading) {
+                VStack(alignment: .leading) {
                 Text("Chaos control")
                     .font(.largeTitle)
                     .fontWeight(.light)
