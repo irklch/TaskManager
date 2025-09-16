@@ -70,7 +70,7 @@ struct CalendarView: View {
                             doneTasksCount: 7,
                             doneTasksColor: .white))),
                     isDone: false,
-                    style: .blueStyle,
+                    style: .grayStyle,
                     sideArrowViewModel: .init(
                         backgroundColor: .hex000101,
                         arrowColor: .hexF2F2F2)))
@@ -89,7 +89,7 @@ struct CalendarView: View {
                             doneTasksCount: 7,
                             doneTasksColor: .white))),
                     isDone: false,
-                    style: .blueStyle,
+                    style: .grayStyle,
                     sideArrowViewModel: .init(
                         backgroundColor: .hex000101,
                         arrowColor: .hexF2F2F2)))
@@ -108,7 +108,7 @@ struct CalendarView: View {
                             doneTasksCount: 7,
                             doneTasksColor: .white))),
                     isDone: false,
-                    style: .blueStyle,
+                    style: .grayStyle,
                     sideArrowViewModel: .init(
                         backgroundColor: .hex000101,
                         arrowColor: .hexF2F2F2)))
@@ -127,7 +127,7 @@ struct CalendarView: View {
                             doneTasksCount: 7,
                             doneTasksColor: .white))),
                     isDone: false,
-                    style: .blueStyle,
+                    style: .grayStyle,
                     sideArrowViewModel: .init(
                         backgroundColor: .hex000101,
                         arrowColor: .hexF2F2F2)))

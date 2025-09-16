@@ -66,6 +66,11 @@ final class TaskItemViewModel: ObservableObject {
             textColor: .white,
             backgroundColor: .hex316AFD,
             timeColor: .white.opacity(10))
+        
+        static let grayStyle: Style = .init(
+            textColor: .hex000101,
+            backgroundColor: .hexF2F2F2,
+            timeColor: .hex000101.opacity(10))
     }
 }
 
