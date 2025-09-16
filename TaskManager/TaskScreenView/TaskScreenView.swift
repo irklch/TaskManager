@@ -10,12 +10,10 @@ struct TaskScreenView: View {
     var body: some View {
         ScrollView(.vertical) {
             VStack(alignment: .leading) {
-                Text("Hi, Irina")
+                Text("Chaos control")
                     .font(.largeTitle)
                     .fontWeight(.light)
-                    .padding(
-                        .leading,
-                        Offset.titlesLeadingOffset)
+                    .padding(.leading, Offset.titlesLeadingOffset)
 
                 HStack(spacing: Offset.screenBorderOffset) {
                     TaskResultView(viewModel: .init(
@@ -37,7 +35,9 @@ struct TaskScreenView: View {
                         .font(.title2)
                         .padding(.leading, Offset.titlesLeadingOffset)
                         .padding(.top, 20)
-
+                    let sideArrowVM: SideArrowViewModel = .init(
+                        backgroundColor: .hexF2F2F2,
+                        arrowColor: .hex000101)
                     VStack(
                         alignment: .leading,
                         spacing: Offset.screenBorderOffset
@@ -46,26 +46,34 @@ struct TaskScreenView: View {
                             title: "UX Research",
                             timeInterval: "Started 10:30 PM",
                             description: "Formulating design strategies on user data",
-                            itemType: .progress(.init(allItems: 11, doneItems: 3)),
-                            isDone: false))
+                            itemType: .progress(.init(progressViewModel: .init(tasksCount: 11, doneTasksCount: 3, doneTasksColor: .hex316AFD))),
+                            isDone: false,
+                            style: .whiteStyle,
+                        sideArrowViewModel: sideArrowVM))
                         TaskItemView(viewModel: .init(
                             title: "Feature Implementation",
                             timeInterval: "Today 08:00 AM",
                             description: "Developing new features for an iOS application",
                             itemType: .checkbox,
-                            isDone: true))
+                            isDone: true,
+                            style: .whiteStyle,
+                        sideArrowViewModel: sideArrowVM))
                         TaskItemView(viewModel: .init(
                             title: "Bug Fixing",
                             timeInterval: "Tomorrow 12:20 PM",
                             description: "Identifying and fixing bugs reported by QA testers",
-                            itemType: .progress(.init(allItems: 10, doneItems: 10)),
-                            isDone: true))
+                            itemType: .progress(.init(progressViewModel: .init(tasksCount: 10, doneTasksCount: 10, doneTasksColor: .hex316AFD))),
+                            isDone: true,
+                            style: .whiteStyle,
+                        sideArrowViewModel: sideArrowVM))
                         TaskItemView(viewModel: .init(
                             title: "Code Optimization",
                             timeInterval: "Today 09:00 AM",
                             description: "Improving the performance",
                             itemType: .checkbox,
-                            isDone: false))
+                            isDone: false,
+                            style: .whiteStyle,
+                            sideArrowViewModel: sideArrowVM))
                     }
                     .padding(
                         .horizontal,

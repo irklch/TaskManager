@@ -44,52 +44,159 @@ struct CalendarView: View {
 
     var body: some View {
         VStack {
-            HStack {
-                Button(action: {
-                    dates = Self.getDates(newIndex: selectedDateIndex - 1)
-                    selectedDateIndex = selectedDateIndex - 1
-
-                }) {
-                    Image(systemName: "chevron.left")
-                }
-                .tint(Color.hex000101)
-                Spacer()
-                ForEach(dates, id: \.self) { date in
-                    Button(action: {
-                        selectedDateIndex = date.index
-                    }) {
-                        if date.index == selectedDateIndex {
-                            Text(date.numberWithMonth)
-                                .font(.title3)
-                                .padding([.top, .bottom], 7)
-                                .padding([.leading, .trailing], 16)
-                                .background(RoundedRectangle(cornerRadius: 20.0)
-                                    .tint(Color.hex316AFD))
-                                .tint(Color.hexF2F2F2)
-
-                        } else {
-                            Text(date.number)
-                                .font(.title3)
-                                .tint(Color.hex000101)
-                        }
-                    }
-                    Spacer()
-                }
-                Button(action: {
-                    dates = Self.getDates(newIndex: selectedDateIndex + 1)
-                    selectedDateIndex = selectedDateIndex + 1
-                }) {
-                    Image(systemName: "chevron.right")
-                }
-                .tint(Color.hex000101)
-            }
-            .frame(maxWidth: .infinity)
-            .padding([.leading, .trailing], 16)
+            getCalendarLineHStack()
+            Spacer(minLength: 24)
             ScrollView {
+                getDayVStack()
+                getDaliTaskHStack()
             }
-            .background(Color.hexF2F2F2)
+            .background(Color.white)
             .cornerRadius(20)
         }
+        .background(Color.hexF2F2F2)
+    }
+
+    private func getDaliTaskHStack() -> some View {
+        VStack(spacing: 16) {
+            HStack(alignment: .firstTextBaseline, spacing: 16) {
+                Text("10:00")
+                TaskItemView(viewModel: .init(
+                    title: "Daily Meeting",
+                    timeInterval: "10:00 - 10:45",
+                    description: "Task allocation and planning for the day",
+                    itemType: .progress(.init(
+                        progressViewModel: .init(
+                            tasksCount: 13,
+                            doneTasksCount: 7,
+                            doneTasksColor: .white))),
+                    isDone: false,
+                    style: .blueStyle,
+                    sideArrowViewModel: .init(
+                        backgroundColor: .hex000101,
+                        arrowColor: .hexF2F2F2)))
+            }
+            .padding([.leading, .trailing], 16)
+
+            HStack(alignment: .firstTextBaseline, spacing: 16) {
+                Text("11:00")
+                TaskItemView(viewModel: .init(
+                    title: "Daily Meeting",
+                    timeInterval: "10:00 - 10:45",
+                    description: "Task allocation and planning for the day",
+                    itemType: .progress(.init(
+                        progressViewModel: .init(
+                            tasksCount: 13,
+                            doneTasksCount: 7,
+                            doneTasksColor: .white))),
+                    isDone: false,
+                    style: .blueStyle,
+                    sideArrowViewModel: .init(
+                        backgroundColor: .hex000101,
+                        arrowColor: .hexF2F2F2)))
+            }
+            .padding([.leading, .trailing], 16)
+
+            HStack(alignment: .firstTextBaseline, spacing: 16) {
+                Text("12:00")
+                TaskItemView(viewModel: .init(
+                    title: "Daily Meeting",
+                    timeInterval: "10:00 - 10:45",
+                    description: "Task allocation and planning for the day",
+                    itemType: .progress(.init(
+                        progressViewModel: .init(
+                            tasksCount: 13,
+                            doneTasksCount: 7,
+                            doneTasksColor: .white))),
+                    isDone: false,
+                    style: .blueStyle,
+                    sideArrowViewModel: .init(
+                        backgroundColor: .hex000101,
+                        arrowColor: .hexF2F2F2)))
+            }
+            .padding([.leading, .trailing], 16)
+
+            HStack(alignment: .firstTextBaseline, spacing: 16) {
+                Text("13:00")
+                TaskItemView(viewModel: .init(
+                    title: "Daily Meeting",
+                    timeInterval: "10:00 - 10:45",
+                    description: "Task allocation and planning for the day",
+                    itemType: .progress(.init(
+                        progressViewModel: .init(
+                            tasksCount: 13,
+                            doneTasksCount: 7,
+                            doneTasksColor: .white))),
+                    isDone: false,
+                    style: .blueStyle,
+                    sideArrowViewModel: .init(
+                        backgroundColor: .hex000101,
+                        arrowColor: .hexF2F2F2)))
+            }
+            .padding([.leading, .trailing], 16)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.top, 16)
+        .padding(.bottom, 100)
+    }
+
+    private func getDayVStack() -> some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Text("Wednesday")
+                .foregroundStyle(.black)
+                .font(.system(size: 36, weight: .light))
+
+            Text("6 meetings")
+                .foregroundStyle(.gray)
+                .font(.system(size: 12))
+                .padding(.top, 8)
+
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding([.leading, .top], 16)
+    }
+
+    private func getCalendarLineHStack() -> some View {
+        return HStack {
+            Button(action: {
+                dates = Self.getDates(newIndex: selectedDateIndex - 1)
+                selectedDateIndex = selectedDateIndex - 1
+
+            }) {
+                Image(systemName: "chevron.left")
+            }
+            .tint(Color.hex000101)
+            Spacer()
+            ForEach(dates, id: \.self) { date in
+                Button(action: {
+                    selectedDateIndex = date.index
+                }) {
+                    if date.index == selectedDateIndex {
+                        Text(date.numberWithMonth)
+                            .font(.title3)
+                            .padding([.top, .bottom], 7)
+                            .padding([.leading, .trailing], 16)
+                            .background(RoundedRectangle(cornerRadius: 20.0)
+                                .tint(Color.hex316AFD))
+                            .tint(Color.hexF2F2F2)
+
+                    } else {
+                        Text(date.number)
+                            .font(.title3)
+                            .tint(Color.hex000101)
+                    }
+                }
+                Spacer()
+            }
+            Button(action: {
+                dates = Self.getDates(newIndex: selectedDateIndex + 1)
+                selectedDateIndex = selectedDateIndex + 1
+            }) {
+                Image(systemName: "chevron.right")
+            }
+            .tint(Color.hex000101)
+        }
+        .frame(maxWidth: .infinity)
+        .padding([.leading, .trailing], 16)
     }
 }
 

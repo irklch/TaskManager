@@ -8,21 +8,31 @@
 import SwiftUI
 
 final class TaskItemViewModel: ObservableObject {
-    let sideArrowViewModel: SideArrowViewModel = .init(
-        backgroundColor: .hexF2F2F2,
-        arrowColor: .hex000101)
+    let sideArrowViewModel: SideArrowViewModel
     let title: String
     let timeInterval: String
     let description: String
     let itemType: ItemType
+    let style: Style
+
     @Published var isDone: Bool
 
-    init(title: String, timeInterval: String, description: String, itemType: ItemType, isDone: Bool) {
+    init(
+        title: String,
+        timeInterval: String,
+        description: String,
+        itemType: ItemType,
+        isDone: Bool,
+        style: Style,
+        sideArrowViewModel: SideArrowViewModel
+    ) {
         self.title = title
         self.timeInterval = timeInterval
         self.description = description
         self.itemType = itemType
         self.isDone = isDone
+        self.style = style
+        self.sideArrowViewModel = sideArrowViewModel
     }
 
     enum ItemType {
@@ -35,15 +45,27 @@ final class TaskItemViewModel: ObservableObject {
         let percentText: String
 
         init(
-            allItems: Double,
-            doneItems: Double
+            progressViewModel: CustomProgressViewModel
         ) {
-            self.progressViewModel = .init(
-                tasksCount: allItems,
-                doneTasksCount: doneItems,
-                doneTasksColor: .hex316AFD)
-            self.percentText = (doneItems / allItems * 100).rounded().formatted().description + "%"
+            self.progressViewModel = progressViewModel
+            self.percentText = (progressViewModel.doneTasksPercent * 100).rounded().formatted().description + "%"
         }
+    }
+
+    struct Style {
+        let textColor: Color
+        let backgroundColor: Color
+        let timeColor: Color
+
+        static let whiteStyle: Style = .init(
+            textColor: .hex000101,
+            backgroundColor: .white,
+            timeColor: .gray)
+
+        static let blueStyle: Style = .init(
+            textColor: .white,
+            backgroundColor: .hex316AFD,
+            timeColor: .white.opacity(10))
     }
 }
 
@@ -61,17 +83,17 @@ struct TaskItemView: View {
                 Text(viewModel.title)
                     .font(.system(size: 20))
                     .fontWeight(.regular)
-                    .foregroundColor(.hex000101)
+                    .foregroundColor(viewModel.style.textColor)
                     .strikethrough(viewModel.isDone)
 
                 Text(viewModel.timeInterval)
                     .font(.subheadline)
-                    .foregroundColor(.gray)
+                    .foregroundColor(viewModel.style.timeColor)
                     .padding([.top, .bottom], 1.0)
 
                 Text(viewModel.description)
                     .font(.subheadline)
-                    .foregroundColor(.hex000101)
+                    .foregroundColor(viewModel.style.textColor)
                     .font(.system(size: 14))
                 switch viewModel.itemType {
                 case .progress(let progressModel):
@@ -81,7 +103,7 @@ struct TaskItemView: View {
                 }
             }
             .padding(18)
-            .background(Color.white)
+            .background(viewModel.style.backgroundColor)
             .cornerRadius(28)
 
             SideArrowView(viewModel: viewModel.sideArrowViewModel)

@@ -17,15 +17,23 @@ struct CustomTabBar: View {
     var body: some View {
         HStack {
             plusButton()
-            ZStack(alignment: .center) {
-                tabBarItemsBackground()
-                HStack {
-                    ForEach(viewModel.tabItems.indices, id: \.self) { index in
-                        getTabButton(by: index)
-                    }
+//            ZStack(alignment: .center) {
+//                tabBarItemsBackground()
+//                HStack {
+//                    ForEach(viewModel.tabItems.indices, id: \.self) { index in
+//                        getTabButton(by: index)
+//                    }
+//                }
+//                .frame(height: 60)
+//            }
+            HStack {
+                ForEach(viewModel.tabItems.indices, id: \.self) { index in
+                    getTabButton(by: index)
+                        .padding(.top, 10)
                 }
-                .frame(height: 60)
-            }
+            }.padding([.leading, .trailing], 10)
+            .background(Color.hex000101)
+            .cornerRadius(10)
         }
     }
 

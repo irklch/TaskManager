@@ -9,10 +9,10 @@ import SwiftUI
 import CoreData
 
 struct ContentView: View {
-    @State private var selectedIndex = 0
+    @State private var selectedIndex = 1
     private let tabItems = [
-        TabItemModel(icon: "calendar", view: AnyView(TaskScreenView())),
-        TabItemModel(icon: "list.clipboard", view: AnyView(CalendarView()))
+        TabItemModel(icon: "list.clipboard", view: AnyView(TaskScreenView())),
+        TabItemModel(icon: "calendar", view: AnyView(CalendarView()))
     ]
 
     var body: some View {
@@ -22,7 +22,6 @@ struct ContentView: View {
             getCustomTabBar()
                 .padding(.bottom, 16)
                 .padding(.trailing, 16)
-
         }
         .edgesIgnoringSafeArea(.bottom)
         .background(.white)
