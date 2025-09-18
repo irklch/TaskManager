@@ -13,10 +13,13 @@ struct PersistenceController {
     static var preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
-        for _ in 0..<10 {
-            let newItem = Item(context: viewContext)
-            newItem.timestamp = Date()
-        }
+        
+        // Create sample folders
+        TaskFolder.createSampleFolders(in: viewContext)
+        
+        // Create sample tasks
+        Task.createSampleTasks(in: viewContext)
+        
         do {
             try viewContext.save()
         } catch {
@@ -52,5 +55,21 @@ struct PersistenceController {
             }
         })
         container.viewContext.automaticallyMergesChangesFromParent = true
+        
+        // Initialize sample data if needed
+        initializeSampleDataIfNeeded()
+    }
+    
+    private func initializeSampleDataIfNeeded() {
+        let context = container.viewContext
+        
+        // Check if folders already exist
+        let folderRequest: NSFetchRequest<TaskFolder> = TaskFolder.fetchRequest()
+        let folderCount = (try? context.count(for: folderRequest)) ?? 0
+        
+        if folderCount == 0 {
+            TaskFolder.createSampleFolders(in: context)
+            Task.createSampleTasks(in: context)
+        }
     }
 }
