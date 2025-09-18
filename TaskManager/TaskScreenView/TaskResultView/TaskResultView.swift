@@ -40,7 +40,7 @@ struct TaskResultView: View {
 }
 
 #Preview {
-    TaskScreenView()
+    TaskScreenView(tasks: .constant(TaskModel.sampleTasks))
 }
 
 

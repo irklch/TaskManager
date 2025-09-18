@@ -137,7 +137,7 @@ struct CustomTabBar: View {
 
 
     private func addNewItem() {
-
+        viewModel.onPlusTapped?()
     }
 }
 

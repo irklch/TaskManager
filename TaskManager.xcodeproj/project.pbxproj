@@ -25,6 +25,8 @@
 		A982F8AF2E7A060900377F26 /* TaskFolderPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A982F8AE2E7A060900377F26 /* TaskFolderPopupView.swift */; };
 		A982F8B02E7A060900377F26 /* TaskFolderModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A982F8AD2E7A060900377F26 /* TaskFolderModel.swift */; };
 		A982F8B62E7A14B600377F26 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A982F8B52E7A14B600377F26 /* LaunchScreen.storyboard */; };
+		A99E3BDD2E7C2B41000D69B2 /* TaskModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A99E3BDC2E7C2B41000D69B2 /* TaskModel.swift */; };
+		A99E3BDF2E7C2B5B000D69B2 /* AddTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A99E3BDE2E7C2B5B000D69B2 /* AddTaskView.swift */; };
 		A9BE46C52C00CC50003A586E /* CustomProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9BE46C42C00CC50003A586E /* CustomProgressView.swift */; };
 		A9BE46C92C00E031003A586E /* CustomProgressViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9BE46C82C00E031003A586E /* CustomProgressViewModel.swift */; };
 		A9BE46CB2C00E054003A586E /* DiagonalStripesShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9BE46CA2C00E054003A586E /* DiagonalStripesShape.swift */; };
@@ -56,6 +58,8 @@
 		A982F8AD2E7A060900377F26 /* TaskFolderModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskFolderModel.swift; sourceTree = "<group>"; };
 		A982F8AE2E7A060900377F26 /* TaskFolderPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskFolderPopupView.swift; sourceTree = "<group>"; };
 		A982F8B52E7A14B600377F26 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		A99E3BDC2E7C2B41000D69B2 /* TaskModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskModel.swift; sourceTree = "<group>"; };
+		A99E3BDE2E7C2B5B000D69B2 /* AddTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTaskView.swift; sourceTree = "<group>"; };
 		A9BE46C42C00CC50003A586E /* CustomProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomProgressView.swift; sourceTree = "<group>"; };
 		A9BE46C82C00E031003A586E /* CustomProgressViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomProgressViewModel.swift; sourceTree = "<group>"; };
 		A9BE46CA2C00E054003A586E /* DiagonalStripesShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiagonalStripesShape.swift; sourceTree = "<group>"; };
@@ -175,6 +179,8 @@
 				A9BE46D52C00E198003A586E /* TaskItemView */,
 				A9BE46DA2C00E853003A586E /* SideArrowView */,
 				A92313722BFBE20C00528706 /* TaskScreenView.swift */,
+				A99E3BDC2E7C2B41000D69B2 /* TaskModel.swift */,
+				A99E3BDE2E7C2B5B000D69B2 /* AddTaskView.swift */,
 			);
 			path = TaskScreenView;
 			sourceTree = "<group>";
@@ -290,7 +296,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				A92313662BFBDC0900528706 /* Persistence.swift in Sources */,
+				A99E3BDD2E7C2B41000D69B2 /* TaskModel.swift in Sources */,
 				A967DB212BFEA21700AF9BE5 /* Colors.swift in Sources */,
+				A99E3BDF2E7C2B5B000D69B2 /* AddTaskView.swift in Sources */,
 				A923135F2BFBDC0700528706 /* ContentView.swift in Sources */,
 				A9BE46CB2C00E054003A586E /* DiagonalStripesShape.swift in Sources */,
 				A9BE46CD2C00E0EB003A586E /* CustomProgressView+Offset.swift in Sources */,

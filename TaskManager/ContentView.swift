@@ -11,9 +11,11 @@ import CoreData
 struct ContentView: View {
     @State private var selectedIndex = 0
     @State private var isTabBarVisible = true
+    @State private var showAddTask = false
+    @State private var tasks: [TaskModel] = TaskModel.sampleTasks
     private var tabItems: [TabItemModel] {
         [
-            TabItemModel(icon: "list.clipboard", title: "Задачи", view: AnyView(TaskScreenView())),
+            TabItemModel(icon: "list.clipboard", title: "Задачи", view: AnyView(TaskScreenView(tasks: $tasks))),
             TabItemModel(icon: "calendar", title: "Календарь", view: AnyView(CalendarView()))
         ]
     }
@@ -52,12 +54,22 @@ struct ContentView: View {
         }
         .edgesIgnoringSafeArea([.bottom, .top])
         .background(.white)
+        .fullScreenCover(isPresented: $showAddTask) {
+            AddTaskView(
+                isPresented: $showAddTask,
+                tasks: $tasks
+            )
+        }
     }
 
     private func getCustomTabBar() -> CustomTabBar {
         let customTabBarViewModel: CustomTabBarViewModel = .init(
             selectedIndex: $selectedIndex,
-            tabItems: tabItems)
+            tabItems: tabItems,
+            onPlusTapped: {
+                showAddTask = true
+            }
+        )
         return .init(viewModel: customTabBarViewModel)
     }
 }

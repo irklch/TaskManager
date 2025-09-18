@@ -104,5 +104,5 @@ extension TaskResultViewModel {
     }
 }
 #Preview {
-    TaskScreenView()
+    TaskScreenView(tasks: .constant(TaskModel.sampleTasks))
 }

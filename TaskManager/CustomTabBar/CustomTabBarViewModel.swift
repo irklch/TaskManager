@@ -10,5 +10,12 @@ import SwiftUI
 struct CustomTabBarViewModel {
     @Binding var selectedIndex: Int
     let tabItems: [TabItemModel]
+    let onPlusTapped: (() -> Void)?
+    
+    init(selectedIndex: Binding<Int>, tabItems: [TabItemModel], onPlusTapped: (() -> Void)? = nil) {
+        self._selectedIndex = selectedIndex
+        self.tabItems = tabItems
+        self.onPlusTapped = onPlusTapped
+    }
 }
 

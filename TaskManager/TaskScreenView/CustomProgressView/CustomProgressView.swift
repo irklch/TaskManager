@@ -46,5 +46,5 @@ struct CustomProgressView: View {
     }
 }
 #Preview {
-    TaskScreenView()
+    TaskScreenView(tasks: .constant(TaskModel.sampleTasks))
 }

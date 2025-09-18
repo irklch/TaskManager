@@ -7,6 +7,7 @@
 import SwiftUI
 
 struct TaskScreenView: View {
+    @Binding var tasks: [TaskModel]
     @State private var selectedFolder: TaskFolderModel = TaskFolderModel.sampleFolders[1]
     @State private var showFolderPopup = false
     @State private var folders: [TaskFolderModel] = TaskFolderModel.sampleFolders
@@ -65,38 +66,17 @@ struct TaskScreenView: View {
                         alignment: .leading,
                         spacing: Offset.screenBorderOffset
                     ) {
-                        TaskItemView(viewModel: .init(
-                            title: "UX Research",
-                            timeInterval: "Started 10:30 PM",
-                            description: "Formulating design strategies on user data",
-                            itemType: .progress(.init(progressViewModel: .init(tasksCount: 11, doneTasksCount: 3, doneTasksColor: .hex316AFD))),
-                            isDone: false,
-                            style: .whiteStyle,
-                        sideArrowViewModel: sideArrowVM))
-                        TaskItemView(viewModel: .init(
-                            title: "Feature Implementation",
-                            timeInterval: "Today 08:00 AM",
-                            description: "Developing new features for an iOS application",
-                            itemType: .checkbox,
-                            isDone: true,
-                            style: .whiteStyle,
-                        sideArrowViewModel: sideArrowVM))
-                        TaskItemView(viewModel: .init(
-                            title: "Bug Fixing",
-                            timeInterval: "Tomorrow 12:20 PM",
-                            description: "Identifying and fixing bugs reported by QA testers",
-                            itemType: .progress(.init(progressViewModel: .init(tasksCount: 10, doneTasksCount: 10, doneTasksColor: .hex316AFD))),
-                            isDone: true,
-                            style: .whiteStyle,
-                        sideArrowViewModel: sideArrowVM))
-                        TaskItemView(viewModel: .init(
-                            title: "Code Optimization",
-                            timeInterval: "Today 09:00 AM",
-                            description: "Improving the performance",
-                            itemType: .checkbox,
-                            isDone: false,
-                            style: .whiteStyle,
-                            sideArrowViewModel: sideArrowVM))
+                        ForEach(tasks) { task in
+                            TaskItemView(viewModel: .init(
+                                title: task.title,
+                                timeInterval: formatDate(task.createdAt),
+                                description: task.description,
+                                itemType: .checkbox,
+                                isDone: task.isCompleted,
+                                style: .whiteStyle,
+                                sideArrowViewModel: sideArrowVM
+                            ))
+                        }
                     }
                     .padding(
                         .horizontal,
@@ -117,11 +97,26 @@ struct TaskScreenView: View {
             .presentationBackground(.regularMaterial)
         }
     }
+    private func formatDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"
+        let timeString = formatter.string(from: date)
+        
+        let calendar = Calendar.current
+        if calendar.isDateInToday(date) {
+            return "Today \(timeString)"
+        } else if calendar.isDateInYesterday(date) {
+            return "Yesterday \(timeString)"
+        } else {
+            formatter.dateFormat = "MMM dd"
+            let dateString = formatter.string(from: date)
+            return "\(dateString) \(timeString)"
+        }
+    }
 }
 
-
 #Preview {
-    ContentView()
+    TaskScreenView(tasks: .constant(TaskModel.sampleTasks))
 }
 
 extension TaskScreenView {
