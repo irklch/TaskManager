@@ -6,11 +6,13 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct TaskFolderPopupView: View {
     @Binding var isPresented: Bool
-    @Binding var selectedFolder: TaskFolderModel
-    @Binding var folders: [TaskFolderModel]
+    @Binding var selectedFolder: TaskFolder?
+    let folders: [TaskFolder]
+    @Environment(\.managedObjectContext) private var viewContext
     @State private var isCreatingNewFolder = false
     @State private var newFolderName = ""
     @FocusState private var isTextFieldFocused: Bool
@@ -96,9 +98,22 @@ struct TaskFolderPopupView: View {
                     
                     ForEach(folders) { folder in
                         Button(action: {
-                            selectedFolder.isSelected = false
+                            // Deselect current folder
+                            if let currentSelected = selectedFolder {
+                                currentSelected.isSelected = false
+                            }
+                            
+                            // Select new folder
                             folder.isSelected = true
                             selectedFolder = folder
+                            
+                            // Save changes
+                            do {
+                                try viewContext.save()
+                            } catch {
+                                print("Failed to save folder selection: \(error)")
+                            }
+                            
                             isPresented = false
                         }) {
                             HStack(spacing: 12) {
@@ -110,7 +125,7 @@ struct TaskFolderPopupView: View {
                                         .frame(width: 20)
                                     
                                     // Folder name
-                                    Text(folder.name)
+                                    Text(folder.wrappedName)
                                         .font(.system(size: 16, weight: .medium))
                                         .foregroundColor(.hex316AFD)
                                 } else {
@@ -121,7 +136,7 @@ struct TaskFolderPopupView: View {
                                         .frame(width: 20)
                                     
                                     // Folder name
-                                    Text(folder.name)
+                                    Text(folder.wrappedName)
                                         .font(.system(size: 16, weight: .medium))
                                         .foregroundColor(.hex000101)
                                 }
@@ -159,29 +174,32 @@ struct TaskFolderPopupView: View {
             return
         }
         
-        let newFolder = TaskFolderModel(
-            name: newFolderName.trimmingCharacters(in: .whitespacesAndNewlines),
-            taskCount: 0,
-            isSelected: false
-        )
+        // Deselect current folder
+        if let currentSelected = selectedFolder {
+            currentSelected.isSelected = false
+        }
         
-        // Снимаем выделение с текущей папки
-        selectedFolder.isSelected = false
-        
-        // Добавляем новую папку в начало списка
-        folders.insert(newFolder, at: 0)
-        
-        // Выбираем новую папку
+        // Create new folder in Core Data
+        let newFolder = TaskFolder(context: viewContext)
+        newFolder.id = UUID()
+        newFolder.name = newFolderName.trimmingCharacters(in: .whitespacesAndNewlines)
         newFolder.isSelected = true
-        selectedFolder = newFolder
         
-        // Скрываем поле создания
-        isCreatingNewFolder = false
-        newFolderName = ""
-        isTextFieldFocused = false
-        
-        // Закрываем попап
-        isPresented = false
+        // Save changes
+        do {
+            try viewContext.save()
+            selectedFolder = newFolder
+            
+            // Hide creation field
+            isCreatingNewFolder = false
+            newFolderName = ""
+            isTextFieldFocused = false
+            
+            // Close popup
+            isPresented = false
+        } catch {
+            print("Failed to create new folder: \(error)")
+        }
     }
 }
 
@@ -195,8 +213,8 @@ extension TaskFolderPopupView {
 #Preview {
     TaskFolderPopupView(
         isPresented: .constant(true),
-        selectedFolder: .constant(TaskFolderModel.sampleFolders[1]),
-        folders: .constant(TaskFolderModel.sampleFolders)
+        selectedFolder: .constant(nil),
+        folders: []
     )
 }
 

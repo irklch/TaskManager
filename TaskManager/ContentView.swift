@@ -9,13 +9,24 @@ import SwiftUI
 import CoreData
 
 struct ContentView: View {
+    @Environment(\.managedObjectContext) private var viewContext
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \Task.createdAt, ascending: false)],
+        animation: .default)
+    private var tasks: FetchedResults<Task>
+    
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \TaskFolder.name, ascending: true)],
+        animation: .default)
+    private var folders: FetchedResults<TaskFolder>
+    
     @State private var selectedIndex = 0
     @State private var isTabBarVisible = true
     @State private var showAddTask = false
-    @State private var tasks: [TaskModel] = TaskModel.sampleTasks
+    
     private var tabItems: [TabItemModel] {
         [
-            TabItemModel(icon: "list.clipboard", title: "Задачи", view: AnyView(TaskScreenView(tasks: $tasks))),
+            TabItemModel(icon: "list.clipboard", title: "Задачи", view: AnyView(TaskScreenView(tasks: Array(tasks), folders: Array(folders)))),
             TabItemModel(icon: "calendar", title: "Календарь", view: AnyView(CalendarView()))
         ]
     }
@@ -57,7 +68,7 @@ struct ContentView: View {
         .fullScreenCover(isPresented: $showAddTask) {
             AddTaskView(
                 isPresented: $showAddTask,
-                tasks: $tasks
+                context: viewContext
             )
         }
     }

@@ -7,10 +7,11 @@
 
 import SwiftUI
 import PhotosUI
+import CoreData
 
 struct AddTaskView: View {
     @Binding var isPresented: Bool
-    @Binding var tasks: [TaskModel]
+    let context: NSManagedObjectContext
     @State private var taskTitle = ""
     @State private var taskDescription = ""
     @State private var selectedImage: UIImage?
@@ -119,14 +120,35 @@ struct AddTaskView: View {
     
     private func saveTask() {
         let imageData = selectedImage?.jpegData(compressionQuality: 0.8)
-        let newTask = TaskModel(
+        
+        // Get the default folder (first folder or create one)
+        let folderRequest: NSFetchRequest<TaskFolder> = TaskFolder.fetchRequest()
+        let folders = (try? context.fetch(folderRequest)) ?? []
+        
+        let defaultFolder = folders.first ?? {
+            let newFolder = TaskFolder(context: context)
+            newFolder.id = UUID()
+            newFolder.name = "Все задачи"
+            newFolder.isSelected = true
+            return newFolder
+        }()
+        
+        // Create new task
+        let newTask = Task.createNew(
             title: taskTitle.trimmingCharacters(in: .whitespacesAndNewlines),
             description: taskDescription.trimmingCharacters(in: .whitespacesAndNewlines),
-            imageData: imageData
+            imageData: imageData,
+            folder: defaultFolder,
+            in: context
         )
         
-        tasks.append(newTask)
-        isPresented = false
+        // Save context
+        do {
+            try context.save()
+            isPresented = false
+        } catch {
+            print("Failed to save task: \(error)")
+        }
     }
 }
 
@@ -170,6 +192,6 @@ struct ImagePicker: UIViewControllerRepresentable {
 #Preview {
     AddTaskView(
         isPresented: .constant(true),
-        tasks: .constant(TaskModel.sampleTasks)
+        context: PersistenceController.preview.container.viewContext
     )
 }

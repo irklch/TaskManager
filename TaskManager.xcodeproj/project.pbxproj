@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A912EAF22E7C384B00763F51 /* TaskFolder+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A912EAF12E7C384B00763F51 /* TaskFolder+Extensions.swift */; };
+		A912EAF32E7C384B00763F51 /* Task+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A912EAF02E7C384B00763F51 /* Task+Extensions.swift */; };
 		A923135D2BFBDC0700528706 /* TaskManagerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A923135C2BFBDC0700528706 /* TaskManagerApp.swift */; };
 		A923135F2BFBDC0700528706 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A923135E2BFBDC0700528706 /* ContentView.swift */; };
 		A92313612BFBDC0900528706 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A92313602BFBDC0900528706 /* Assets.xcassets */; };
@@ -27,8 +29,6 @@
 		A982F8B62E7A14B600377F26 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A982F8B52E7A14B600377F26 /* LaunchScreen.storyboard */; };
 		A99E3BDD2E7C2B41000D69B2 /* TaskModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A99E3BDC2E7C2B41000D69B2 /* TaskModel.swift */; };
 		A99E3BDF2E7C2B5B000D69B2 /* AddTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A99E3BDE2E7C2B5B000D69B2 /* AddTaskView.swift */; };
-		A99E3BE22E7C3139000D69B2 /* TaskFolder+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = A99E3BE12E7C3139000D69B2 /* TaskFolder+CoreDataClass.swift */; };
-		A99E3BE32E7C3139000D69B2 /* Task+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = A99E3BE02E7C3139000D69B2 /* Task+CoreDataClass.swift */; };
 		A9BE46C52C00CC50003A586E /* CustomProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9BE46C42C00CC50003A586E /* CustomProgressView.swift */; };
 		A9BE46C92C00E031003A586E /* CustomProgressViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9BE46C82C00E031003A586E /* CustomProgressViewModel.swift */; };
 		A9BE46CB2C00E054003A586E /* DiagonalStripesShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9BE46CA2C00E054003A586E /* DiagonalStripesShape.swift */; };
@@ -41,6 +41,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A912EAF02E7C384B00763F51 /* Task+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Task+Extensions.swift"; sourceTree = "<group>"; };
+		A912EAF12E7C384B00763F51 /* TaskFolder+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaskFolder+Extensions.swift"; sourceTree = "<group>"; };
 		A92313592BFBDC0700528706 /* TaskManager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TaskManager.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A923135C2BFBDC0700528706 /* TaskManagerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskManagerApp.swift; sourceTree = "<group>"; };
 		A923135E2BFBDC0700528706 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -62,8 +64,6 @@
 		A982F8B52E7A14B600377F26 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A99E3BDC2E7C2B41000D69B2 /* TaskModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskModel.swift; sourceTree = "<group>"; };
 		A99E3BDE2E7C2B5B000D69B2 /* AddTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTaskView.swift; sourceTree = "<group>"; };
-		A99E3BE02E7C3139000D69B2 /* Task+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Task+CoreDataClass.swift"; sourceTree = "<group>"; };
-		A99E3BE12E7C3139000D69B2 /* TaskFolder+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaskFolder+CoreDataClass.swift"; sourceTree = "<group>"; };
 		A9BE46C42C00CC50003A586E /* CustomProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomProgressView.swift; sourceTree = "<group>"; };
 		A9BE46C82C00E031003A586E /* CustomProgressViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomProgressViewModel.swift; sourceTree = "<group>"; };
 		A9BE46CA2C00E054003A586E /* DiagonalStripesShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiagonalStripesShape.swift; sourceTree = "<group>"; };
@@ -129,9 +129,9 @@
 				A923135C2BFBDC0700528706 /* TaskManagerApp.swift */,
 				A92313602BFBDC0900528706 /* Assets.xcassets */,
 				A92313652BFBDC0900528706 /* Persistence.swift */,
-				A99E3BE02E7C3139000D69B2 /* Task+CoreDataClass.swift */,
-				A99E3BE12E7C3139000D69B2 /* TaskFolder+CoreDataClass.swift */,
 				A92313672BFBDC0900528706 /* TaskManager.xcdatamodeld */,
+				A912EAF02E7C384B00763F51 /* Task+Extensions.swift */,
+				A912EAF12E7C384B00763F51 /* TaskFolder+Extensions.swift */,
 				A967DB1D2BFEA07100AF9BE5 /* Assets */,
 				A92313622BFBDC0900528706 /* Preview Content */,
 			);
@@ -313,14 +313,14 @@
 				A967DB182BFE94C900AF9BE5 /* CustomTabBar.swift in Sources */,
 				A967DB172BFE934C00AF9BE5 /* CustomTabBar+Offset.swift in Sources */,
 				A967DB232BFEA2F000AF9BE5 /* CalendarView.swift in Sources */,
+				A912EAF22E7C384B00763F51 /* TaskFolder+Extensions.swift in Sources */,
+				A912EAF32E7C384B00763F51 /* Task+Extensions.swift in Sources */,
 				A967DB152BFE92CB00AF9BE5 /* TabItemModel.swift in Sources */,
 				A9BE46D72C00E831003A586E /* SideArrowView.swift in Sources */,
 				A9BE46D42C00E194003A586E /* TaskItemView.swift in Sources */,
 				A9BE46CF2C00E104003A586E /* TaskResultView.swift in Sources */,
 				A967DB132BFE929100AF9BE5 /* CustomTabBarViewModel.swift in Sources */,
 				A92313732BFBE20C00528706 /* TaskScreenView.swift in Sources */,
-				A99E3BE22E7C3139000D69B2 /* TaskFolder+CoreDataClass.swift in Sources */,
-				A99E3BE32E7C3139000D69B2 /* Task+CoreDataClass.swift in Sources */,
 				A9BE46D22C00E16A003A586E /* TaskResultViewModel.swift in Sources */,
 				A9BE46C92C00E031003A586E /* CustomProgressViewModel.swift in Sources */,
 				A9BE46C52C00CC50003A586E /* CustomProgressView.swift in Sources */,

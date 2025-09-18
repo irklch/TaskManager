@@ -5,12 +5,19 @@
 //  Created by Ирина Кольчугина on 20.05.2024.
 //
 import SwiftUI
+import CoreData
 
 struct TaskScreenView: View {
-    @Binding var tasks: [TaskModel]
-    @State private var selectedFolder: TaskFolderModel = TaskFolderModel.sampleFolders[1]
+    let tasks: [Task]
+    let folders: [TaskFolder]
+    @State private var selectedFolder: TaskFolder?
     @State private var showFolderPopup = false
-    @State private var folders: [TaskFolderModel] = TaskFolderModel.sampleFolders
+    
+    init(tasks: [Task], folders: [TaskFolder]) {
+        self.tasks = tasks
+        self.folders = folders
+        self._selectedFolder = State(initialValue: folders.first { $0.isSelected } ?? folders.first)
+    }
     
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
@@ -43,7 +50,7 @@ struct TaskScreenView: View {
                             showFolderPopup = true
                         }) {
                             HStack(spacing: 4) {
-                                Text(selectedFolder.name)
+                                Text(selectedFolder?.wrappedName ?? "Все задачи")
                                     .font(.title2)
                                     .foregroundColor(.hex316AFD)
                                     .multilineTextAlignment(.leading)
@@ -68,9 +75,9 @@ struct TaskScreenView: View {
                     ) {
                         ForEach(tasks) { task in
                             TaskItemView(viewModel: .init(
-                                title: task.title,
-                                timeInterval: formatDate(task.createdAt),
-                                description: task.description,
+                                title: task.wrappedTitle,
+                                timeInterval: formatDate(task.wrappedCreatedAt),
+                                description: task.wrappedDescription,
                                 itemType: .checkbox,
                                 isDone: task.isCompleted,
                                 style: .whiteStyle,
@@ -90,7 +97,7 @@ struct TaskScreenView: View {
             TaskFolderPopupView(
                 isPresented: $showFolderPopup,
                 selectedFolder: $selectedFolder,
-                folders: $folders
+                folders: folders
             )
             .presentationDetents([.height(300), .large])
             .presentationDragIndicator(.visible)
@@ -116,7 +123,7 @@ struct TaskScreenView: View {
 }
 
 #Preview {
-    TaskScreenView(tasks: .constant(TaskModel.sampleTasks))
+    TaskScreenView(tasks: [], folders: [])
 }
 
 extension TaskScreenView {
