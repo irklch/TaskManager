@@ -9,6 +9,7 @@ import SwiftUI
 struct TaskScreenView: View {
     @State private var selectedFolder: TaskFolderModel = TaskFolderModel.sampleFolders[1]
     @State private var showFolderPopup = false
+    @State private var folders: [TaskFolderModel] = TaskFolderModel.sampleFolders
     
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
@@ -36,20 +37,26 @@ struct TaskScreenView: View {
                     Offset.screenBorderOffset)
 
                 VStack(alignment: .leading) {
-                    Button(action: {
-                        showFolderPopup = true
-                    }) {
-                        HStack {
-                            Text(selectedFolder.name)
-                                .font(.title2)
-                                .foregroundColor(.hex316AFD)
-                            
-                            Image(systemName: "chevron.down")
-                                .foregroundColor(.hex316AFD)
-                                .font(.system(size: 16, weight: .medium))
+                    HStack {
+                        Button(action: {
+                            showFolderPopup = true
+                        }) {
+                            HStack(spacing: 4) {
+                                Text(selectedFolder.name)
+                                    .font(.title2)
+                                    .foregroundColor(.hex316AFD)
+                                    .multilineTextAlignment(.leading)
+                                
+                                Image(systemName: "chevron.down")
+                                    .foregroundColor(.hex316AFD)
+                                    .font(.system(size: 16, weight: .medium))
+                            }
                         }
+                        .buttonStyle(PlainButtonStyle())
+                        
+                        Spacer()
                     }
-                    .padding(.leading, Offset.titlesLeadingOffset)
+                    .padding(.horizontal, Offset.titlesLeadingOffset)
                     .padding(.top, 20)
                     let sideArrowVM: SideArrowViewModel = .init(
                         backgroundColor: .hexF2F2F2,
@@ -103,7 +110,7 @@ struct TaskScreenView: View {
             TaskFolderPopupView(
                 isPresented: $showFolderPopup,
                 selectedFolder: $selectedFolder,
-                folders: TaskFolderModel.sampleFolders
+                folders: $folders
             )
             .presentationDetents([.height(300), .large])
             .presentationDragIndicator(.visible)
