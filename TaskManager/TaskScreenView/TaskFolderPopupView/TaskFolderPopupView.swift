@@ -9,51 +9,82 @@ import SwiftUI
 
 struct TaskFolderPopupView: View {
     @Binding var isPresented: Bool
-    @Binding var selectedFolder: String
+    @Binding var selectedFolder: TaskFolderModel
     let folders: [TaskFolderModel]
     
     var body: some View {
-        NavigationView {
-            ScrollView(.vertical) {
-                VStack(alignment: .leading) {
-                    Text("Все папки")
-                        .font(.largeTitle)
-                        .fontWeight(.light)
-                        .padding(.leading, Offset.titlesLeadingOffset)
-                    
-                    VStack(alignment: .leading) {
-                        ForEach(folders) { folder in
-                            Button(action: {
-                                selectedFolder = folder.name
-                                isPresented = false
-                            }) {
-                                HStack {
+        VStack(spacing: 0) {
+            Spacer(minLength: 30)
+            
+            // Header with title and close button
+            HStack {
+                Text("Папки")
+                    .font(.title)
+                    .fontWeight(.bold)
+                    .foregroundColor(.hex000101)
+                
+                Spacer()
+            }
+            .padding(.horizontal, 20)
+            .padding(.bottom, 20)
+            
+            // Folder list
+            ScrollView(showsIndicators: false) {
+                LazyVStack(spacing: 0) {
+                    ForEach(folders) { folder in
+                        Button(action: {
+                            selectedFolder.isSelected = false
+                            folder.isSelected = true
+                            selectedFolder = folder
+                            isPresented = false
+                        }) {
+                            HStack(spacing: 12) {
+                                if folder.isSelected {
+                                    // Folder icon
+                                    Image(systemName: "folder")
+                                        .font(.system(size: 16))
+                                        .foregroundColor(.hex316AFD)
+                                        .frame(width: 20)
+                                    
+                                    // Folder name
                                     Text(folder.name)
-                                        .foregroundColor(.hex000101)
                                         .font(.system(size: 16, weight: .medium))
-                                    
-                                    Spacer()
-                                    
-                                    Text("\(folder.taskCount)")
+                                        .foregroundColor(.hex316AFD)
+                                } else {
+                                    // Folder icon
+                                    Image(systemName: "folder")
+                                        .font(.system(size: 16))
                                         .foregroundColor(.gray)
-                                        .font(.system(size: 14))
+                                        .frame(width: 20)
+                                    
+                                    // Folder name
+                                    Text(folder.name)
+                                        .font(.system(size: 16, weight: .medium))
+                                        .foregroundColor(.hex000101)
                                 }
-                                .padding(.horizontal, Offset.screenBorderOffset)
-                                .padding(.vertical, 12)
-                                .background(Color.white)
-                                .cornerRadius(8)
+                                
+                                Spacer()
+                                
+                                // Task count
+                                Text("\(folder.taskCount)")
+                                    .font(.system(size: 14))
+                                    .foregroundColor(.gray)
                             }
-                            .buttonStyle(PlainButtonStyle())
-                            .padding(.horizontal, Offset.screenBorderOffset)
-                            .padding(.vertical, 4)
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 16)
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                        
+                        if folder.id != folders.last?.id {
+                            Divider()
+                                .background(Color.gray.opacity(0.3))
+                                .padding(.leading, 52)
                         }
                     }
-                    .padding(.top, 20)
                 }
-                .padding(.bottom, 150)
             }
-            .background(Color.hexF2F2F2)
         }
+        .background(Color.hexF2F2F2)
     }
 }
 
@@ -67,7 +98,8 @@ extension TaskFolderPopupView {
 #Preview {
     TaskFolderPopupView(
         isPresented: .constant(true),
-        selectedFolder: .constant("All Tasks"),
+        selectedFolder: .constant(TaskFolderModel.sampleFolders[1]),
         folders: TaskFolderModel.sampleFolders
     )
 }
+

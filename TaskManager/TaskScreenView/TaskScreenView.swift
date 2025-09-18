@@ -7,7 +7,7 @@
 import SwiftUI
 
 struct TaskScreenView: View {
-    @State private var selectedFolder = "Все задачи"
+    @State private var selectedFolder: TaskFolderModel = TaskFolderModel.sampleFolders[1]
     @State private var showFolderPopup = false
     
     var body: some View {
@@ -40,7 +40,7 @@ struct TaskScreenView: View {
                         showFolderPopup = true
                     }) {
                         HStack {
-                            Text(selectedFolder)
+                            Text(selectedFolder.name)
                                 .font(.title2)
                                 .foregroundColor(.hex316AFD)
                             
@@ -105,6 +105,9 @@ struct TaskScreenView: View {
                 selectedFolder: $selectedFolder,
                 folders: TaskFolderModel.sampleFolders
             )
+            .presentationDetents([.height(300), .large])
+            .presentationDragIndicator(.visible)
+            .presentationBackground(.regularMaterial)
         }
     }
 }
