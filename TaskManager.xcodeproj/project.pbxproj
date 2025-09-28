@@ -13,6 +13,10 @@
 		A904B8792E89D80E0047C016 /* ContentViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A904B8772E89D80E0047C016 /* ContentViewViewModel.swift */; };
 		A904B87A2E89D80E0047C016 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A904B8762E89D80E0047C016 /* ContentView.swift */; };
 		A904B87C2E89D8380047C016 /* CalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A904B87B2E89D8380047C016 /* CalendarViewModel.swift */; };
+		A904B87E2E89DD6E0047C016 /* DeadlinePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A904B87D2E89DD6E0047C016 /* DeadlinePickerView.swift */; };
+		A904B8822E89DD750047C016 /* TaskStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A904B8812E89DD750047C016 /* TaskStepView.swift */; };
+		A904B8832E89DD750047C016 /* TaskStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = A904B8802E89DD750047C016 /* TaskStep.swift */; };
+		A904B8842E89DD750047C016 /* FolderPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A904B87F2E89DD750047C016 /* FolderPickerView.swift */; };
 		A912EAF22E7C384B00763F51 /* TaskFolder+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A912EAF12E7C384B00763F51 /* TaskFolder+Extensions.swift */; };
 		A912EAF32E7C384B00763F51 /* Task+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A912EAF02E7C384B00763F51 /* Task+Extensions.swift */; };
 		A923135D2BFBDC0700528706 /* TaskManagerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A923135C2BFBDC0700528706 /* TaskManagerApp.swift */; };
@@ -51,6 +55,10 @@
 		A904B8762E89D80E0047C016 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		A904B8772E89D80E0047C016 /* ContentViewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewViewModel.swift; sourceTree = "<group>"; };
 		A904B87B2E89D8380047C016 /* CalendarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewModel.swift; sourceTree = "<group>"; };
+		A904B87D2E89DD6E0047C016 /* DeadlinePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeadlinePickerView.swift; sourceTree = "<group>"; };
+		A904B87F2E89DD750047C016 /* FolderPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderPickerView.swift; sourceTree = "<group>"; };
+		A904B8802E89DD750047C016 /* TaskStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskStep.swift; sourceTree = "<group>"; };
+		A904B8812E89DD750047C016 /* TaskStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskStepView.swift; sourceTree = "<group>"; };
 		A912EAF02E7C384B00763F51 /* Task+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Task+Extensions.swift"; sourceTree = "<group>"; };
 		A912EAF12E7C384B00763F51 /* TaskFolder+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaskFolder+Extensions.swift"; sourceTree = "<group>"; };
 		A92313592BFBDC0700528706 /* TaskManager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TaskManager.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -97,8 +105,12 @@
 		A904B8712E89D77A0047C016 /* AddTaskView */ = {
 			isa = PBXGroup;
 			children = (
+				A904B87D2E89DD6E0047C016 /* DeadlinePickerView.swift */,
 				A904B86F2E89D77A0047C016 /* AddTaskView.swift */,
 				A904B8702E89D77A0047C016 /* AddTaskViewModel.swift */,
+				A904B87F2E89DD750047C016 /* FolderPickerView.swift */,
+				A904B8802E89DD750047C016 /* TaskStep.swift */,
+				A904B8812E89DD750047C016 /* TaskStepView.swift */,
 			);
 			path = AddTaskView;
 			sourceTree = "<group>";
@@ -349,6 +361,10 @@
 				A9BE46CF2C00E104003A586E /* TaskResultView.swift in Sources */,
 				A904B8752E89D7B40047C016 /* TaskScreenViewModel.swift in Sources */,
 				A967DB132BFE929100AF9BE5 /* CustomTabBarViewModel.swift in Sources */,
+				A904B87E2E89DD6E0047C016 /* DeadlinePickerView.swift in Sources */,
+				A904B8822E89DD750047C016 /* TaskStepView.swift in Sources */,
+				A904B8832E89DD750047C016 /* TaskStep.swift in Sources */,
+				A904B8842E89DD750047C016 /* FolderPickerView.swift in Sources */,
 				A92313732BFBE20C00528706 /* TaskScreenView.swift in Sources */,
 				A9BE46D22C00E16A003A586E /* TaskResultViewModel.swift in Sources */,
 				A9BE46C92C00E031003A586E /* CustomProgressViewModel.swift in Sources */,

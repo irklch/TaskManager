@@ -103,6 +103,3 @@ extension TaskResultViewModel {
         }
     }
 }
-#Preview {
-    TaskScreenView(tasks: [], folders: [])
-}

@@ -45,6 +45,3 @@ struct CustomProgressView: View {
         .frame(height: Offset.viewHeight, alignment: .center)
     }
 }
-#Preview {
-    TaskScreenView(tasks: [], folders: [])
-}

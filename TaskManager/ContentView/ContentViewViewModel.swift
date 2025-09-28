@@ -16,6 +16,7 @@ class ContentViewViewModel: ObservableObject {
     @Published var showAddTask = false
     @Published var tasks: [Task] = []
     @Published var folders: [TaskFolder] = []
+    @Published var selectedFolder: TaskFolder?
     
     private var cancellables = Set<AnyCancellable>()
     private let persistenceController = PersistenceController.shared
@@ -83,14 +84,15 @@ class ContentViewViewModel: ObservableObject {
         showAddTask = false
     }
     
-    var tabItems: [TabItemModel] {
+    func createTabItems() -> [TabItemModel] {
         [
             TabItemModel(
                 icon: "list.clipboard",
                 title: "Задачи",
                 view: AnyView(TaskScreenView(
                     tasks: tasks,
-                    folders: folders))),
+                    folders: folders,
+                    selectedFolder: .constant(selectedFolder)))),
             TabItemModel(
                 icon: "calendar",
                 title: "Календарь",

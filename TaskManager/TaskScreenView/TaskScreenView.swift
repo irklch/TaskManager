@@ -9,8 +9,10 @@ import CoreData
 
 struct TaskScreenView: View {
     @StateObject private var viewModel: TaskScreenViewModel
+    @Binding var selectedFolder: TaskFolder?
     
-    init(tasks: [Task], folders: [TaskFolder]) {
+    init(tasks: [Task], folders: [TaskFolder], selectedFolder: Binding<TaskFolder?>) {
+        self._selectedFolder = selectedFolder
         self._viewModel = StateObject(wrappedValue: TaskScreenViewModel(tasks: tasks, folders: folders))
     }
     
@@ -74,18 +76,24 @@ struct TaskScreenView: View {
         .sheet(isPresented: $viewModel.isPopupFolderVisible) {
             TaskFolderPopupView(
                 isPresented: $viewModel.isPopupFolderVisible,
-                selectedFolder: $viewModel.selectedFolder,
+                selectedFolder: $selectedFolder,
                 folders: viewModel.folders
             )
             .presentationDetents([.height(300), .large])
             .presentationDragIndicator(.visible)
             .presentationBackground(.regularMaterial)
         }
+        .onChange(of: viewModel.selectedFolder) { newFolder in
+            selectedFolder = newFolder
+        }
+        .onChange(of: selectedFolder) { newFolder in
+            viewModel.selectedFolder = newFolder
+        }
     }
 }
 
 #Preview {
-    TaskScreenView(tasks: [], folders: [])
+    TaskScreenView(tasks: [], folders: [], selectedFolder: .constant(nil))
 }
 
 extension TaskScreenView {

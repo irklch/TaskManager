@@ -9,48 +9,91 @@ import SwiftUI
 import CoreData
 
 struct ContentView: View {
-    @StateObject private var viewModel = ContentViewViewModel()
     @Environment(\.managedObjectContext) private var viewContext
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \Task.createdAt, ascending: false)],
+        animation: .default)
+    private var tasks: FetchedResults<Task>
+    
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \TaskFolder.name, ascending: true)],
+        animation: .default)
+    private var folders: FetchedResults<TaskFolder>
+    
+    @State private var selectedIndex = 0
+    @State private var isTabBarVisible = true
+    @State private var showAddTask = false
+    @State private var selectedFolder: TaskFolder?
+
+    private var tabItems: [TabItemModel] {
+        [
+            TabItemModel(
+                icon: "list.clipboard",
+                title: "Задачи",
+                view: AnyView(TaskScreenView(
+                    tasks: Array(tasks),
+                    folders: Array(folders),
+                    selectedFolder: .constant(selectedFolder)))),
+            TabItemModel(
+                icon: "calendar",
+                title: "Календарь",
+                view: AnyView(CalendarView()))
+        ]
+    }
 
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
-            TabView(selection: $viewModel.selectedIndex) {
-                ForEach(viewModel.tabItems.indices, id: \.self) { index in
-                    viewModel.tabItems[index].view
+            TabView(selection: $selectedIndex) {
+                ForEach(tabItems.indices, id: \.self) { index in
+                    tabItems[index].view
                         .tag(index)
                         .simultaneousGesture(
                             DragGesture()
                                 .onChanged { value in
-                                    viewModel.handleScrollGesture(translation: value.translation)
+                                    handleScrollGesture(translation: value.translation)
                                 }
                         )
                 }
             }
             .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-            .animation(.easeInOut(duration: 0.3), value: viewModel.selectedIndex)
+            .animation(.easeInOut(duration: 0.3), value: selectedIndex)
 
             getCustomTabBar()
                 .padding(.bottom, 16)
                 .padding(.trailing, 16)
-                .offset(y: viewModel.isTabBarVisible ? 0 : 100)
-                .animation(.easeInOut(duration: 0.3), value: viewModel.isTabBarVisible)
+                .offset(y: isTabBarVisible ? 0 : 100)
+                .animation(.easeInOut(duration: 0.3), value: isTabBarVisible)
         }
         .edgesIgnoringSafeArea([.bottom, .top])
         .background(.white)
-        .fullScreenCover(isPresented: $viewModel.showAddTask) {
+        .fullScreenCover(isPresented: $showAddTask) {
             AddTaskView(
-                isPresented: $viewModel.showAddTask,
-                context: viewContext
+                isPresented: $showAddTask,
+                context: viewContext,
+                selectedFolder: selectedFolder
             )
         }
     }
 
+    private func handleScrollGesture(translation: CGSize) {
+        let dy = translation.height
+        
+        // Скролл вниз (палец вверх, dy < 0) — скрыть таббар
+        if dy < -50 && isTabBarVisible {
+            isTabBarVisible = false
+        }
+        // Скролл вверх (палец вниз, dy > 0) — показать таббар
+        else if dy > 50 && !isTabBarVisible {
+            isTabBarVisible = true
+        }
+    }
+    
     private func getCustomTabBar() -> CustomTabBar {
         let customTabBarViewModel: CustomTabBarViewModel = .init(
-            selectedIndex: $viewModel.selectedIndex,
-            tabItems: viewModel.tabItems,
+            selectedIndex: $selectedIndex,
+            tabItems: tabItems,
             onPlusTapped: {
-                viewModel.showAddTaskView()
+                showAddTask = true
             }
         )
         return .init(viewModel: customTabBarViewModel)

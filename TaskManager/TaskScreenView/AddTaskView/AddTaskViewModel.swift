@@ -19,12 +19,30 @@ class AddTaskViewModel: ObservableObject {
     @Published var isTitleFocused = false
     @Published var isDescriptionFocused = false
     @Published var isPresented = false
+    @Published var selectedFolder: TaskFolder?
+    @Published var taskSteps: [TaskStep] = [TaskStep()]
+    @Published var deadline: Date?
+    @Published var hasDeadline = false
+    @Published var showingFolderPicker = false
+    @Published var showingDatePicker = false
     
     private let context: NSManagedObjectContext
+    private let availableFolders: [TaskFolder]
     private var cancellables = Set<AnyCancellable>()
     
-    init(context: NSManagedObjectContext) {
+    init(context: NSManagedObjectContext, selectedFolder: TaskFolder? = nil) {
         self.context = context
+        self.selectedFolder = selectedFolder
+        
+        // Получаем доступные папки
+        let folderRequest: NSFetchRequest<TaskFolder> = TaskFolder.fetchRequest()
+        self.availableFolders = (try? context.fetch(folderRequest)) ?? []
+        
+        // Если папка не выбрана, берем первую доступную
+        if self.selectedFolder == nil {
+            self.selectedFolder = availableFolders.first
+        }
+        
         setupObservers()
     }
     
@@ -103,5 +121,80 @@ class AddTaskViewModel: ObservableObject {
     func dismissView() {
         clearForm()
         isPresented = false
+    }
+    
+    // MARK: - Folder Management
+    func showFolderPicker() {
+        showingFolderPicker = true
+    }
+    
+    func hideFolderPicker() {
+        showingFolderPicker = false
+    }
+    
+    func selectFolder(_ folder: TaskFolder) {
+        selectedFolder = folder
+        hideFolderPicker()
+    }
+    
+    // MARK: - Task Steps Management
+    func updateTaskStep(at index: Int, with title: String) {
+        guard index < taskSteps.count else { return }
+        taskSteps[index].title = title
+        
+        // Если текущий этап заполнен и это последний этап, добавляем новый
+        if !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && index == taskSteps.count - 1 {
+            addNewTaskStep()
+        }
+    }
+    
+    func addNewTaskStep() {
+        taskSteps.append(TaskStep())
+    }
+    
+    func removeTaskStep(at index: Int) {
+        guard taskSteps.count > 1 && index < taskSteps.count else { return }
+        taskSteps.remove(at: index)
+    }
+    
+    // MARK: - Deadline Management
+    func showDatePicker() {
+        showingDatePicker = true
+    }
+    
+    func hideDatePicker() {
+        showingDatePicker = false
+    }
+    
+    func setDeadline(_ date: Date) {
+        deadline = date
+        hasDeadline = true
+        hideDatePicker()
+    }
+    
+    func removeDeadline() {
+        deadline = nil
+        hasDeadline = false
+    }
+    
+    func formattedDeadline() -> String {
+        guard let deadline = deadline else { return "Без даты" }
+        
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd MMMM yyyy"
+        return formatter.string(from: deadline)
+    }
+    
+    // MARK: - Computed Properties
+    var validTaskSteps: [TaskStep] {
+        taskSteps.filter { !$0.isEmpty }
+    }
+    
+    var folderName: String {
+        selectedFolder?.wrappedName ?? "Все задачи"
+    }
+    
+    var availableFoldersList: [TaskFolder] {
+        availableFolders
     }
 }

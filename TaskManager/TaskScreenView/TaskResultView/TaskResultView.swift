@@ -38,9 +38,3 @@ struct TaskResultView: View {
         }
     }
 }
-
-#Preview {
-    TaskScreenView(tasks: [], folders: [])
-}
-
-
