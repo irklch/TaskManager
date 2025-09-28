@@ -19,11 +19,13 @@ class TaskScreenViewModel: ObservableObject {
     @Published var inProgressTasksCount: Int = 0
     
     private var cancellables = Set<AnyCancellable>()
+    private var context: NSManagedObjectContext?
     
-    init(tasks: [Task], folders: [TaskFolder]) {
+    init(tasks: [Task], folders: [TaskFolder], context: NSManagedObjectContext? = nil) {
         self.tasks = tasks
         self.folders = folders
         self.selectedFolder = folders.first { $0.isSelected } ?? folders.first
+        self.context = context
         
         setupObservers()
         calculateTaskCounts()
@@ -119,5 +121,29 @@ class TaskScreenViewModel: ObservableObject {
             style: .whiteStyle,
             sideArrowViewModel: sideArrowVM
         )
+    }
+    
+    func setContext(_ context: NSManagedObjectContext) {
+        self.context = context
+    }
+    
+    func refreshFolders() {
+        guard let context = context else { return }
+        
+        let request: NSFetchRequest<TaskFolder> = TaskFolder.fetchRequest()
+        request.sortDescriptors = [NSSortDescriptor(keyPath: \TaskFolder.name, ascending: true)]
+        
+        do {
+            let newFolders = try context.fetch(request)
+            self.folders = newFolders
+            
+            // Обновляем selectedFolder если он больше не существует
+            if let currentSelected = selectedFolder,
+               !newFolders.contains(where: { $0.id == currentSelected.id }) {
+                selectedFolder = newFolders.first { $0.isSelected } ?? newFolders.first
+            }
+        } catch {
+            print("Failed to refresh folders: \(error)")
+        }
     }
 }

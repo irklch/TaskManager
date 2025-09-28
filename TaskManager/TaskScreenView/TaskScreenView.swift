@@ -10,6 +10,7 @@ import CoreData
 struct TaskScreenView: View {
     @StateObject private var viewModel: TaskScreenViewModel
     @Binding var selectedFolder: TaskFolder?
+    @Environment(\.managedObjectContext) private var viewContext
     
     init(tasks: [Task], folders: [TaskFolder], selectedFolder: Binding<TaskFolder?>) {
         self._selectedFolder = selectedFolder
@@ -88,6 +89,10 @@ struct TaskScreenView: View {
         }
         .onChange(of: selectedFolder) { newFolder in
             viewModel.selectedFolder = newFolder
+        }
+        .onAppear {
+            viewModel.setContext(viewContext)
+            viewModel.refreshFolders()
         }
     }
 }
