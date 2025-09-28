@@ -8,39 +8,7 @@
 import SwiftUI
 
 struct CalendarView: View {
-    @State var selectedDateIndex: Int = 0
-
-    struct DateFormat: Hashable {
-        let index: Int
-        let number: String
-        let numberWithMonth: String
-
-        init(
-            index: Int
-        ) {
-            let today = Date()
-            let calendar = Calendar.current
-            let todateDay = calendar.date(byAdding: .day, value: index, to: today)!
-            let dateMonthFormatter = DateFormatter()
-            dateMonthFormatter.dateFormat = "dd MMMM"
-            let dayFormatter = DateFormatter()
-            dayFormatter.dateFormat = "dd"
-            self.number = dayFormatter.string(from: todateDay)
-            self.numberWithMonth = dateMonthFormatter.string(from: todateDay)
-            self.index = index
-        }
-    }
-
-    static func getDates(newIndex: Int) -> [DateFormat] {
-        return [
-            .init(index: newIndex-1),
-            .init(index: newIndex),
-            .init(index: newIndex+1),
-            .init(index: newIndex+2)
-        ]
-    }
-
-    @State var dates: [DateFormat] = getDates(newIndex: 0)
+    @StateObject private var viewModel = CalendarViewModel()
 
     var body: some View {
         VStack {
@@ -59,85 +27,17 @@ struct CalendarView: View {
 
     private func getDaliTaskHStack() -> some View {
         VStack(spacing: 16) {
-            HStack(alignment: .firstTextBaseline, spacing: 16) {
-                Text("10:00")
-                    .foregroundStyle(.hex000101)
-                TaskItemView(viewModel: .init(
-                    title: "Daily Meeting",
-                    timeInterval: "10:00 - 10:45",
-                    description: "Task allocation and planning for the day",
-                    itemType: .progress(.init(
-                        progressViewModel: .init(
-                            tasksCount: 13,
-                            doneTasksCount: 7,
-                            doneTasksColor: .white))),
-                    isDone: false,
-                    style: .grayStyle,
-                    sideArrowViewModel: .init(
-                        backgroundColor: .hex000101,
-                        arrowColor: .hexF2F2F2)))
+            ForEach(Array(viewModel.tasksForSelectedDate.enumerated()), id: \.offset) { index, task in
+                let time = ["10:00", "11:00", "12:00", "13:00"][index]
+                let taskRowVM = viewModel.createTaskRowViewModel(for: task, time: time)
+                
+                HStack(alignment: .firstTextBaseline, spacing: 16) {
+                    Text(taskRowVM.time)
+                        .foregroundStyle(.hex000101)
+                    TaskItemView(viewModel: taskRowVM.taskViewModel)
+                }
+                .padding([.leading, .trailing], 16)
             }
-            .padding([.leading, .trailing], 16)
-
-            HStack(alignment: .firstTextBaseline, spacing: 16) {
-                Text("11:00")
-                    .foregroundStyle(.hex000101)
-                TaskItemView(viewModel: .init(
-                    title: "Daily Meeting",
-                    timeInterval: "10:00 - 10:45",
-                    description: "Task allocation and planning for the day",
-                    itemType: .progress(.init(
-                        progressViewModel: .init(
-                            tasksCount: 13,
-                            doneTasksCount: 7,
-                            doneTasksColor: .white))),
-                    isDone: false,
-                    style: .grayStyle,
-                    sideArrowViewModel: .init(
-                        backgroundColor: .hex000101,
-                        arrowColor: .hexF2F2F2)))
-            }
-            .padding([.leading, .trailing], 16)
-
-            HStack(alignment: .firstTextBaseline, spacing: 16) {
-                Text("12:00")
-                    .foregroundStyle(.hex000101)
-                TaskItemView(viewModel: .init(
-                    title: "Daily Meeting",
-                    timeInterval: "10:00 - 10:45",
-                    description: "Task allocation and planning for the day",
-                    itemType: .progress(.init(
-                        progressViewModel: .init(
-                            tasksCount: 13,
-                            doneTasksCount: 7,
-                            doneTasksColor: .white))),
-                    isDone: false,
-                    style: .grayStyle,
-                    sideArrowViewModel: .init(
-                        backgroundColor: .hex000101,
-                        arrowColor: .hexF2F2F2)))
-            }
-            .padding([.leading, .trailing], 16)
-
-            HStack(alignment: .firstTextBaseline, spacing: 16) {
-                Text("13:00")
-                    .foregroundStyle(.hex000101)
-                TaskItemView(viewModel: .init(
-                    title: "Daily Meeting",
-                    timeInterval: "10:00 - 10:45",
-                    description: "Task allocation and planning for the day",
-                    itemType: .progress(.init(
-                        progressViewModel: .init(
-                            tasksCount: 13,
-                            doneTasksCount: 7,
-                            doneTasksColor: .white))),
-                    isDone: false,
-                    style: .grayStyle,
-                    sideArrowViewModel: .init(
-                        backgroundColor: .hex000101,
-                        arrowColor: .hexF2F2F2)))
-            }
-            .padding([.leading, .trailing], 16)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.top, 16)
@@ -146,11 +46,11 @@ struct CalendarView: View {
 
     private func getDayVStack() -> some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text("Wednesday")
+            Text(viewModel.getSelectedDateName())
                 .foregroundStyle(.hex000101)
                 .font(.system(size: 36, weight: .light))
 
-            Text("6 meetings")
+            Text(viewModel.getTasksCount())
                 .foregroundStyle(.gray)
                 .font(.system(size: 12))
                 .padding(.top, 8)
@@ -163,19 +63,17 @@ struct CalendarView: View {
     private func getCalendarLineHStack() -> some View {
         return HStack {
             Button(action: {
-                dates = Self.getDates(newIndex: selectedDateIndex - 1)
-                selectedDateIndex = selectedDateIndex - 1
-
+                viewModel.navigateToPreviousDate()
             }) {
                 Image(systemName: "chevron.left")
             }
             .tint(Color.hex000101)
             Spacer()
-            ForEach(dates, id: \.self) { date in
+            ForEach(viewModel.dates, id: \.self) { date in
                 Button(action: {
-                    selectedDateIndex = date.index
+                    viewModel.selectDate(at: date.index)
                 }) {
-                    if date.index == selectedDateIndex {
+                    if viewModel.isDateSelected(date) {
                         Text(date.numberWithMonth)
                             .font(.title3)
                             .foregroundStyle(.hexF2F2F2)
@@ -193,8 +91,7 @@ struct CalendarView: View {
                 Spacer()
             }
             Button(action: {
-                dates = Self.getDates(newIndex: selectedDateIndex + 1)
-                selectedDateIndex = selectedDateIndex + 1
+                viewModel.navigateToNextDate()
             }) {
                 Image(systemName: "chevron.right")
             }

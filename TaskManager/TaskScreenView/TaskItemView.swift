@@ -149,7 +149,7 @@ struct TaskItemView: View {
                 }
                 .buttonStyle(NoHighlightButtonStyle())
 
-                Text(viewModel.isDone ? "Done" : "Tap to make it done")
+                Text(viewModel.isDone ? "Готово" : "Нажмите, чтобы завершить")
                     .foregroundStyle(.hex000101)
                     .font(.title3)
                     .padding(.leading, 4)

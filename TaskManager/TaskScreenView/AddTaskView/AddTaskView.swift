@@ -12,12 +12,15 @@ import CoreData
 struct AddTaskView: View {
     @Binding var isPresented: Bool
     let context: NSManagedObjectContext
-    @State private var taskTitle = ""
-    @State private var taskDescription = ""
-    @State private var selectedImage: UIImage?
-    @State private var showingImagePicker = false
+    @StateObject private var viewModel: AddTaskViewModel
     @FocusState private var isTitleFocused: Bool
     @FocusState private var isDescriptionFocused: Bool
+    
+    init(isPresented: Binding<Bool>, context: NSManagedObjectContext) {
+        self._isPresented = isPresented
+        self.context = context
+        self._viewModel = StateObject(wrappedValue: AddTaskViewModel(context: context))
+    }
     
     var body: some View {
         ZStack {
@@ -27,6 +30,7 @@ struct AddTaskView: View {
                         Spacer()
                         
                         Button(action: {
+                            viewModel.dismissView()
                             isPresented = false
                         }) {
                             Image(systemName: "xmark")
@@ -42,7 +46,7 @@ struct AddTaskView: View {
                     VStack(spacing: 20) {
                         // Title field
                         VStack(alignment: .leading, spacing: 8) {
-                            TextField("Название задачи", text: $taskTitle)
+                            TextField("Название задачи", text: $viewModel.taskTitle)
                                 .font(.title2)
                                 .foregroundColor(.hex000101)
                                 .focused($isTitleFocused)
@@ -51,7 +55,7 @@ struct AddTaskView: View {
                         
                         // Description field
                         VStack(alignment: .leading, spacing: 8) {
-                            TextField("Добавьте описание...", text: $taskDescription, axis: .vertical)
+                            TextField("Добавьте описание...", text: $viewModel.taskDescription, axis: .vertical)
                                 .font(.body)
                                 .foregroundColor(.hex000101)
                                 .focused($isDescriptionFocused)
@@ -75,7 +79,7 @@ struct AddTaskView: View {
                         HStack(spacing: 12) {
                             // Attachment button
                             Button(action: {
-                                showingImagePicker = true
+                                viewModel.showImagePicker()
                             }) {
                                 Image(systemName: "paperclip")
                                     .font(.system(size: 16, weight: .medium))
@@ -90,7 +94,12 @@ struct AddTaskView: View {
                             }
                             
                             // Save button
-                            Button(action: saveTask) {
+                            Button(action: {
+                                viewModel.saveTask()
+                                if !viewModel.isPresented {
+                                    isPresented = false
+                                }
+                            }) {
                                 Image(systemName: "checkmark")
                                     .font(.system(size: 16, weight: .medium))
                                     .foregroundColor(.hex316AFD)
@@ -102,52 +111,19 @@ struct AddTaskView: View {
                                     )
                                     .clipShape(Circle())
                             }
-                            .disabled(taskTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-                            .opacity(taskTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? 0.5 : 1.0)
+                            .disabled(!viewModel.isSaveButtonEnabled)
+                            .opacity(viewModel.saveButtonOpacity)
                         }
                         .padding(.trailing, 20)
                         .padding(.bottom, 20)
                     }
                 }
             }
-        .sheet(isPresented: $showingImagePicker) {
-            ImagePicker(selectedImage: $selectedImage)
+        .sheet(isPresented: $viewModel.showingImagePicker) {
+            ImagePicker(selectedImage: $viewModel.selectedImage)
         }
         .onAppear {
             isTitleFocused = true
-        }
-    }
-    
-    private func saveTask() {
-        let imageData = selectedImage?.jpegData(compressionQuality: 0.8)
-        
-        // Get the default folder (first folder or create one)
-        let folderRequest: NSFetchRequest<TaskFolder> = TaskFolder.fetchRequest()
-        let folders = (try? context.fetch(folderRequest)) ?? []
-        
-        let defaultFolder = folders.first ?? {
-            let newFolder = TaskFolder(context: context)
-            newFolder.id = UUID()
-            newFolder.name = "Все задачи"
-            newFolder.isSelected = true
-            return newFolder
-        }()
-        
-        // Create new task
-        let newTask = Task.createNew(
-            title: taskTitle.trimmingCharacters(in: .whitespacesAndNewlines),
-            description: taskDescription.trimmingCharacters(in: .whitespacesAndNewlines),
-            imageData: imageData,
-            folder: defaultFolder,
-            in: context
-        )
-        
-        // Save context
-        do {
-            try context.save()
-            isPresented = false
-        } catch {
-            print("Failed to save task: \(error)")
         }
     }
 }

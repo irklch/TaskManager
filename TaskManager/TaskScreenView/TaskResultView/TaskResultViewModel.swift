@@ -44,9 +44,9 @@ extension TaskResultViewModel {
         var titleText: String {
             switch self {
             case .doneTasks:
-                return "Today's Task"
+                return "Текущие задачи"
             case .progressTasks:
-                return "In Progress"
+                return "В процессе"
             }
         }
 
@@ -60,9 +60,9 @@ extension TaskResultViewModel {
             + " "
             switch self {
             case .doneTasks:
-                return count + "Done"
+                return count + "Готово"
             case .progressTasks:
-                return count + "Tasks"
+                return count + "Задачи"
             }
         }
 
