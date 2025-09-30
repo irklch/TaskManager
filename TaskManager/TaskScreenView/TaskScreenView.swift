@@ -8,13 +8,15 @@ import SwiftUI
 import CoreData
 
 struct TaskScreenView: View {
-    @StateObject private var viewModel: TaskScreenViewModel
-    @Binding var selectedFolder: TaskFolder?
-    @Environment(\.managedObjectContext) private var viewContext
+    let tasks: [Task]
+    let folders: [TaskFolder]
+    @State private var selectedFolder: TaskFolder?
+    @State private var showFolderPopup = false
     
-    init(tasks: [Task], folders: [TaskFolder], selectedFolder: Binding<TaskFolder?>) {
-        self._selectedFolder = selectedFolder
-        self._viewModel = StateObject(wrappedValue: TaskScreenViewModel(tasks: tasks, folders: folders))
+    init(tasks: [Task], folders: [TaskFolder]) {
+        self.tasks = tasks
+        self.folders = folders
+        self._selectedFolder = State(initialValue: folders.first { $0.isSelected } ?? folders.first)
     }
     
     var body: some View {
@@ -28,9 +30,15 @@ struct TaskScreenView: View {
                     
 
                 HStack(spacing: Offset.screenBorderOffset) {
-                    TaskResultView(viewModel: viewModel.createTaskResultViewModel(for: .doneTasks))
+                    TaskResultView(viewModel: .init(
+                        tasksCount: 8,
+                        doneTasksCount: 3,
+                        resultType: .doneTasks))
 
-                    TaskResultView(viewModel: viewModel.createTaskResultViewModel(for: .progressTasks))
+                    TaskResultView(viewModel: .init(
+                        tasksCount: 5,
+                        doneTasksCount: 1,
+                        resultType: .progressTasks))
                 }
                 .padding(
                     .horizontal,
@@ -39,10 +47,10 @@ struct TaskScreenView: View {
                 VStack(alignment: .leading) {
                     HStack {
                         Button(action: {
-                            viewModel.showFolderPopup()
+                            showFolderPopup = true
                         }) {
                             HStack(spacing: 4) {
-                                Text(viewModel.selectedFolder?.wrappedName ?? "Все задачи")
+                                Text(selectedFolder?.wrappedName ?? "Все задачи")
                                     .font(.title2)
                                     .foregroundColor(.hex316AFD)
                                     .multilineTextAlignment(.leading)
@@ -58,12 +66,23 @@ struct TaskScreenView: View {
                     }
                     .padding(.horizontal, Offset.titlesLeadingOffset)
                     .padding(.top, 20)
+                    let sideArrowVM: SideArrowViewModel = .init(
+                        backgroundColor: .hexF2F2F2,
+                        arrowColor: .hex000101)
                     VStack(
                         alignment: .leading,
                         spacing: Offset.screenBorderOffset
                     ) {
-                        ForEach(viewModel.getFilteredTasks()) { task in
-                            TaskItemView(viewModel: viewModel.createTaskItemViewModel(for: task))
+                        ForEach(tasks) { task in
+                            TaskItemView(viewModel: .init(
+                                title: task.wrappedTitle,
+                                timeInterval: formatDate(task.wrappedCreatedAt),
+                                description: task.wrappedDescription,
+                                itemType: .checkbox,
+                                isDone: task.isCompleted,
+                                style: .whiteStyle,
+                                sideArrowViewModel: sideArrowVM
+                            ))
                         }
                     }
                     .padding(
@@ -74,31 +93,37 @@ struct TaskScreenView: View {
             .padding(.bottom, 150)
         }
         .background(Color.hexF2F2F2)
-        .sheet(isPresented: $viewModel.isPopupFolderVisible) {
+        .sheet(isPresented: $showFolderPopup) {
             TaskFolderPopupView(
-                isPresented: $viewModel.isPopupFolderVisible,
+                isPresented: $showFolderPopup,
                 selectedFolder: $selectedFolder,
-                folders: viewModel.folders
+                folders: folders
             )
             .presentationDetents([.height(300), .large])
             .presentationDragIndicator(.visible)
             .presentationBackground(.regularMaterial)
         }
-        .onChange(of: viewModel.selectedFolder) { newFolder in
-            selectedFolder = newFolder
-        }
-        .onChange(of: selectedFolder) { newFolder in
-            viewModel.selectedFolder = newFolder
-        }
-        .onAppear {
-            viewModel.setContext(viewContext)
-            viewModel.refreshFolders()
+    }
+    private func formatDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"
+        let timeString = formatter.string(from: date)
+        
+        let calendar = Calendar.current
+        if calendar.isDateInToday(date) {
+            return "Today \(timeString)"
+        } else if calendar.isDateInYesterday(date) {
+            return "Yesterday \(timeString)"
+        } else {
+            formatter.dateFormat = "MMM dd"
+            let dateString = formatter.string(from: date)
+            return "\(dateString) \(timeString)"
         }
     }
 }
 
 #Preview {
-    TaskScreenView(tasks: [], folders: [], selectedFolder: .constant(nil))
+    TaskScreenView(tasks: [], folders: [])
 }
 
 extension TaskScreenView {

@@ -47,3 +47,4 @@ struct FolderPickerView: View {
         .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
     }
 }
+
