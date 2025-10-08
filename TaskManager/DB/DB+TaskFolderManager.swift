@@ -129,6 +129,10 @@ final class TaskFolderNonDB: Identifiable, Equatable {
     var isSelected: Bool
     var tasks: [TaskItem]
     
+    var taskCount: Int {
+        return tasks.count
+    }
+    
     init(id: UUID, name: String, isSelected: Bool, tasks: [TaskItem]) {
         self.id = id
         self.name = name

@@ -16,10 +16,14 @@ final class TaskFolderPopupViewModel: ObservableObject {
     @Published var isCreatingNewFolder = false
     @Published var newFolderName = ""
     
-    @Environment(\.managedObjectContext) private var viewContext
+    private let viewContext: NSManagedObjectContext
     
-    init(isPresented: Bool) {
+    init(
+        isPresented: Bool,
+        viewContext: NSManagedObjectContext
+    ) {
         self.isPresented = isPresented
+        self.viewContext = viewContext
         let allFolders = DB.TaskFolderManager.getAllFolders(in: viewContext)
         self.folders = allFolders
         self.selectedFolder = allFolders.first(where: { $0.isSelected }) ?? allFolders[0]

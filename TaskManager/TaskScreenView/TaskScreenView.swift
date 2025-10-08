@@ -94,7 +94,8 @@ struct TaskScreenView: View {
         .background(Color.hexF2F2F2)
         .sheet(isPresented: $showFolderPopup) {
             TaskFolderPopupView(viewModel: .init(
-                isPresented: showFolderPopup))
+                isPresented: showFolderPopup,
+                viewContext: viewModel.viewContext))
             .presentationDetents([.height(300), .large])
             .presentationDragIndicator(.visible)
             .presentationBackground(.regularMaterial)

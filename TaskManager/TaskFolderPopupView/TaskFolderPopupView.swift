@@ -91,7 +91,9 @@ struct TaskFolderPopupView: View {
                     }
                     
                     ForEach(viewModel.folders) { folder in
-                        Button(action: viewModel.select(folder: folder)) {
+                        Button(action: {
+                            viewModel.select(folder: folder)
+                        }) {
                             HStack(spacing: 12) {
                                 if folder.isSelected {
                                     // Folder icon
@@ -120,7 +122,7 @@ struct TaskFolderPopupView: View {
                                 Spacer()
                                 
                                 // Task count
-                                Text("\(folder.taskCount)")
+                                Text("\(folder.tasks.count)")
                                     .font(.system(size: 14))
                                     .foregroundColor(.gray)
                             }
@@ -156,6 +158,6 @@ extension TaskFolderPopupView {
 
 #Preview {
     TaskFolderPopupView(
-        viewModel: .init(isPresented: true))
+        viewModel: .init(isPresented: true, viewContext: PersistenceController.preview.container.viewContext))
 }
 

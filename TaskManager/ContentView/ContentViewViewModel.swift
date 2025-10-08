@@ -15,12 +15,13 @@ class ContentViewViewModel: ObservableObject {
     @Published var isTabBarVisible = true
     @Published var showAddTask = false
     
-    @Environment(\.managedObjectContext) var viewContext
+    let viewContext: NSManagedObjectContext
     @Published var selectedFolder: TaskFolderNonDB = .getTemplate()
     
     lazy var tabItems: [TabItemModel] = {
         let taskScreenView: TaskScreenView = .init(viewModel: .init(
-            selectedFolder: $selectedFolder))
+            selectedFolder: $selectedFolder,
+            viewContext: viewContext))
         return [
             TabItemModel(
                 icon: "list.clipboard",
@@ -33,18 +34,13 @@ class ContentViewViewModel: ObservableObject {
         ]
     }()
     
-    init() {
+    init(viewContext: NSManagedObjectContext) {
+        self.viewContext = viewContext
         setupSelectedFolder()
     }
     
     private func setupSelectedFolder() {
-        let backgroundContext = PersistenceController.shared.container.newBackgroundContext()
-        backgroundContext.perform { [weak self] in
-            let selectedFolder = DB.TaskFolderManager.getSelectedFolder(in: backgroundContext)
-            DispatchQueue.main.async { [weak self] in
-                self?.selectedFolder = selectedFolder
-            }
-        }
+        selectedFolder = DB.TaskFolderManager.getSelectedFolder(in: viewContext)
     }
     
     

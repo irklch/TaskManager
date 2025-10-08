@@ -26,10 +26,14 @@ final class AddTaskViewModel: ObservableObject {
     @Published var showingFolderPicker = false
     @Published var showingDatePicker = false
     
-    @Environment(\.managedObjectContext) private var viewContext
+    private let context: NSManagedObjectContext
 //    private var cancellables = Set<AnyCancellable>()
     
-    init(selectedFolder: Published<TaskFolderNonDB>.Publisher) {
+    init(
+        context: NSManagedObjectContext,
+        selectedFolder: Published<TaskFolderNonDB>.Publisher
+    ) {
+        self.context = context
         selectedFolder
             .receive(on: DispatchQueue.main)
             .assign(to: &$selectedFolder)
@@ -37,8 +41,10 @@ final class AddTaskViewModel: ObservableObject {
     }
     
     init(
+        context: NSManagedObjectContext,
         selectedFolder: TaskFolderNonDB
     ) {
+        self.context = context
         self.selectedFolder = selectedFolder
 //        setupObservers()
     }
@@ -76,14 +82,14 @@ final class AddTaskViewModel: ObservableObject {
     func saveTask() {
         let imageData = selectedImage?.jpegData(compressionQuality: 0.8)
         
-        let folders = DB.TaskFolderManager.getAllFolders(in: viewContext)
+        let folders = DB.TaskFolderManager.getAllFolders(in: context)
         
         DB.TaskItemManager.addNewTask(
             title: taskTitle.trimmingCharacters(in: .whitespacesAndNewlines),
             description: taskDescription.trimmingCharacters(in: .whitespacesAndNewlines),
             imageData: imageData,
             folder: folders[0],
-            in: viewContext)
+            in: context)
         isPresented = false
     }
     

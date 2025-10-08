@@ -155,6 +155,7 @@ struct ImagePicker: UIViewControllerRepresentable {
 #Preview {
     AddTaskView(
         viewModel: .init(
+            context: PersistenceController.preview.container.viewContext,
             selectedFolder: DB.TaskFolderManager.getSelectedFolder(in: PersistenceController.preview.container.viewContext)),
         isPresented: .constant(true)
     )

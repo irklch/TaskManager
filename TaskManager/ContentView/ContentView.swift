@@ -9,7 +9,13 @@ import SwiftUI
 import CoreData
 
 struct ContentView: View {
-    @StateObject private var viewModel = ContentViewViewModel()
+    @Environment(\.managedObjectContext) private var viewContext
+    @StateObject private var viewModel: ContentViewViewModel
+    
+    init() {
+        let context = PersistenceController.shared.container.viewContext
+        _viewModel = StateObject(wrappedValue: ContentViewViewModel(viewContext: context))
+    }
 
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
@@ -38,7 +44,9 @@ struct ContentView: View {
         .background(.white)
         .fullScreenCover(isPresented: $viewModel.showAddTask) {
             AddTaskView(
-                viewModel: .init(selectedFolder: viewModel.$selectedFolder),
+                viewModel: .init(
+                    context: viewModel.viewContext,
+                    selectedFolder: viewModel.$selectedFolder),
                 isPresented: $viewModel.showAddTask)
         }
     }
@@ -58,4 +66,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
+        .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 }

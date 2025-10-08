@@ -11,12 +11,24 @@ import CoreData
 extension DB {
     enum TaskItemManager {
         static func getItemsFrom(folder: TaskFolderNonDB, in context: NSManagedObjectContext) -> [TaskItemNonDB] {
-            let request: NSFetchRequest<TaskItem> = TaskItem.fetchRequest()
-            request.predicate = NSPredicate(format: "folder == %@", folder.getDBModel(in: context))
-            request.sortDescriptors = [NSSortDescriptor(keyPath: \TaskItem.createdAt, ascending: false)]
+            // Сначала находим реальный объект TaskFolder в базе данных
+            let folderRequest: NSFetchRequest<TaskFolder> = TaskFolder.fetchRequest()
+            folderRequest.predicate = NSPredicate(format: "id == %@", folder.id as CVarArg)
+            
             do {
+                guard let dbFolder = try context.fetch(folderRequest).first else {
+                    print("Folder not found in database")
+                    return []
+                }
+                
+                // Теперь ищем задачи, связанные с этой папкой
+                let request: NSFetchRequest<TaskItem> = TaskItem.fetchRequest()
+                request.predicate = NSPredicate(format: "folder == %@", dbFolder)
+                request.sortDescriptors = [NSSortDescriptor(keyPath: \TaskItem.createdAt, ascending: false)]
+                
                 return try context.fetch(request).map({ .init(model: $0) })
             } catch {
+                print("Failed to fetch tasks: \(error)")
                 return []
             }
         }
