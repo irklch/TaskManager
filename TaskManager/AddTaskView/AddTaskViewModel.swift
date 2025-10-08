@@ -37,6 +37,7 @@ final class AddTaskViewModel: ObservableObject {
         guard !trimmed.isEmpty else {
             return
         }
+        
         checklist.append(.init(text: trimmed, isDone: false))
     }
 
@@ -47,7 +48,6 @@ final class AddTaskViewModel: ObservableObject {
     }
 
     func delete(item: ChecklistItem) {
-        guard item.text.isEmpty else { return }
         checklist.removeAll{ $0.id == item.id }
     }
 }

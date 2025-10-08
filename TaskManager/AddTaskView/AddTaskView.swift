@@ -9,6 +9,7 @@ struct AddTaskView: View {
     @State private var showPhotoPicker = false
     @State private var showFileImporter = false
     @FocusState private var isNewItemFieldFocused: Bool
+    @FocusState private var editingItemId: UUID?
 
     var body: some View {
         ZStack {
@@ -84,7 +85,7 @@ struct AddTaskView: View {
         PlaceholderTextField(
             placeholder: "Заголовок",
             placeholderFont: Fonts.titleTextFieldFont,
-            text: $vm.title, onCommit: nil)
+            text: $vm.title, onSubmit: nil)
         .font(Fonts.titleTextFieldFont)
         .tint(.hex316AFD)
         .padding(16)
@@ -113,12 +114,13 @@ struct AddTaskView: View {
                     PlaceholderTextField(
                         placeholder: "",
                         placeholderFont: Fonts.checkboxFont,
-                        text: $item.text, onCommit: {
-                            vm.delete(item: item)
+                        text: $item.text, onSubmit: {
+                            handleItemCommit(item: item)
                         })
                     .frame(height: 44)
                     .strikethrough(item.isDone, color: .secondary)
                     .foregroundStyle(item.isDone ? .secondary : Color.hex000101)
+                    .focused($editingItemId, equals: item.id)
                 }
                 .contextMenu {
                     Button(role: .destructive) { vm.checklist.removeAll{ $0.id == item.id } } label: {
@@ -127,7 +129,6 @@ struct AddTaskView: View {
                 }
             }
 
-
             HStack(spacing: 12) {
                 Toggle("", isOn: .constant(false))
                     .toggleStyle(CircleCheckmarkToggleStyle())
@@ -135,9 +136,8 @@ struct AddTaskView: View {
                     placeholder: "Добавить пункт",
                     placeholderFont: Fonts.checkboxFont,
                     text: $vm.newItemText,
-                    onCommit: {
-                        vm.addChecklistItem()
-                        isNewItemFieldFocused = true
+                    onSubmit: {
+                        handleNewItemCommit()
                     })
                 .focused($isNewItemFieldFocused)
             }
@@ -177,6 +177,29 @@ struct AddTaskView: View {
         }
         .padding(12)
         .background(RoundedRectangle(cornerRadius: 28, style: .continuous).fill(Color.white))
+    }
+    
+    // MARK: - Helper Functions
+    
+    private func handleNewItemCommit() {
+        let text = vm.newItemText
+        vm.addChecklistItem()
+        // Клавиатура остается активной для добавления следующего пункта
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            isNewItemFieldFocused = text.isEmpty == false
+        }
+    }
+    
+    private func handleItemCommit(item: AddTaskViewModel.ChecklistItem) {
+        let trimmed = item.text.trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        if trimmed.isEmpty {
+            // Если пункт стал пустым - удаляем его
+            vm.delete(item: item)
+        }
+        
+        // Скрываем клавиатуру после редактирования существующего пункта
+        editingItemId = nil
     }
 }
 
