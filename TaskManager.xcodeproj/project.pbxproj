@@ -16,7 +16,7 @@
 		A90ACDC42E96D81900FF7C44 /* AttachmentThumb.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90ACDBE2E96D81900FF7C44 /* AttachmentThumb.swift */; };
 		A90ACDC52E96D81900FF7C44 /* CircleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90ACDBF2E96D81900FF7C44 /* CircleButton.swift */; };
 		A90ACDC62E96D81900FF7C44 /* CircleCheckmarkToggleStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90ACDC02E96D81900FF7C44 /* CircleCheckmarkToggleStyle.swift */; };
-		A90ACDC72E96D81900FF7C44 /* GrowingTextEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90ACDC12E96D81900FF7C44 /* GrowingTextEditor.swift */; };
+		A90ACDC72E96D81900FF7C44 /* GrowingTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90ACDC12E96D81900FF7C44 /* GrowingTextView.swift */; };
 		A90ACDC82E96D81900FF7C44 /* PlaceholderTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90ACDC22E96D81900FF7C44 /* PlaceholderTextField.swift */; };
 		A923135D2BFBDC0700528706 /* TaskManagerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A923135C2BFBDC0700528706 /* TaskManagerApp.swift */; };
 		A92313612BFBDC0900528706 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A92313602BFBDC0900528706 /* Assets.xcassets */; };
@@ -60,7 +60,7 @@
 		A90ACDBE2E96D81900FF7C44 /* AttachmentThumb.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentThumb.swift; sourceTree = "<group>"; };
 		A90ACDBF2E96D81900FF7C44 /* CircleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleButton.swift; sourceTree = "<group>"; };
 		A90ACDC02E96D81900FF7C44 /* CircleCheckmarkToggleStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleCheckmarkToggleStyle.swift; sourceTree = "<group>"; };
-		A90ACDC12E96D81900FF7C44 /* GrowingTextEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowingTextEditor.swift; sourceTree = "<group>"; };
+		A90ACDC12E96D81900FF7C44 /* GrowingTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowingTextView.swift; sourceTree = "<group>"; };
 		A90ACDC22E96D81900FF7C44 /* PlaceholderTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceholderTextField.swift; sourceTree = "<group>"; };
 		A92313592BFBDC0700528706 /* TaskManager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TaskManager.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A923135C2BFBDC0700528706 /* TaskManagerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskManagerApp.swift; sourceTree = "<group>"; };
@@ -132,7 +132,7 @@
 				A90ACDBE2E96D81900FF7C44 /* AttachmentThumb.swift */,
 				A90ACDBF2E96D81900FF7C44 /* CircleButton.swift */,
 				A90ACDC02E96D81900FF7C44 /* CircleCheckmarkToggleStyle.swift */,
-				A90ACDC12E96D81900FF7C44 /* GrowingTextEditor.swift */,
+				A90ACDC12E96D81900FF7C44 /* GrowingTextView.swift */,
 				A90ACDC22E96D81900FF7C44 /* PlaceholderTextField.swift */,
 			);
 			path = Views;
@@ -368,7 +368,7 @@
 				A90ACDC42E96D81900FF7C44 /* AttachmentThumb.swift in Sources */,
 				A90ACDC52E96D81900FF7C44 /* CircleButton.swift in Sources */,
 				A90ACDC62E96D81900FF7C44 /* CircleCheckmarkToggleStyle.swift in Sources */,
-				A90ACDC72E96D81900FF7C44 /* GrowingTextEditor.swift in Sources */,
+				A90ACDC72E96D81900FF7C44 /* GrowingTextView.swift in Sources */,
 				A90ACDC82E96D81900FF7C44 /* PlaceholderTextField.swift in Sources */,
 				A92313662BFBDC0900528706 /* Persistence.swift in Sources */,
 				A967DB212BFEA21700AF9BE5 /* Colors.swift in Sources */,

@@ -91,7 +91,7 @@ struct AddTaskView: View {
     }
 
     private var descriptionCard: some View {
-        GrowingTextEditor(
+        GrowingTextView(
             text: $vm.details,
             placeholder: "Опишите детали задачи...",
             placeholderFont: Fonts.descriptionTextViewFont)
