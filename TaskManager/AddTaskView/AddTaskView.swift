@@ -104,30 +104,40 @@ struct AddTaskView: View {
     }
 
     private var checklistCard: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 0) {
             
-            ForEach($vm.checklist, id: \.id) { $item in
-                HStack(spacing: 12) {
-                    Toggle("", isOn: $item.isDone)
-                        .toggleStyle(CircleCheckmarkToggleStyle())
-                    
-                    PlaceholderTextField(
-                        placeholder: "",
-                        placeholderFont: Fonts.checkboxFont,
-                        text: $item.text, onSubmit: {
-                            handleItemCommit(item: item)
-                        })
-                    .frame(height: 44)
-                    .strikethrough(item.isDone, color: .secondary)
-                    .foregroundStyle(item.isDone ? .secondary : Color.hex000101)
-                    .focused($editingItemId, equals: item.id)
-                }
-                .contextMenu {
-                    Button(role: .destructive) { vm.checklist.removeAll{ $0.id == item.id } } label: {
-                        Label("Удалить", systemImage: "trash")
+            List {
+                ForEach($vm.checklist, id: \.id) { $item in
+                    HStack(spacing: 12) {
+                        Toggle("", isOn: $item.isDone)
+                            .toggleStyle(CircleCheckmarkToggleStyle())
+                        
+                        PlaceholderTextField(
+                            placeholder: "",
+                            placeholderFont: Fonts.checkboxFont,
+                            text: $item.text, onSubmit: {
+                                handleItemCommit(item: item)
+                            })
+                        .frame(height: 44)
+                        .strikethrough(item.isDone, color: .secondary)
+                        .foregroundStyle(item.isDone ? .secondary : Color.hex000101)
+                        .focused($editingItemId, equals: item.id)
+                    }
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(EdgeInsets())
+                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                        Button(role: .destructive) {
+                            vm.delete(item: item)
+                        } label: {
+                            Label("Удалить", systemImage: "trash")
+                        }
                     }
                 }
             }
+            .listStyle(.plain)
+            .frame(height: CGFloat(vm.checklist.count * 44)) // Примерная высота
+            .scrollDisabled(true)
 
             HStack(spacing: 12) {
                 Toggle("", isOn: .constant(false))
@@ -182,12 +192,9 @@ struct AddTaskView: View {
     // MARK: - Helper Functions
     
     private func handleNewItemCommit() {
-        let text = vm.newItemText
+        let text = vm.newItemText.trimmingCharacters(in: .whitespacesAndNewlines)
         vm.addChecklistItem()
-        // Клавиатура остается активной для добавления следующего пункта
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            isNewItemFieldFocused = text.isEmpty == false
-        }
+        isNewItemFieldFocused = text.isEmpty == false
     }
     
     private func handleItemCommit(item: AddTaskViewModel.ChecklistItem) {
