@@ -14,11 +14,7 @@ import Combine
 final class AddTaskViewModel: ObservableObject {
     @Published var title: String = ""
     @Published var details: String = ""
-    @Published var checklist: [ChecklistItem] = [
-        .init(text: "Create wireframe", isDone: true),
-        .init(text: "Discuss with team", isDone: false),
-        .init(text: "Attach Figma link", isDone: false)
-    ]
+    @Published var checklist: [ChecklistItem] = []
     @Published var newItemText: String = ""
     @Published var attachments: [Attachment] = []
 

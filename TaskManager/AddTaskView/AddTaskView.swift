@@ -108,7 +108,7 @@ struct AddTaskView: View {
                 HStack(spacing: 12) {
                     Toggle("", isOn: $item.isDone)
                         .toggleStyle(CircleCheckmarkToggleStyle())
-                    TextField("List item", text: $item.text, onCommit: {
+                    TextField("Пункт чек-листа", text: $item.text, onCommit: {
                         vm.delete(item: item)
                     })
                     .frame(height: 44)
@@ -118,7 +118,7 @@ struct AddTaskView: View {
                 }
                 .contextMenu {
                     Button(role: .destructive) { vm.checklist.removeAll{ $0.id == item.id } } label: {
-                        Label("Delete", systemImage: "trash")
+                        Label("Удалить", systemImage: "trash")
                     }
                 }
             }
@@ -127,7 +127,7 @@ struct AddTaskView: View {
             HStack(spacing: 12) {
                 Toggle("", isOn: .constant(false))
                     .toggleStyle(CircleCheckmarkToggleStyle())
-                TextField("Add item", text: $vm.newItemText, onCommit: vm.addChecklistItem)
+                TextField("Добавить пункт", text: $vm.newItemText, onCommit: vm.addChecklistItem)
                     .font(.system(size: 16))
             }
             .padding(.top, 6)
@@ -150,7 +150,7 @@ struct AddTaskView: View {
                 Button {
                     showPhotoPicker = true
                 } label: {
-                    Label("Image", systemImage: "photo")
+                    Label("Изображение", systemImage: "photo")
                         .padding(.horizontal, 16).padding(.vertical, 12)
                         .background(Capsule().fill(Color(.systemGray6)))
                 }
@@ -158,7 +158,7 @@ struct AddTaskView: View {
                 Button {
                     showFileImporter = true
                 } label: {
-                    Label("File", systemImage: "paperclip")
+                    Label("Файл", systemImage: "paperclip")
                         .padding(.horizontal, 16).padding(.vertical, 12)
                         .background(Capsule().fill(Color(.systemGray6)))
                 }
