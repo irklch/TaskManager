@@ -24,28 +24,52 @@ final class TaskFolderPopupViewModel: ObservableObject {
         self.folders = allFolders
     }
     
+    private func reloadFolders() {
+        folders = DB.TaskFolderManager.getAllFolders(in: viewContext)
+    }
     
-    func getNewFolder(selectedFolder: TaskFolderNonDB) -> TaskFolderNonDB {
+    func createNewFolder(selectedFolder: TaskFolderNonDB) -> TaskFolderNonDB? {
         let folderName: String = newFolderName.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !folderName.isEmpty else {
-            return selectedFolder
+            return nil
         }
+        
+        // Снимаем выбор с текущей папки
         selectedFolder.isSelected = false
         DB.TaskFolderManager.change(item: selectedFolder, in: viewContext)
         
-        // Create new folder in Core Data
+        // Создаём новую папку
         let newFolder: TaskFolderNonDB = .init(
             id: .init(),
             name: folderName,
             isSelected: true,
             tasks: [])
         DB.TaskFolderManager.addNew(item: newFolder, in: viewContext)
-        return newFolder
+        
+        // Перезагружаем список папок
+        reloadFolders()
+        
+        // Находим созданную папку в новом списке
+        return folders.first(where: { $0.id == newFolder.id })
     }
     
-    func select(currentFolder: TaskFolderNonDB, newFolder: TaskFolderNonDB) {
+    func selectFolder(currentFolder: TaskFolderNonDB, newFolder: TaskFolderNonDB) -> TaskFolderNonDB? {
+        // Не делаем ничего, если выбрали ту же папку
+        guard currentFolder.id != newFolder.id else {
+            return nil
+        }
+        
+        // Обновляем статус в объектах
         currentFolder.isSelected = false
         newFolder.isSelected = true
+        
+        // Сохраняем изменения в БД
         DB.TaskFolderManager.change(items: [currentFolder, newFolder], in: viewContext)
+        
+        // Перезагружаем список папок из БД
+        reloadFolders()
+        
+        // Возвращаем обновлённую папку из нового списка
+        return folders.first(where: { $0.id == newFolder.id })
     }
 }

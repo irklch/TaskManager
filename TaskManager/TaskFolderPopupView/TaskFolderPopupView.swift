@@ -60,17 +60,19 @@ struct TaskFolderPopupView: View {
                                 .foregroundColor(.hex000101)
                                 .focused($isTextFieldFocused)
                                 .onSubmit {
-                                    let newFolder = viewModel.getNewFolder(selectedFolder: selectedFolder)
-                                    selectedFolder = newFolder
-                                    isPresented = false
+                                    if let newFolder = viewModel.createNewFolder(selectedFolder: selectedFolder) {
+                                        selectedFolder = newFolder
+                                        isPresented = false
+                                    }
                                 }
                                 .toolbar {
                                     ToolbarItemGroup(placement: .keyboard) {
                                         Spacer()
                                         Button("Готово") {
-                                            let newFolder = viewModel.getNewFolder(selectedFolder: selectedFolder)
-                                            selectedFolder = newFolder
-                                            isPresented = false
+                                            if let newFolder = viewModel.createNewFolder(selectedFolder: selectedFolder) {
+                                                selectedFolder = newFolder
+                                                isPresented = false
+                                            }
                                         }
                                         .foregroundColor(.hex316AFD)
                                         .fontWeight(.medium)
@@ -98,12 +100,13 @@ struct TaskFolderPopupView: View {
                     
                     ForEach(viewModel.folders) { folder in
                         Button(action: {
-                            viewModel.select(currentFolder: selectedFolder, newFolder: folder)
-                            selectedFolder = folder
+                            if let updatedFolder = viewModel.selectFolder(currentFolder: selectedFolder, newFolder: folder) {
+                                selectedFolder = updatedFolder
+                            }
                             isPresented = false
                         }) {
                             HStack(spacing: 12) {
-                                if folder.isSelected {
+                                if selectedFolder.id == folder.id {
                                     // Folder icon
                                     Image(systemName: "folder")
                                         .font(.system(size: 16))
