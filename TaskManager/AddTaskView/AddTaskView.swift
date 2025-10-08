@@ -8,6 +8,7 @@ struct AddTaskView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var showPhotoPicker = false
     @State private var showFileImporter = false
+    @FocusState private var isNewItemFieldFocused: Bool
 
     var body: some View {
         ZStack {
@@ -52,7 +53,7 @@ struct AddTaskView: View {
     private var header: some View {
         HStack {
             Button("Отмена") { dismiss() }
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.gray)
                 .font(.system(size: 16, weight: .light))
 
             Spacer()
@@ -83,7 +84,7 @@ struct AddTaskView: View {
         PlaceholderTextField(
             placeholder: "Заголовок",
             placeholderFont: Fonts.titleTextFieldFont,
-            text: $vm.title)
+            text: $vm.title, onCommit: nil)
         .font(Fonts.titleTextFieldFont)
         .tint(.hex316AFD)
         .padding(16)
@@ -104,15 +105,18 @@ struct AddTaskView: View {
     private var checklistCard: some View {
         VStack(alignment: .leading, spacing: 8) {
             
-            ForEach($vm.checklist) { $item in
+            ForEach($vm.checklist, id: \.id) { $item in
                 HStack(spacing: 12) {
                     Toggle("", isOn: $item.isDone)
                         .toggleStyle(CircleCheckmarkToggleStyle())
-                    TextField("Пункт чек-листа", text: $item.text, onCommit: {
-                        vm.delete(item: item)
-                    })
+                    
+                    PlaceholderTextField(
+                        placeholder: "",
+                        placeholderFont: Fonts.checkboxFont,
+                        text: $item.text, onCommit: {
+                            vm.delete(item: item)
+                        })
                     .frame(height: 44)
-                    .font(.system(size: 16))
                     .strikethrough(item.isDone, color: .secondary)
                     .foregroundStyle(item.isDone ? .secondary : Color.hex000101)
                 }
@@ -127,8 +131,15 @@ struct AddTaskView: View {
             HStack(spacing: 12) {
                 Toggle("", isOn: .constant(false))
                     .toggleStyle(CircleCheckmarkToggleStyle())
-                TextField("Добавить пункт", text: $vm.newItemText, onCommit: vm.addChecklistItem)
-                    .font(.system(size: 16))
+                PlaceholderTextField(
+                    placeholder: "Добавить пункт",
+                    placeholderFont: Fonts.checkboxFont,
+                    text: $vm.newItemText,
+                    onCommit: {
+                        vm.addChecklistItem()
+                        isNewItemFieldFocused = true
+                    })
+                .focused($isNewItemFieldFocused)
             }
             .padding(.top, 6)
         }
@@ -152,7 +163,7 @@ struct AddTaskView: View {
                 } label: {
                     Label("Изображение", systemImage: "photo")
                         .padding(.horizontal, 16).padding(.vertical, 12)
-                        .background(Capsule().fill(Color(.systemGray6)))
+                        .background(Capsule().fill(Color(.hexF2F2F2)))
                 }
 
                 Button {
@@ -160,7 +171,7 @@ struct AddTaskView: View {
                 } label: {
                     Label("Файл", systemImage: "paperclip")
                         .padding(.horizontal, 16).padding(.vertical, 12)
-                        .background(Capsule().fill(Color(.systemGray6)))
+                        .background(Capsule().fill(Color(.hexF2F2F2)))
                 }
             }
         }

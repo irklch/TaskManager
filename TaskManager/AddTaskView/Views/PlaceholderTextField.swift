@@ -11,6 +11,7 @@ struct PlaceholderTextField: View {
     var placeholder: String
     var placeholderFont: Font
     @Binding var text: String
+    let onCommit: (() -> Void)?
 
     var body: some View {
         ZStack(alignment: .leading) {
@@ -19,8 +20,13 @@ struct PlaceholderTextField: View {
                     .font(placeholderFont)
                     .foregroundColor(Color.gray.opacity(0.5))
             }
-            TextField("", text: $text)
-                .foregroundColor(.hex000101)
+            if let onCommit {
+                TextField("", text: $text, onCommit: onCommit)
+                    .foregroundColor(.hex000101)
+            } else {
+                TextField("", text: $text)
+                    .foregroundColor(.hex000101)
+            }
         }
     }
 }

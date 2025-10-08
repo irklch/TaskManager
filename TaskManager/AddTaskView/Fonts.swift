@@ -11,6 +11,7 @@ extension AddTaskView {
     enum Fonts {
         static let titleTextFieldFont: Font = .system(size: 20, weight: .light)
         static let descriptionTextViewFont: Font = .system(size: 16, weight: .light)
+        static let checkboxFont: Font = .system(size: 16, weight: .light)
     }
 }
 
