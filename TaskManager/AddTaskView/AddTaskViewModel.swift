@@ -15,34 +15,39 @@ final class AddTaskViewModel: ObservableObject {
     @Published var taskTitle = ""
     @Published var taskDescription = ""
     @Published var selectedImage: UIImage?
+    @Published var selectedImageItem: PhotosPickerItem?
     @Published var showingImagePicker = false
-//    @FocusState var isTitleFocused
     @Published var isDescriptionFocused = false
+    @Published var isPresented = false
+    @Published var selectedFolder: TaskFolderNonDB = .getTemplate()
     @Published var taskSteps: [TaskStep] = [TaskStep()]
-    @Published var deadline: Date?
-    @Published var hasDeadline = false
     @Published var showingFolderPicker = false
-    @Published var showingDatePicker = false
+    @Published var folders: [TaskFolderNonDB] = []
     
     private let context: NSManagedObjectContext
-//    private var cancellables = Set<AnyCancellable>()
+    
+    init(
+        context: NSManagedObjectContext,
+        selectedFolder: TaskFolderNonDB
+    ) {
+        self.context = context
+        self.selectedFolder = selectedFolder
+        loadFolders()
+    }
     
     init(
         context: NSManagedObjectContext
     ) {
         self.context = context
-//        setupObservers()
+        loadFolders()
     }
     
-//    private func setupObservers() {
-//        // Автоматически фокусируемся на поле заголовка при появлении
-//        $isPresented
-//            .filter { $0 }
-//            .sink { [weak self] _ in
-//                self?.isTitleFocused = true
-//            }
-//            .store(in: &cancellables)
-//    }
+    private func loadFolders() {
+        folders = DB.TaskFolderManager.getAllFolders(in: context)
+        if selectedFolder.id == UUID() {
+            selectedFolder = folders.first ?? .getTemplate()
+        }
+    }
     
     var isSaveButtonEnabled: Bool {
         !taskTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
@@ -67,14 +72,28 @@ final class AddTaskViewModel: ObservableObject {
     func saveTask() {
         let imageData = selectedImage?.jpegData(compressionQuality: 0.8)
         
-        let folders = DB.TaskFolderManager.getAllFolders(in: context)
-        
         DB.TaskItemManager.addNewTask(
             title: taskTitle.trimmingCharacters(in: .whitespacesAndNewlines),
             description: taskDescription.trimmingCharacters(in: .whitespacesAndNewlines),
             imageData: imageData,
-            folder: folders[0],
+            folder: selectedFolder,
             in: context)
+        
+        // Clear form after saving
+        clearForm()
+    }
+    
+    func clearForm() {
+        taskTitle = ""
+        taskDescription = ""
+        selectedImage = nil
+        selectedImageItem = nil
+        taskSteps = [TaskStep()]
+    }
+    
+    func dismissView() {
+        clearForm()
+        isPresented = false
     }
     
     // MARK: - Folder Management
@@ -84,6 +103,11 @@ final class AddTaskViewModel: ObservableObject {
     
     func hideFolderPicker() {
         showingFolderPicker = false
+    }
+    
+    func selectFolder(_ folder: TaskFolderNonDB) {
+        selectedFolder = folder
+        hideFolderPicker()
     }
     
     // MARK: - Task Steps Management
@@ -104,34 +128,6 @@ final class AddTaskViewModel: ObservableObject {
     func removeTaskStep(at index: Int) {
         guard taskSteps.count > 1 && index < taskSteps.count else { return }
         taskSteps.remove(at: index)
-    }
-    
-    // MARK: - Deadline Management
-    func showDatePicker() {
-        showingDatePicker = true
-    }
-    
-    func hideDatePicker() {
-        showingDatePicker = false
-    }
-    
-    func setDeadline(_ date: Date) {
-        deadline = date
-        hasDeadline = true
-        hideDatePicker()
-    }
-    
-    func removeDeadline() {
-        deadline = nil
-        hasDeadline = false
-    }
-    
-    func formattedDeadline() -> String {
-        guard let deadline = deadline else { return "Без даты" }
-        
-        let formatter = DateFormatter()
-        formatter.dateFormat = "dd MMMM yyyy"
-        return formatter.string(from: deadline)
     }
     
     // MARK: - Computed Properties
