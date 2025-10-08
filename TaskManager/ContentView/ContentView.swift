@@ -9,19 +9,31 @@ import SwiftUI
 import CoreData
 
 struct ContentView: View {
-    @Environment(\.managedObjectContext) private var viewContext
-    @StateObject private var viewModel: ContentViewViewModel
+    @State private var viewContext: NSManagedObjectContext
+    @StateObject private var viewModel: ContentViewViewModel = .init()
+    @State var selectedFolder: TaskFolderNonDB
     
-    init() {
-        let context = PersistenceController.shared.container.viewContext
-        _viewModel = StateObject(wrappedValue: ContentViewViewModel(viewContext: context))
+//    private lazy var tabItems: [TabItemModel] =  [
+//        TabItemModel(
+//            icon: "list.clipboard",
+//            title: "Задачи",
+//            view: AnyView()),
+//        TabItemModel(
+//            icon: "calendar",
+//            title: "Календарь",
+//            view: AnyView(CalendarView()))
+//    ]
+    
+    init(viewContext: NSManagedObjectContext) {
+        self.viewContext = viewContext
+        self.selectedFolder = DB.TaskFolderManager.getSelectedFolder(in: viewContext)
     }
 
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
             TabView(selection: $viewModel.selectedIndex) {
-                ForEach(viewModel.tabItems) { tabItem in
-                    tabItem.view
+//                ForEach(self.tabItems) { tabItem in
+//                    tabItem.view
 //                        .tag(index)
 //                        .simultaneousGesture(
 //                            DragGesture()
@@ -29,7 +41,9 @@ struct ContentView: View {
 //                                    viewModel.handleScrollGesture(translation: value.translation)
 //                                }
 //                        )
-                }
+//                }
+                TaskScreenView(selectedFolder: $selectedFolder)
+                CalendarView()
             }
             .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
             .animation(.easeInOut(duration: 0.3), value: viewModel.selectedIndex)
@@ -44,17 +58,25 @@ struct ContentView: View {
         .background(.white)
         .fullScreenCover(isPresented: $viewModel.showAddTask) {
             AddTaskView(
-                viewModel: .init(
-                    context: viewModel.viewContext,
-                    selectedFolder: viewModel.$selectedFolder),
-                isPresented: $viewModel.showAddTask)
+                viewModel: .init(context: viewContext),
+                isPresented: $viewModel.showAddTask,
+                selectedFolder: $selectedFolder)
         }
     }
-
+    
     private func getCustomTabBar() -> CustomTabBar {
+        let tabItems = [
+            TabItemModel(
+                icon: "list.clipboard",
+                title: "Задачи"),
+            TabItemModel(
+                icon: "calendar",
+                title: "Календарь")]
+        
+        
         let customTabBarViewModel: CustomTabBarViewModel = .init(
             selectedIndex: $viewModel.selectedIndex,
-            tabItems: viewModel.tabItems,
+            tabItems: tabItems,
             onPlusTapped: {
                 viewModel.showAddTaskView()
             }
@@ -65,6 +87,6 @@ struct ContentView: View {
 
 
 #Preview {
-    ContentView()
+    ContentView(viewContext: PersistenceController.preview.container.viewContext)
         .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 }

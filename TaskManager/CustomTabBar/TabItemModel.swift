@@ -11,5 +11,4 @@ struct TabItemModel: Identifiable {
     let id: UUID = .init()
     let icon: String
     let title: String
-    let view: AnyView
 }

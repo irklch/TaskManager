@@ -8,14 +8,13 @@ import SwiftUI
 import CoreData
 import Combine
 
-
-
 struct TaskScreenView: View {
-    @ObservedObject private var viewModel: TaskScreenViewModel
-    @State private var showFolderPopup = false
+    @State private var isFolderPopupVisible = false
+    @Binding var selectedFolder: TaskFolderNonDB
+    @Environment(\.managedObjectContext) private var viewContext
     
-    init(viewModel: TaskScreenViewModel) {
-        self.viewModel = viewModel
+    private func getTasks() -> [TaskItemNonDB] {
+        DB.TaskItemManager.getItemsFrom(folder: selectedFolder, in: viewContext)
     }
     
     var body: some View {
@@ -46,10 +45,10 @@ struct TaskScreenView: View {
                 VStack(alignment: .leading) {
                     HStack {
                         Button(action: {
-                            showFolderPopup = true
+                            isFolderPopupVisible = true
                         }) {
                             HStack(spacing: 4) {
-                                Text(viewModel.selectedFolder.name)
+                                Text(selectedFolder.name)
                                     .font(.title2)
                                     .foregroundColor(.hex316AFD)
                                     .multilineTextAlignment(.leading)
@@ -72,7 +71,7 @@ struct TaskScreenView: View {
                         alignment: .leading,
                         spacing: Offset.screenBorderOffset
                     ) {
-                        ForEach(viewModel.tasks) { task in
+                        ForEach(getTasks()) { task in
                             TaskItemView(viewModel: .init(
                                 title: task.title,
                                 timeInterval: formatDate(task.createdAt),
@@ -92,10 +91,12 @@ struct TaskScreenView: View {
             .padding(.bottom, 150)
         }
         .background(Color.hexF2F2F2)
-        .sheet(isPresented: $showFolderPopup) {
-            TaskFolderPopupView(viewModel: .init(
-                isPresented: showFolderPopup,
-                viewContext: viewModel.viewContext))
+        .sheet(isPresented: $isFolderPopupVisible) {
+            TaskFolderPopupView(
+                viewModel: .init(
+                    viewContext: viewContext),
+                isPresented: $isFolderPopupVisible,
+                selectedFolder: $selectedFolder)
             .presentationDetents([.height(300), .large])
             .presentationDragIndicator(.visible)
             .presentationBackground(.regularMaterial)
@@ -119,9 +120,9 @@ struct TaskScreenView: View {
     }
 }
 
-#Preview {
-    ContentView()
-}
+//#Preview {
+//    ContentView()
+//}
 
 extension TaskScreenView {
     enum Offset {

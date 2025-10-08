@@ -10,8 +10,6 @@ import CoreData
 import SwiftUICore
 
 final class TaskFolderPopupViewModel: ObservableObject {
-    @Published var isPresented: Bool
-    @Published var selectedFolder: TaskFolderNonDB
     @Published var folders: [TaskFolderNonDB]
     @Published var isCreatingNewFolder = false
     @Published var newFolderName = ""
@@ -19,21 +17,18 @@ final class TaskFolderPopupViewModel: ObservableObject {
     private let viewContext: NSManagedObjectContext
     
     init(
-        isPresented: Bool,
         viewContext: NSManagedObjectContext
     ) {
-        self.isPresented = isPresented
         self.viewContext = viewContext
         let allFolders = DB.TaskFolderManager.getAllFolders(in: viewContext)
         self.folders = allFolders
-        self.selectedFolder = allFolders.first(where: { $0.isSelected }) ?? allFolders[0]
     }
     
     
-    func createNewFolder() {
+    func getNewFolder(selectedFolder: TaskFolderNonDB) -> TaskFolderNonDB {
         let folderName: String = newFolderName.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !folderName.isEmpty else {
-            return
+            return selectedFolder
         }
         selectedFolder.isSelected = false
         DB.TaskFolderManager.change(item: selectedFolder, in: viewContext)
@@ -45,15 +40,12 @@ final class TaskFolderPopupViewModel: ObservableObject {
             isSelected: true,
             tasks: [])
         DB.TaskFolderManager.addNew(item: newFolder, in: viewContext)
-        selectedFolder = newFolder
-        isPresented = false
+        return newFolder
     }
     
-    func select(folder: TaskFolderNonDB) {
-        selectedFolder.isSelected = false
-        folder.isSelected = true
-        DB.TaskFolderManager.change(items: [selectedFolder, folder], in: viewContext)
-        selectedFolder = folder
-        isPresented = false
+    func select(currentFolder: TaskFolderNonDB, newFolder: TaskFolderNonDB) {
+        currentFolder.isSelected = false
+        newFolder.isSelected = true
+        DB.TaskFolderManager.change(items: [currentFolder, newFolder], in: viewContext)
     }
 }

@@ -14,6 +14,7 @@ struct AddTaskView: View {
     @Binding var isPresented: Bool
     @FocusState private var isTitleFocused: Bool
     @FocusState private var isDescriptionFocused: Bool
+    @Binding var selectedFolder: TaskFolderNonDB
     
     var body: some View {
         ZStack {
@@ -86,7 +87,10 @@ struct AddTaskView: View {
                             }
                             
                             // Save button
-                            Button(action: viewModel.saveTask) {
+                            Button(action: {
+                                viewModel.saveTask()
+                                isPresented = false
+                            }) {
                                 Image(systemName: "checkmark")
                                     .font(.system(size: 16, weight: .medium))
                                     .foregroundColor(.hex316AFD)
@@ -152,11 +156,10 @@ struct ImagePicker: UIViewControllerRepresentable {
     }
 }
 
-#Preview {
-    AddTaskView(
-        viewModel: .init(
-            context: PersistenceController.preview.container.viewContext,
-            selectedFolder: DB.TaskFolderManager.getSelectedFolder(in: PersistenceController.preview.container.viewContext)),
-        isPresented: .constant(true)
-    )
-}
+//#Preview {
+//    AddTaskView(
+//        viewModel: .init(
+//            context: PersistenceController.preview.container.viewContext),
+//        isPresented: .constant(true)
+//    )
+//}

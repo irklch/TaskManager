@@ -18,8 +18,6 @@ final class AddTaskViewModel: ObservableObject {
     @Published var showingImagePicker = false
 //    @FocusState var isTitleFocused
     @Published var isDescriptionFocused = false
-    @Published var isPresented = false
-    @Published var selectedFolder: TaskFolderNonDB = .getTemplate()
     @Published var taskSteps: [TaskStep] = [TaskStep()]
     @Published var deadline: Date?
     @Published var hasDeadline = false
@@ -30,22 +28,9 @@ final class AddTaskViewModel: ObservableObject {
 //    private var cancellables = Set<AnyCancellable>()
     
     init(
-        context: NSManagedObjectContext,
-        selectedFolder: Published<TaskFolderNonDB>.Publisher
+        context: NSManagedObjectContext
     ) {
         self.context = context
-        selectedFolder
-            .receive(on: DispatchQueue.main)
-            .assign(to: &$selectedFolder)
-//        setupObservers()
-    }
-    
-    init(
-        context: NSManagedObjectContext,
-        selectedFolder: TaskFolderNonDB
-    ) {
-        self.context = context
-        self.selectedFolder = selectedFolder
 //        setupObservers()
     }
     
@@ -90,20 +75,6 @@ final class AddTaskViewModel: ObservableObject {
             imageData: imageData,
             folder: folders[0],
             in: context)
-        isPresented = false
-    }
-    
-//    func clearForm() {
-//        taskTitle = ""
-//        taskDescription = ""
-//        selectedImage = nil
-//        isTitleFocused = false
-//        isDescriptionFocused = false
-//    }
-    
-    func dismissView() {
-//        clearForm()
-        isPresented = false
     }
     
     // MARK: - Folder Management
@@ -113,11 +84,6 @@ final class AddTaskViewModel: ObservableObject {
     
     func hideFolderPicker() {
         showingFolderPicker = false
-    }
-    
-    func selectFolder(_ folder: TaskFolderNonDB) {
-        selectedFolder = folder
-        hideFolderPicker()
     }
     
     // MARK: - Task Steps Management

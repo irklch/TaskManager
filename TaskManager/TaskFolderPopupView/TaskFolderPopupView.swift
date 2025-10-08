@@ -11,6 +11,8 @@ import CoreData
 struct TaskFolderPopupView: View {
     @ObservedObject var viewModel: TaskFolderPopupViewModel
     @FocusState private var isTextFieldFocused: Bool
+    @Binding var isPresented: Bool
+    @Binding var selectedFolder: TaskFolderNonDB
     
     var body: some View {
         VStack(spacing: 0) {
@@ -58,13 +60,17 @@ struct TaskFolderPopupView: View {
                                 .foregroundColor(.hex000101)
                                 .focused($isTextFieldFocused)
                                 .onSubmit {
-                                    viewModel.createNewFolder()
+                                    let newFolder = viewModel.getNewFolder(selectedFolder: selectedFolder)
+                                    selectedFolder = newFolder
+                                    isPresented = false
                                 }
                                 .toolbar {
                                     ToolbarItemGroup(placement: .keyboard) {
                                         Spacer()
                                         Button("Готово") {
-                                            viewModel.createNewFolder()
+                                            let newFolder = viewModel.getNewFolder(selectedFolder: selectedFolder)
+                                            selectedFolder = newFolder
+                                            isPresented = false
                                         }
                                         .foregroundColor(.hex316AFD)
                                         .fontWeight(.medium)
@@ -92,7 +98,9 @@ struct TaskFolderPopupView: View {
                     
                     ForEach(viewModel.folders) { folder in
                         Button(action: {
-                            viewModel.select(folder: folder)
+                            viewModel.select(currentFolder: selectedFolder, newFolder: folder)
+                            selectedFolder = folder
+                            isPresented = false
                         }) {
                             HStack(spacing: 12) {
                                 if folder.isSelected {
@@ -156,8 +164,8 @@ extension TaskFolderPopupView {
     }
 }
 
-#Preview {
-    TaskFolderPopupView(
-        viewModel: .init(isPresented: true, viewContext: PersistenceController.preview.container.viewContext))
-}
+//#Preview {
+//    TaskFolderPopupView(
+//        viewModel: .init(viewContext: PersistenceController.preview.container.viewContext), isPresented: .constant(true), selectedFolder: .constant(.getTemplate()))
+//}
 
