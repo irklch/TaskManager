@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct FolderPickerView: View {
-    let folders: [TaskFolder]
-    @Binding var selectedFolder: TaskFolder?
-    let onSelect: (TaskFolder) -> Void
+    let folders: [TaskFolderNonDB]
+    @Binding var selectedFolder: TaskFolderNonDB
+    let onSelect: (TaskFolderNonDB) -> Void
     
     var body: some View {
         VStack(spacing: 0) {
@@ -19,13 +19,13 @@ struct FolderPickerView: View {
                     onSelect(folder)
                 }) {
                     HStack {
-                        Text(folder.wrappedName)
+                        Text(folder.name)
                             .font(.body)
                             .foregroundColor(.hex000101)
                         
                         Spacer()
                         
-                        if selectedFolder?.id == folder.id {
+                        if selectedFolder.id == folder.id {
                             Image(systemName: "checkmark")
                                 .foregroundColor(.hex316AFD)
                                 .font(.system(size: 16, weight: .medium))

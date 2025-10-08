@@ -14,54 +14,39 @@ class ContentViewViewModel: ObservableObject {
     @Published var selectedIndex = 0
     @Published var isTabBarVisible = true
     @Published var showAddTask = false
-    @Published var tasks: [Task] = []
-    @Published var folders: [TaskFolder] = []
-    @Published var selectedFolder: TaskFolder?
     
-    private var cancellables = Set<AnyCancellable>()
-    private let persistenceController = PersistenceController.shared
+    @Environment(\.managedObjectContext) var viewContext
+    @Published var selectedFolder: TaskFolderNonDB = .getTemplate()
+    
+    lazy var tabItems: [TabItemModel] = {
+        let taskScreenView: TaskScreenView = .init(viewModel: .init(
+            selectedFolder: $selectedFolder))
+        return [
+            TabItemModel(
+                icon: "list.clipboard",
+                title: "Задачи",
+                view: AnyView(taskScreenView)),
+            TabItemModel(
+                icon: "calendar",
+                title: "Календарь",
+                view: AnyView(CalendarView()))
+        ]
+    }()
     
     init() {
-        setupFetchRequests()
+        setupSelectedFolder()
     }
     
-    private func setupFetchRequests() {
-        let context = persistenceController.container.viewContext
-        
-        // Наблюдаем за изменениями задач
-        NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave, object: context)
-            .sink { [weak self] _ in
-                self?.fetchTasks()
-                self?.fetchFolders()
+    private func setupSelectedFolder() {
+        let backgroundContext = PersistenceController.shared.container.newBackgroundContext()
+        backgroundContext.perform { [weak self] in
+            let selectedFolder = DB.TaskFolderManager.getSelectedFolder(in: backgroundContext)
+            DispatchQueue.main.async { [weak self] in
+                self?.selectedFolder = selectedFolder
             }
-            .store(in: &cancellables)
-        
-        // Первоначальная загрузка данных
-        fetchTasks()
-        fetchFolders()
-    }
-    
-    private func fetchTasks() {
-        let request: NSFetchRequest<Task> = Task.fetchRequest()
-        request.sortDescriptors = [NSSortDescriptor(keyPath: \Task.createdAt, ascending: false)]
-        
-        do {
-            tasks = try persistenceController.container.viewContext.fetch(request)
-        } catch {
-            print("Failed to fetch tasks: \(error)")
         }
     }
     
-    private func fetchFolders() {
-        let request: NSFetchRequest<TaskFolder> = TaskFolder.fetchRequest()
-        request.sortDescriptors = [NSSortDescriptor(keyPath: \TaskFolder.name, ascending: true)]
-        
-        do {
-            folders = try persistenceController.container.viewContext.fetch(request)
-        } catch {
-            print("Failed to fetch folders: \(error)")
-        }
-    }
     
     func handleScrollGesture(translation: CGSize) {
         let dy = translation.height
@@ -82,21 +67,5 @@ class ContentViewViewModel: ObservableObject {
     
     func hideAddTaskView() {
         showAddTask = false
-    }
-    
-    func createTabItems() -> [TabItemModel] {
-        [
-            TabItemModel(
-                icon: "list.clipboard",
-                title: "Задачи",
-                view: AnyView(TaskScreenView(
-                    tasks: tasks,
-                    folders: folders,
-                    selectedFolder: .constant(selectedFolder)))),
-            TabItemModel(
-                icon: "calendar",
-                title: "Календарь",
-                view: AnyView(CalendarView()))
-        ]
     }
 }

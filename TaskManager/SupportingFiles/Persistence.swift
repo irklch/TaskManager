@@ -13,21 +13,7 @@ struct PersistenceController {
     static var preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
-        
-        // Create sample folders
-        TaskFolder.createSampleFolders(in: viewContext)
-        
-        // Create sample tasks
-        Task.createSampleTasks(in: viewContext)
-        
-        do {
-            try viewContext.save()
-        } catch {
-            // Replace this implementation with code to handle the error appropriately.
-            // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-            let nsError = error as NSError
-            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-        }
+        DB.TaskFolderManager.createPrimaryFolder(in: viewContext)
         return result
     }()
 
@@ -56,20 +42,6 @@ struct PersistenceController {
         })
         container.viewContext.automaticallyMergesChangesFromParent = true
         
-        // Initialize sample data if needed
-        initializeSampleDataIfNeeded()
-    }
-    
-    private func initializeSampleDataIfNeeded() {
-        let context = container.viewContext
-        
-        // Check if folders already exist
-        let folderRequest: NSFetchRequest<TaskFolder> = TaskFolder.fetchRequest()
-        let folderCount = (try? context.count(for: folderRequest)) ?? 0
-        
-        if folderCount == 0 {
-            TaskFolder.createSampleFolders(in: context)
-            Task.createSampleTasks(in: context)
-        }
+        DB.TaskFolderManager.createPrimaryFolder(in: container.viewContext)
     }
 }

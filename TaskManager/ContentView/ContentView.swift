@@ -10,20 +10,19 @@ import CoreData
 
 struct ContentView: View {
     @StateObject private var viewModel = ContentViewViewModel()
-    @Environment(\.managedObjectContext) private var viewContext
 
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
             TabView(selection: $viewModel.selectedIndex) {
-                ForEach(viewModel.tabItems.indices, id: \.self) { index in
-                    viewModel.tabItems[index].view
-                        .tag(index)
-                        .simultaneousGesture(
-                            DragGesture()
-                                .onChanged { value in
-                                    viewModel.handleScrollGesture(translation: value.translation)
-                                }
-                        )
+                ForEach(viewModel.tabItems) { tabItem in
+                    tabItem.view
+//                        .tag(index)
+//                        .simultaneousGesture(
+//                            DragGesture()
+//                                .onChanged { value in
+//                                    viewModel.handleScrollGesture(translation: value.translation)
+//                                }
+//                        )
                 }
             }
             .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
@@ -39,9 +38,8 @@ struct ContentView: View {
         .background(.white)
         .fullScreenCover(isPresented: $viewModel.showAddTask) {
             AddTaskView(
-                isPresented: $viewModel.showAddTask,
-                context: viewContext
-            )
+                viewModel: .init(selectedFolder: viewModel.$selectedFolder),
+                isPresented: $viewModel.showAddTask)
         }
     }
 

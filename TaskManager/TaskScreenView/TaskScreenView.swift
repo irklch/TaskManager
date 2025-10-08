@@ -6,17 +6,16 @@
 //
 import SwiftUI
 import CoreData
+import Combine
+
+
 
 struct TaskScreenView: View {
-    let tasks: [Task]
-    let folders: [TaskFolder]
-    @State private var selectedFolder: TaskFolder?
+    @ObservedObject private var viewModel: TaskScreenViewModel
     @State private var showFolderPopup = false
     
-    init(tasks: [Task], folders: [TaskFolder]) {
-        self.tasks = tasks
-        self.folders = folders
-        self._selectedFolder = State(initialValue: folders.first { $0.isSelected } ?? folders.first)
+    init(viewModel: TaskScreenViewModel) {
+        self.viewModel = viewModel
     }
     
     var body: some View {
@@ -50,7 +49,7 @@ struct TaskScreenView: View {
                             showFolderPopup = true
                         }) {
                             HStack(spacing: 4) {
-                                Text(selectedFolder?.wrappedName ?? "Все задачи")
+                                Text(viewModel.selectedFolder.name)
                                     .font(.title2)
                                     .foregroundColor(.hex316AFD)
                                     .multilineTextAlignment(.leading)
@@ -73,11 +72,11 @@ struct TaskScreenView: View {
                         alignment: .leading,
                         spacing: Offset.screenBorderOffset
                     ) {
-                        ForEach(tasks) { task in
+                        ForEach(viewModel.tasks) { task in
                             TaskItemView(viewModel: .init(
-                                title: task.wrappedTitle,
-                                timeInterval: formatDate(task.wrappedCreatedAt),
-                                description: task.wrappedDescription,
+                                title: task.title,
+                                timeInterval: formatDate(task.createdAt),
+                                description: task.taskDescription,
                                 itemType: .checkbox,
                                 isDone: task.isCompleted,
                                 style: .whiteStyle,
@@ -94,11 +93,8 @@ struct TaskScreenView: View {
         }
         .background(Color.hexF2F2F2)
         .sheet(isPresented: $showFolderPopup) {
-            TaskFolderPopupView(
-                isPresented: $showFolderPopup,
-                selectedFolder: $selectedFolder,
-                folders: folders
-            )
+            TaskFolderPopupView(viewModel: .init(
+                isPresented: showFolderPopup))
             .presentationDetents([.height(300), .large])
             .presentationDragIndicator(.visible)
             .presentationBackground(.regularMaterial)
@@ -123,7 +119,7 @@ struct TaskScreenView: View {
 }
 
 #Preview {
-    TaskScreenView(tasks: [], folders: [])
+    ContentView()
 }
 
 extension TaskScreenView {

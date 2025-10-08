@@ -11,50 +11,47 @@ import PhotosUI
 import Combine
 
 @MainActor
-class AddTaskViewModel: ObservableObject {
+final class AddTaskViewModel: ObservableObject {
     @Published var taskTitle = ""
     @Published var taskDescription = ""
     @Published var selectedImage: UIImage?
     @Published var showingImagePicker = false
-    @Published var isTitleFocused = false
+//    @FocusState var isTitleFocused
     @Published var isDescriptionFocused = false
     @Published var isPresented = false
-    @Published var selectedFolder: TaskFolder?
+    @Published var selectedFolder: TaskFolderNonDB = .getTemplate()
     @Published var taskSteps: [TaskStep] = [TaskStep()]
     @Published var deadline: Date?
     @Published var hasDeadline = false
     @Published var showingFolderPicker = false
     @Published var showingDatePicker = false
     
-    private let context: NSManagedObjectContext
-    private let availableFolders: [TaskFolder]
-    private var cancellables = Set<AnyCancellable>()
+    @Environment(\.managedObjectContext) private var viewContext
+//    private var cancellables = Set<AnyCancellable>()
     
-    init(context: NSManagedObjectContext, selectedFolder: TaskFolder? = nil) {
-        self.context = context
+    init(selectedFolder: Published<TaskFolderNonDB>.Publisher) {
+        selectedFolder
+            .receive(on: DispatchQueue.main)
+            .assign(to: &$selectedFolder)
+//        setupObservers()
+    }
+    
+    init(
+        selectedFolder: TaskFolderNonDB
+    ) {
         self.selectedFolder = selectedFolder
-        
-        // Получаем доступные папки
-        let folderRequest: NSFetchRequest<TaskFolder> = TaskFolder.fetchRequest()
-        self.availableFolders = (try? context.fetch(folderRequest)) ?? []
-        
-        // Если папка не выбрана, берем первую доступную
-        if self.selectedFolder == nil {
-            self.selectedFolder = availableFolders.first
-        }
-        
-        setupObservers()
+//        setupObservers()
     }
     
-    private func setupObservers() {
-        // Автоматически фокусируемся на поле заголовка при появлении
-        $isPresented
-            .filter { $0 }
-            .sink { [weak self] _ in
-                self?.isTitleFocused = true
-            }
-            .store(in: &cancellables)
-    }
+//    private func setupObservers() {
+//        // Автоматически фокусируемся на поле заголовка при появлении
+//        $isPresented
+//            .filter { $0 }
+//            .sink { [weak self] _ in
+//                self?.isTitleFocused = true
+//            }
+//            .store(in: &cancellables)
+//    }
     
     var isSaveButtonEnabled: Bool {
         !taskTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
@@ -79,47 +76,27 @@ class AddTaskViewModel: ObservableObject {
     func saveTask() {
         let imageData = selectedImage?.jpegData(compressionQuality: 0.8)
         
-        // Получаем папку по умолчанию (первую папку или создаем новую)
-        let folderRequest: NSFetchRequest<TaskFolder> = TaskFolder.fetchRequest()
-        let folders = (try? context.fetch(folderRequest)) ?? []
+        let folders = DB.TaskFolderManager.getAllFolders(in: viewContext)
         
-        let defaultFolder = folders.first ?? {
-            let newFolder = TaskFolder(context: context)
-            newFolder.id = UUID()
-            newFolder.name = "Все задачи"
-            newFolder.isSelected = true
-            return newFolder
-        }()
-        
-        // Создаем новую задачу
-        let newTask = Task.createNew(
+        DB.TaskItemManager.addNewTask(
             title: taskTitle.trimmingCharacters(in: .whitespacesAndNewlines),
             description: taskDescription.trimmingCharacters(in: .whitespacesAndNewlines),
             imageData: imageData,
-            folder: defaultFolder,
-            in: context
-        )
-        
-        // Сохраняем контекст
-        do {
-            try context.save()
-            clearForm()
-            isPresented = false
-        } catch {
-            print("Failed to save task: \(error)")
-        }
+            folder: folders[0],
+            in: viewContext)
+        isPresented = false
     }
     
-    func clearForm() {
-        taskTitle = ""
-        taskDescription = ""
-        selectedImage = nil
-        isTitleFocused = false
-        isDescriptionFocused = false
-    }
+//    func clearForm() {
+//        taskTitle = ""
+//        taskDescription = ""
+//        selectedImage = nil
+//        isTitleFocused = false
+//        isDescriptionFocused = false
+//    }
     
     func dismissView() {
-        clearForm()
+//        clearForm()
         isPresented = false
     }
     
@@ -132,7 +109,7 @@ class AddTaskViewModel: ObservableObject {
         showingFolderPicker = false
     }
     
-    func selectFolder(_ folder: TaskFolder) {
+    func selectFolder(_ folder: TaskFolderNonDB) {
         selectedFolder = folder
         hideFolderPicker()
     }
@@ -188,13 +165,5 @@ class AddTaskViewModel: ObservableObject {
     // MARK: - Computed Properties
     var validTaskSteps: [TaskStep] {
         taskSteps.filter { !$0.isEmpty }
-    }
-    
-    var folderName: String {
-        selectedFolder?.wrappedName ?? "Все задачи"
-    }
-    
-    var availableFoldersList: [TaskFolder] {
-        availableFolders
     }
 }
