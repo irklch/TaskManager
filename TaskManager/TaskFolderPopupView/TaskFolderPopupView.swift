@@ -44,7 +44,7 @@ struct TaskFolderPopupView: View {
             
             // Folder list
             ScrollView(showsIndicators: false) {
-                LazyVStack(spacing: 0) {
+                VStack(spacing: 0) {
                     // New folder creation row
                     if viewModel.isCreatingNewFolder {
                         HStack(spacing: 12) {

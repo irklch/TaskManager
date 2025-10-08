@@ -83,7 +83,7 @@ struct CustomTabBar: View {
                 
                 // Текст
                 Text(viewModel.tabItems[index].title)
-                    .font(.system(size: 14, weight: .medium))
+                    .font(.system(size: 14, weight: .light))
                     .foregroundColor(.hexF2F2F2)
                     .transition(.opacity.combined(with: .scale))
                 
