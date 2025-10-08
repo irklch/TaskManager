@@ -57,10 +57,11 @@ struct ContentView: View {
         .edgesIgnoringSafeArea([.bottom, .top])
         .background(.white)
         .fullScreenCover(isPresented: $viewModel.showAddTask) {
-            AddTaskView(
-                viewModel: .init(context: viewContext),
-                isPresented: $viewModel.showAddTask,
-                selectedFolder: $selectedFolder)
+//            AddTaskView(
+//                viewModel: .init(context: viewContext),
+//                isPresented: $viewModel.showAddTask,
+//                selectedFolder: $selectedFolder)
+            AddTaskView()
         }
     }
     
