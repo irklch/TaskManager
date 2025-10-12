@@ -48,8 +48,8 @@ struct CheckListItemNonDB: Identifiable {
         self.isDone = model.isDone
     }
     
-    func getDBModel() -> ChecklistItem {
-        let model: ChecklistItem = .init()
+    func getDBModel(in context: NSManagedObjectContext) -> ChecklistItem {
+        let model: ChecklistItem = .init(context: context)
         model.id = id
         model.title = title
         model.isDone = isDone

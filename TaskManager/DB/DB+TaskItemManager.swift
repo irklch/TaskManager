@@ -17,19 +17,27 @@ extension DB {
             
             do {
                 guard let dbFolder = try context.fetch(folderRequest).first else {
-                    print("Folder not found in database")
+                    print("❌ Folder not found in database with id: \(folder.id)")
                     return []
                 }
                 
+                print("✅ Found folder: '\(dbFolder.name ?? "Unknown")' with id: \(dbFolder.id?.uuidString ?? "nil")")
+                
                 // Теперь ищем задачи, связанные с этой папкой
                 let request: NSFetchRequest<TaskItem> = TaskItem.fetchRequest()
-                guard let folderId = dbFolder.id else { return [] }
-                request.predicate = NSPredicate(format: "folderID == %@", folderId as CVarArg)
+                request.predicate = NSPredicate(format: "folder == %@", dbFolder)
                 request.sortDescriptors = [NSSortDescriptor(keyPath: \TaskItem.createdAt, ascending: false)]
                 
-                return try context.fetch(request).map({ .init(model: $0) })
+                let tasks = try context.fetch(request)
+                print("📋 Found \(tasks.count) tasks in folder '\(dbFolder.name ?? "Unknown")'")
+                
+                // Также проверяем через relationship
+                let tasksFromRelationship = (dbFolder.tasks?.allObjects as? [TaskItem]) ?? []
+                print("📋 Tasks from relationship: \(tasksFromRelationship.count)")
+                
+                return tasks.map({ .init(model: $0) })
             } catch {
-                print("Failed to fetch tasks: \(error)")
+                print("❌ Failed to fetch tasks: \(error)")
                 return []
             }
         }
@@ -39,10 +47,17 @@ extension DB {
             title: String,
             description: String,
             imageData: Data?,
-            folderID: UUID,
             checklistItems: [CheckListItemNonDB],
+            folder: TaskFolderNonDB,
             in context: NSManagedObjectContext
         ) {
+            // Получаем существующую папку из БД
+            guard let dbFolder = DB.TaskFolderManager.getFolder(in: context, with: folder.id) else {
+                print("❌ Failed to find folder with id: \(folder.id)")
+                return
+            }
+            
+            // Создаем новую задачу
             let newTask = TaskItem(context: context)
             newTask.id = id
             newTask.title = title
@@ -50,7 +65,7 @@ extension DB {
             newTask.imageData = imageData
             newTask.createdAt = Date()
             newTask.isCompleted = false
-            newTask.folderID = folderID
+            newTask.folder = dbFolder  // Используем существующий объект из БД
             
             // Создаем элементы чеклиста
             let checklistItemsSet = NSMutableSet()
@@ -65,8 +80,9 @@ extension DB {
             
             do {
                 try context.save()
+                print("✅ Task '\(title)' saved successfully to folder '\(dbFolder.name ?? "")'")
             } catch {
-                print("Failed to save task: \(error)")
+                print("❌ Failed to save task: \(error)")
             }
         }
     }
@@ -100,21 +116,21 @@ struct TaskItemNonDB: Identifiable {
         self.imageData = model.imageData
         self.createdAt = model.createdAt ?? .init(timeIntervalSinceNow: .init())
         self.isCompleted = model.isCompleted
-        self.folderID = model.folderID ?? .init()
+        self.folderID = model.folder?.id ?? .init()
         let checkListItemModels = (model.checklistItems?.allObjects as? [ChecklistItem]) ?? []
         self.checkListItems = checkListItemModels.map({ .init(model: $0) })
     }
     
-    func getDBModel() -> TaskItem {
-        let model: TaskItem = .init()
+    func getDBModel(context: NSManagedObjectContext) -> TaskItem {
+        let model: TaskItem = .init(context: context)
         model.id = id
         model.title = title
         model.taskDescription = taskDescription
         model.imageData = imageData
         model.createdAt = createdAt
         model.isCompleted = isCompleted
-        model.folderID = folderID
-        model.checklistItems = NSSet(array: checkListItems.map({ $0.getDBModel() }))
+        model.folder = DB.TaskFolderManager.getFolder(in: context, with: folderID)
+        model.checklistItems = NSSet(array: checkListItems.map({ $0.getDBModel(in: context) }))
         return model
     }
 }

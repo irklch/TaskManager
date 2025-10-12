@@ -32,7 +32,7 @@ struct FolderRow: View {
             Spacer()
 
             // счётчик «пилюля»
-            CountPill(count: folder.taskCount, isSelected: isSelected)
+            CountPill(count: folder.tasks.count, isSelected: isSelected)
 
             // индикатор выбранной
             if isSelected {

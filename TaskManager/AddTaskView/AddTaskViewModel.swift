@@ -30,10 +30,8 @@ final class AddTaskViewModel: ObservableObject {
 
     struct Attachment: Identifiable {
         let id = UUID()
-        var preview: Image // thumbnail; для реального проекта подставь из PHImageManager/QuickLook
-        var type: Kind
+        var preview: Image
         var data: Data
-        enum Kind { case image, file }
     }
 
     func addChecklistItem() {
@@ -63,7 +61,7 @@ final class AddTaskViewModel: ObservableObject {
         }
         
         // Получаем данные первого изображения (если есть)
-        let imageData = attachments.first(where: { $0.type == .image })?.data
+        let imageData = attachments.first?.data
         
         // Сохраняем задачу в базу данных
         DB.TaskItemManager.addNewTask(
@@ -71,8 +69,8 @@ final class AddTaskViewModel: ObservableObject {
             title: title,
             description: details,
             imageData: imageData,
-            folderID: folder.id,
             checklistItems: checklistItemsNonDB,
+            folder: folder,
             in: context
         )
         

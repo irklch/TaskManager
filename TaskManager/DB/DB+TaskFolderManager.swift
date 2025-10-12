@@ -92,7 +92,7 @@ extension DB {
             newFolder.id = item.id
             newFolder.name = item.name
             newFolder.isSelected = item.isSelected
-            newFolder.tasks = .init(array: item.tasks)
+            // tasks будут добавлены автоматически через relationship TaskItem.folder
             DB.save(in: context)
         }
         
@@ -109,7 +109,31 @@ extension DB {
                 // Обновляем параметры объекта
                 folder.name = item.name
                 folder.isSelected = item.isSelected
-                folder.tasks = NSSet(array: item.tasks)
+                // tasks обновляются автоматически через relationship
+                
+                // Сохраняем изменения
+                DB.save(in: context)
+                
+            } catch {
+                print("Failed to update folder: \(error)")
+            }
+        }
+        
+        static func change(item: TaskFolder, in context: NSManagedObjectContext) {
+            guard let id = item.id else { return }
+            let request: NSFetchRequest<TaskFolder> = TaskFolder.fetchRequest()
+            request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+            
+            do {
+                guard let folder = try context.fetch(request).first else {
+                    print("Failed to find folder with id: \(id)")
+                    return
+                }
+                
+                // Обновляем параметры объекта
+                folder.name = item.name
+                folder.isSelected = item.isSelected
+                folder.tasks = item.tasks
                 
                 // Сохраняем изменения
                 DB.save(in: context)
@@ -129,7 +153,7 @@ extension DB {
                     }
                     selectedFolder.name = item.name
                     selectedFolder.isSelected = item.isSelected
-                    selectedFolder.tasks = NSSet(array: item.tasks)
+                    // tasks обновляются автоматически через relationship
                 }
                 
                 DB.save(in: context)
@@ -151,10 +175,6 @@ final class TaskFolderNonDB: Identifiable, Equatable {
     var isSelected: Bool
     var tasks: [TaskItemNonDB]
     
-    var taskCount: Int {
-        return tasks.count
-    }
-    
     init(id: UUID, name: String, isSelected: Bool, tasks: [TaskItemNonDB]) {
         self.id = id
         self.name = name
@@ -174,7 +194,7 @@ final class TaskFolderNonDB: Identifiable, Equatable {
         model.id = self.id
         model.name = self.name
         model.isSelected = self.isSelected
-        model.tasks = NSSet(array: tasks.map({ $0.getDBModel() }))
+        // tasks будут получены через relationship автоматически
         return model
     }
 }

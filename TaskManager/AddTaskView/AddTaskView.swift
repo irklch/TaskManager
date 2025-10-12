@@ -68,7 +68,6 @@ struct AddTaskView: View {
                     if let fileData = try? Data(contentsOf: url) {
                         vm.attachments.append(.init(
                             preview: Image(systemName: "doc.text.fill"),
-                            type: .file,
                             data: fileData))
                     }
                 }
@@ -84,7 +83,6 @@ struct AddTaskView: View {
                         await MainActor.run {
                             vm.attachments.append(.init(
                                 preview: Image(uiImage: uiImage),
-                                type: .image,
                                 data: data))
                         }
                     }
