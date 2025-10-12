@@ -28,6 +28,7 @@ final class AddTaskViewModel: ObservableObject {
         let id = UUID()
         var preview: Image // thumbnail; для реального проекта подставь из PHImageManager/QuickLook
         var type: Kind
+        var data: Data
         enum Kind { case image, file }
     }
 

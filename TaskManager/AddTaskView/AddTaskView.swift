@@ -42,8 +42,23 @@ struct AddTaskView: View {
         .fileImporter(isPresented: $showFileImporter, allowedContentTypes: [.data], allowsMultipleSelection: true) { result in
             switch result {
             case .success(let urls):
-                for _ in urls {
-                    vm.attachments.append(.init(preview: Image(systemName: "doc.text.fill"), type: .file))
+                for url in urls {
+                    // Начинаем безопасный доступ к файлу
+                    guard url.startAccessingSecurityScopedResource() else {
+                        continue
+                    }
+                    
+                    defer {
+                        url.stopAccessingSecurityScopedResource()
+                    }
+                    
+                    // Загружаем данные файла
+                    if let fileData = try? Data(contentsOf: url) {
+                        vm.attachments.append(.init(
+                            preview: Image(systemName: "doc.text.fill"),
+                            type: .file,
+                            data: fileData))
+                    }
                 }
             case .failure:
                 break
@@ -55,7 +70,10 @@ struct AddTaskView: View {
                     if let data = try? await newItem.loadTransferable(type: Data.self),
                        let uiImage = UIImage(data: data) {
                         await MainActor.run {
-                            vm.attachments.append(.init(preview: Image(uiImage: uiImage), type: .image))
+                            vm.attachments.append(.init(
+                                preview: Image(uiImage: uiImage),
+                                type: .image,
+                                data: data))
                         }
                     }
                 }
@@ -97,7 +115,6 @@ struct AddTaskView: View {
             }
         }
         .padding(.horizontal, 12)
-//        .padding(.vertical, 12)
     }
 
     private var titleCard: some View {
