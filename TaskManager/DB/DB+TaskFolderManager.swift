@@ -127,13 +127,13 @@ final class TaskFolderNonDB: Identifiable, Equatable {
     var id: UUID
     var name: String
     var isSelected: Bool
-    var tasks: [TaskItem]
+    var tasks: [TaskItemNonDB]
     
     var taskCount: Int {
         return tasks.count
     }
     
-    init(id: UUID, name: String, isSelected: Bool, tasks: [TaskItem]) {
+    init(id: UUID, name: String, isSelected: Bool, tasks: [TaskItemNonDB]) {
         self.id = id
         self.name = name
         self.isSelected = isSelected
@@ -144,7 +144,7 @@ final class TaskFolderNonDB: Identifiable, Equatable {
         self.id = model.id ?? .init()
         self.name = model.name ?? ""
         self.isSelected = model.isSelected
-        self.tasks = (model.tasks?.allObjects as? [TaskItem]) ?? []
+        self.tasks = ((model.tasks?.allObjects as? [TaskItem]) ?? []).map({ .init(model: $0) })
     }
     
     func getDBModel(in context: NSManagedObjectContext) -> TaskFolder {
@@ -152,7 +152,7 @@ final class TaskFolderNonDB: Identifiable, Equatable {
         model.id = self.id
         model.name = self.name
         model.isSelected = self.isSelected
-        model.tasks = NSSet(array: self.tasks)
+        model.tasks = NSSet(array: tasks.map({ $0.getDBModel(context: context) }))
         return model
     }
 }

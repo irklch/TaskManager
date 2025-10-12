@@ -34,6 +34,7 @@ extension DB {
         }
         
         static func addNewTask(
+            id: UUID,
             title: String,
             description: String,
             imageData: Data?,
@@ -41,12 +42,12 @@ extension DB {
             in context: NSManagedObjectContext
         ) {
             let newTask = TaskItem(context: context)
-            newTask.id = UUID()
+            newTask.id = id
             newTask.title = title
             newTask.taskDescription = description
             newTask.imageData = imageData
             newTask.createdAt = Date()
-            newTask.isCompleted = false
+            newTask.isCompleted = false // Для драфта но пока не нужно
             newTask.folder = folder.getDBModel(in: context)
             
             do {
@@ -67,8 +68,9 @@ struct TaskItemNonDB: Identifiable {
     let createdAt: Date
     let isCompleted: Bool
     let folder: TaskFolderNonDB
+    let checkListItems: [CheckListItemNonDB]
     
-    init(id: UUID, title: String, taskDescription: String, imageData: Data, createdAt: Date, isCompleted: Bool, folder: TaskFolderNonDB) {
+    init(id: UUID, title: String, taskDescription: String, imageData: Data, createdAt: Date, isCompleted: Bool, folder: TaskFolderNonDB, checkListItems: [CheckListItemNonDB]) {
         self.id = id
         self.title = title
         self.taskDescription = taskDescription
@@ -76,6 +78,7 @@ struct TaskItemNonDB: Identifiable {
         self.createdAt = createdAt
         self.isCompleted = isCompleted
         self.folder = folder
+        self.checkListItems = checkListItems
     }
     
     init(model: TaskItem) {
@@ -90,5 +93,20 @@ struct TaskItemNonDB: Identifiable {
         } else {
             self.folder = .getTemplate()
         }
+        let checkListItemModels = (model.checklistItems?.allObjects as? [ChecklistItem]) ?? []
+        self.checkListItems = checkListItemModels.map({ .init(model: $0) })
+    }
+    
+    func getDBModel(context: NSManagedObjectContext) -> TaskItem {
+        let model: TaskItem = .init()
+        model.id = id
+        model.title = title
+        model.taskDescription = taskDescription
+        model.imageData = imageData
+        model.createdAt = createdAt
+        model.isCompleted = isCompleted
+        model.folder = folder.getDBModel(in: context)
+        model.checklistItems = NSSet(array: checkListItems.map({ $0.getDBModel() }))
+        return model
     }
 }

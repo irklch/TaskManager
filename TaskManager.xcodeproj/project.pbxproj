@@ -47,6 +47,7 @@
 		A9BE46D72C00E831003A586E /* SideArrowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9BE46D62C00E831003A586E /* SideArrowView.swift */; };
 		A9BE46D92C00E844003A586E /* SideArrowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9BE46D82C00E844003A586E /* SideArrowViewModel.swift */; };
 		A9C3EFFA2E8C4BD700D20289 /* DB.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C3EFF92E8C4BD700D20289 /* DB.swift */; };
+		A9E38C042E9BF5C800019E3C /* DB+CheckListItemManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E38C032E9BF5C800019E3C /* DB+CheckListItemManager.swift */; };
 		A9FF06EB2E8DC209004DB16C /* TaskScreenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9FF06EA2E8DC209004DB16C /* TaskScreenViewModel.swift */; };
 /* End PBXBuildFile section */
 
@@ -92,6 +93,7 @@
 		A9BE46D62C00E831003A586E /* SideArrowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideArrowView.swift; sourceTree = "<group>"; };
 		A9BE46D82C00E844003A586E /* SideArrowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideArrowViewModel.swift; sourceTree = "<group>"; };
 		A9C3EFF92E8C4BD700D20289 /* DB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DB.swift; sourceTree = "<group>"; };
+		A9E38C032E9BF5C800019E3C /* DB+CheckListItemManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DB+CheckListItemManager.swift"; sourceTree = "<group>"; };
 		A9FF06EA2E8DC209004DB16C /* TaskScreenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskScreenViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -286,6 +288,7 @@
 				A9C3EFF92E8C4BD700D20289 /* DB.swift */,
 				A9969C982E8C549100E04998 /* DB+TaskItemManager.swift */,
 				A9969C9A2E8C54AE00E04998 /* DB+TaskFolderManager.swift */,
+				A9E38C032E9BF5C800019E3C /* DB+CheckListItemManager.swift */,
 			);
 			path = DB;
 			sourceTree = "<group>";
@@ -368,6 +371,7 @@
 				A90ACDC42E96D81900FF7C44 /* AttachmentThumb.swift in Sources */,
 				A90ACDC52E96D81900FF7C44 /* CircleButton.swift in Sources */,
 				A90ACDC62E96D81900FF7C44 /* CircleCheckmarkToggleStyle.swift in Sources */,
+				A9E38C042E9BF5C800019E3C /* DB+CheckListItemManager.swift in Sources */,
 				A90ACDC72E96D81900FF7C44 /* GrowingTextView.swift in Sources */,
 				A90ACDC82E96D81900FF7C44 /* PlaceholderTextField.swift in Sources */,
 				A92313662BFBDC0900528706 /* Persistence.swift in Sources */,
