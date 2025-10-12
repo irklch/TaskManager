@@ -18,17 +18,10 @@ final class AddTaskViewModel: ObservableObject {
     @Published var newItemText: String = ""
     @Published var attachments: [Attachment] = []
     
-    private let context: NSManagedObjectContext
-    private let folder: TaskFolderNonDB
     var isButtonEnabled: Bool {
         title != "" && details != ""
     }
     
-    init(context: NSManagedObjectContext, folder: TaskFolderNonDB) {
-        self.context = context
-        self.folder = folder
-    }
-
     struct ChecklistItem: Identifiable, Hashable {
         let id = UUID()
         var text: String
@@ -63,7 +56,7 @@ final class AddTaskViewModel: ObservableObject {
         checklist.removeAll{ $0.id == item.id }
     }
     
-    func saveTask() {
+    func saveTask(folder: TaskFolderNonDB, context: NSManagedObjectContext) {
         // Преобразуем checklist в CheckListItemNonDB
         let checklistItemsNonDB = checklist.map { item in
             CheckListItemNonDB(id: item.id, title: item.text, isDone: item.isDone)

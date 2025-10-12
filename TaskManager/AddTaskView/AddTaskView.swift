@@ -5,16 +5,20 @@ import UniformTypeIdentifiers
 import CoreData
 
 struct AddTaskView: View {
-    @StateObject private var vm: AddTaskViewModel
+    @StateObject private var vm: AddTaskViewModel = .init()
     @Environment(\.dismiss) private var dismiss
     @State private var showPhotoPicker = false
     @State private var showFileImporter = false
     @State private var selectedPhotos: [PhotosPickerItem] = []
     @FocusState private var isNewItemFieldFocused: Bool
     @FocusState private var editingItemId: UUID?
+    @State private var isFolderPopupVisible = false
+    private let context: NSManagedObjectContext
+    @State private var selectedFolder: TaskFolderNonDB
     
     init(context: NSManagedObjectContext, folder: TaskFolderNonDB) {
-        _vm = StateObject(wrappedValue: AddTaskViewModel(context: context, folder: folder))
+        self.context = context
+        self.selectedFolder = folder
     }
 
     var body: some View {
@@ -25,7 +29,8 @@ struct AddTaskView: View {
                 header
 
                 ScrollView {
-                    VStack(spacing: 16) {
+                    VStack(alignment: .leading, spacing: 16) {
+                        selectedFolderView
                         titleCard
                         descriptionCard
                         checklistCard
@@ -89,6 +94,34 @@ struct AddTaskView: View {
             }
         }
         .navigationBarHidden(true)
+        .sheet(isPresented: $isFolderPopupVisible) {
+            TaskFolderPopupView(
+                viewModel: .init(
+                    viewContext: context),
+                isPresented: $isFolderPopupVisible,
+                selectedFolder: $selectedFolder)
+            .presentationDetents([.height(300), .large])
+            .presentationDragIndicator(.visible)
+            .presentationBackground(.regularMaterial)
+        }
+    }
+    
+    private var selectedFolderView: some View {
+        Button(action: {
+            isFolderPopupVisible = true
+        }) {
+            HStack(spacing: 4) {
+                Text(selectedFolder.name)
+                    .font(.title2)
+                    .foregroundColor(.hex316AFD)
+                    .multilineTextAlignment(.leading)
+                
+                Image(systemName: "chevron.down")
+                    .foregroundColor(.hex316AFD)
+                    .font(.system(size: 16, weight: .medium))
+            }
+        }
+        .buttonStyle(PlainButtonStyle())
     }
 
     // MARK: Sections
@@ -110,7 +143,7 @@ struct AddTaskView: View {
 
             Button {
                 if vm.isButtonEnabled {
-                    vm.saveTask()
+                    vm.saveTask(folder: selectedFolder, context: context)
                     dismiss()
                 }
             } label: {
