@@ -8,7 +8,7 @@ struct AddTaskView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var showPhotoPicker = false
     @State private var showFileImporter = false
-    @State private var selectedPhoto: PhotosPickerItem?
+    @State private var selectedPhotos: [PhotosPickerItem] = []
     @FocusState private var isNewItemFieldFocused: Bool
     @FocusState private var editingItemId: UUID?
 
@@ -34,24 +34,34 @@ struct AddTaskView: View {
         }
         .photosPicker(
             isPresented: $showPhotoPicker,
-            selection: $selectedPhoto,
+            selection: $selectedPhotos,
+            maxSelectionCount: nil,
             matching: .images,
             photoLibrary: .shared()
         )
-        .fileImporter(isPresented: $showFileImporter, allowedContentTypes: [.data], allowsMultipleSelection: false) { result in
-            if case .success(_) = result {
-                vm.attachments.append(.init(preview: Image(systemName: "doc.fill"), type: .file))
+        .fileImporter(isPresented: $showFileImporter, allowedContentTypes: [.data], allowsMultipleSelection: true) { result in
+            switch result {
+            case .success(let urls):
+                for _ in urls {
+                    vm.attachments.append(.init(preview: Image(systemName: "doc.fill"), type: .file))
+                }
+            case .failure:
+                break
             }
         }
-        .onChange(of: selectedPhoto) { newItem in
+        .onChange(of: selectedPhotos) { newItems in
             Task {
-                if let newItem = newItem {
+                for newItem in newItems {
                     if let data = try? await newItem.loadTransferable(type: Data.self),
                        let uiImage = UIImage(data: data) {
                         await MainActor.run {
                             vm.attachments.append(.init(preview: Image(uiImage: uiImage), type: .image))
                         }
                     }
+                }
+                // Очищаем выбор после обработки
+                await MainActor.run {
+                    selectedPhotos.removeAll()
                 }
             }
         }
@@ -225,7 +235,6 @@ struct AddTaskView: View {
     }
     
     private func handleNewItemCommit() {
-        let text = vm.newItemText.trimmingCharacters(in: .whitespacesAndNewlines)
         vm.addChecklistItem()
         isNewItemFieldFocused = false
     }
