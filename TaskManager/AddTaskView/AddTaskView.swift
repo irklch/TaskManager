@@ -15,10 +15,12 @@ struct AddTaskView: View {
     @State private var isFolderPopupVisible = false
     private let context: NSManagedObjectContext
     @State private var selectedFolder: TaskFolderNonDB
+    @Binding private var parentSelectedFolder: TaskFolderNonDB
     
-    init(context: NSManagedObjectContext, folder: TaskFolderNonDB) {
+    init(context: NSManagedObjectContext, folder: Binding<TaskFolderNonDB>) {
         self.context = context
-        self.selectedFolder = folder
+        self._parentSelectedFolder = folder
+        self._selectedFolder = State(initialValue: folder.wrappedValue)
     }
 
     var body: some View {
@@ -144,6 +146,8 @@ struct AddTaskView: View {
             Button {
                 if vm.isButtonEnabled {
                     vm.saveTask(folder: selectedFolder, context: context)
+                    // Обновляем выбранную папку в родительском view только при сохранении
+                    parentSelectedFolder = selectedFolder
                     dismiss()
                 }
             } label: {
