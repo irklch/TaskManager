@@ -9,22 +9,25 @@ import SwiftUI
 
 struct PlaceholderTextField: View {
     var placeholder: String
-    var placeholderFont: Font
+    var font: Font
     @Binding var text: String
     let onSubmit: (() -> Void)?
-
+    var placeholderColor: Color 
+    var textColor: Color 
+    
     var body: some View {
         ZStack(alignment: .leading) {
             if text.isEmpty {
                 Text(placeholder)
-                    .font(placeholderFont)
-                    .foregroundColor(Color.gray.opacity(0.5))
+                    .font(font)
+                    .foregroundColor(placeholderColor)
             }
             TextField("", text: $text)
                 .onSubmit {
                     onSubmit?()
                 }
-                .foregroundColor(.hex000101)
+                .font(font)
+                .foregroundColor(textColor)
         }
     }
 }

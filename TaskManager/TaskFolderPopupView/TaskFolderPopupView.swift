@@ -14,161 +14,70 @@ struct TaskFolderPopupView: View {
     @Binding var isPresented: Bool
     @Binding var selectedFolder: TaskFolderNonDB
     
-    var body: some View {
-        VStack(spacing: 0) {
-            Spacer(minLength: 30)
-            
-            // Header with title and plus button
-            HStack {
-                Text("Папки")
-                    .font(.largeTitle)
-                    .fontWeight(.light)
-                    .foregroundColor(.hex000101)
-                
-                Spacer()
-                
-                Button(action: {
-                    viewModel.isCreatingNewFolder = true
-                    isTextFieldFocused = true
-                }) {
-                    Image(systemName: "plus")
-                        .font(.system(size: 18, weight: .light))
-                        .foregroundColor(.hex000101)
-                        .frame(width: 54, height: 54)
-                        .background(.hexF2F2F2)
-                        .clipShape(Circle())
-                }
+    private var header: some View {
+        HStack(spacing: 12) {
+            Text("Папки")
+                .font(.system(size: 34, weight: .light))
+                .foregroundColor(.hex000101)
+
+            Spacer()
+
+            Button {
+                viewModel.isCreatingNewFolder = true
+                isTextFieldFocused = true
+            } label: {
+                Image(systemName: "plus")
+                    .font(.system(size: 18, weight: .light))
+                    .foregroundColor(.hex316AFD)
+                    .padding(14)
+                    .background(Circle().fill(.white))
             }
-            .padding(.horizontal, 20)
-            .padding(.bottom, 20)
-            
-            // Folder list
-            ScrollView(showsIndicators: false) {
-                VStack(spacing: 0) {
-                    // New folder creation row
-                    if viewModel.isCreatingNewFolder {
-                        HStack(spacing: 12) {
-                            // Folder icon
-                            Image(systemName: "folder")
-                                .font(.system(size: 16))
-                                .foregroundColor(.gray)
-                                .frame(width: 20)
-                            
-                            // Text field for new folder name
-                            TextField("Название папки", text: $viewModel.newFolderName)
-                                .font(.system(size: 16, weight: .medium))
-                                .foregroundColor(.hex000101)
-                                .focused($isTextFieldFocused)
-                                .onSubmit {
+        }
+        .padding(.vertical, 6)
+    }
+    
+    var body: some View {
+        
+            ZStack {
+                Color.hexF2F2F2.ignoresSafeArea()
+
+                ScrollView(showsIndicators: false) {
+                    VStack(spacing: 16) {
+                        header
+
+                        if viewModel.isCreatingNewFolder {
+                            FolderInputRow(
+                                newFolderName: $viewModel.newFolderName,
+                                onSubmit: {
                                     if let newFolder = viewModel.createNewFolder(selectedFolder: selectedFolder) {
                                         selectedFolder = newFolder
                                         isPresented = false
                                     }
-                                }
-                                .toolbar {
-                                    ToolbarItemGroup(placement: .keyboard) {
-                                        Spacer()
-                                        Button("Готово") {
-                                            if let newFolder = viewModel.createNewFolder(selectedFolder: selectedFolder) {
-                                                selectedFolder = newFolder
-                                                isPresented = false
-                                            }
+                                }).focused($isTextFieldFocused)
+                        }
+                        
+                        LazyVStack(spacing: 14) {
+                            ForEach(viewModel.folders) { folder in
+                                FolderRow(
+                                    folder: folder,
+                                    isSelected: (folder.id == selectedFolder.id) && (viewModel.isCreatingNewFolder == false) )
+                                .onTapGesture {
+                                    withAnimation(.spring(response: 0.32, dampingFraction: 0.86)) {
+                                        if let updatedFolder = viewModel.selectFolder(currentFolder: selectedFolder, newFolder: folder) {
+                                            selectedFolder = updatedFolder
                                         }
-                                        .foregroundColor(.hex316AFD)
-                                        .fontWeight(.medium)
+                                        isPresented = false
                                     }
                                 }
-                            
-                            Spacer()
-                            
-                            // Task count
-                            Text("0")
-                                .font(.system(size: 14, weight: .medium))
-                                .foregroundColor(.gray)
-                                .frame(width: 20)
-                        }
-                        .padding(.horizontal, 20)
-                        .padding(.vertical, 16)
-                        .background(Color.gray.opacity(0.1))
-                        .overlay(
-                            Rectangle()
-                                .frame(height: 1)
-                                .foregroundColor(Color.gray.opacity(0.3))
-                                .padding(.leading, 52)
-                        )
-                    }
-                    
-                    ForEach(viewModel.folders) { folder in
-                        Button(action: {
-                            if let updatedFolder = viewModel.selectFolder(currentFolder: selectedFolder, newFolder: folder) {
-                                selectedFolder = updatedFolder
                             }
-                            isPresented = false
-                        }) {
-                            HStack(spacing: 12) {
-                                if selectedFolder.id == folder.id {
-                                    // Folder icon
-                                    Image(systemName: "folder")
-                                        .font(.system(size: 16))
-                                        .foregroundColor(.hex316AFD)
-                                        .frame(width: 20)
-                                    
-                                    // Folder name
-                                    Text(folder.name)
-                                        .font(.system(size: 16, weight: .medium))
-                                        .foregroundColor(.hex316AFD)
-                                } else {
-                                    // Folder icon
-                                    Image(systemName: "folder")
-                                        .font(.system(size: 16))
-                                        .foregroundColor(.gray)
-                                        .frame(width: 20)
-                                    
-                                    // Folder name
-                                    Text(folder.name)
-                                        .font(.system(size: 16, weight: .medium))
-                                        .foregroundColor(.hex000101)
-                                }
-                                
-                                Spacer()
-                                
-                                // Task count
-                                Text("\(folder.tasks.count)")
-                                    .font(.system(size: 14))
-                                    .foregroundColor(.gray)
-                            }
-                            .padding(.horizontal, 20)
-                            .padding(.vertical, 16)
-                        }
-                        .buttonStyle(PlainButtonStyle())
-                        
-                        if folder.id != viewModel.folders.last?.id {
-                            Divider()
-                                .background(Color.gray.opacity(0.3))
-                                .padding(.leading, 52)
                         }
                     }
+                    .padding(16)
                 }
             }
-        }
-        .background(Color.white)
-        .onTapGesture {
-            // Закрыть клавиатуру при тапе вне текстового поля
-            isTextFieldFocused = false
-        }
-    }
-    
-}
-
-extension TaskFolderPopupView {
-    enum Offset {
-        static let screenBorderOffset: CGFloat = 12.0
-        static let titlesLeadingOffset: CGFloat = 18.0
+            .onTapGesture {
+                // Закрыть клавиатуру при тапе вне текстового поля
+                isTextFieldFocused = false
+            }
     }
 }
-
-//#Preview {
-//    TaskFolderPopupView(
-//        viewModel: .init(viewContext: PersistenceController.preview.container.viewContext), isPresented: .constant(true), selectedFolder: .constant(.getTemplate()))
-//}
-

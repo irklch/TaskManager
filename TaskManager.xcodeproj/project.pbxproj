@@ -37,6 +37,9 @@
 		A982F8B62E7A14B600377F26 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A982F8B52E7A14B600377F26 /* LaunchScreen.storyboard */; };
 		A9969C992E8C549100E04998 /* DB+TaskItemManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9969C982E8C549100E04998 /* DB+TaskItemManager.swift */; };
 		A9969C9B2E8C54AE00E04998 /* DB+TaskFolderManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9969C9A2E8C54AE00E04998 /* DB+TaskFolderManager.swift */; };
+		A997E3D32E9C0C3B00A87AD4 /* FolderRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A997E3D22E9C0C3B00A87AD4 /* FolderRow.swift */; };
+		A997E3D52E9C0C4500A87AD4 /* CountPill.swift in Sources */ = {isa = PBXBuildFile; fileRef = A997E3D42E9C0C4500A87AD4 /* CountPill.swift */; };
+		A997E3D72E9C0F9300A87AD4 /* FolderInputRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A997E3D62E9C0F9300A87AD4 /* FolderInputRow.swift */; };
 		A9BE46C52C00CC50003A586E /* CustomProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9BE46C42C00CC50003A586E /* CustomProgressView.swift */; };
 		A9BE46C92C00E031003A586E /* CustomProgressViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9BE46C82C00E031003A586E /* CustomProgressViewModel.swift */; };
 		A9BE46CB2C00E054003A586E /* DiagonalStripesShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9BE46CA2C00E054003A586E /* DiagonalStripesShape.swift */; };
@@ -83,6 +86,9 @@
 		A982F8B52E7A14B600377F26 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A9969C982E8C549100E04998 /* DB+TaskItemManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DB+TaskItemManager.swift"; sourceTree = "<group>"; };
 		A9969C9A2E8C54AE00E04998 /* DB+TaskFolderManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DB+TaskFolderManager.swift"; sourceTree = "<group>"; };
+		A997E3D22E9C0C3B00A87AD4 /* FolderRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderRow.swift; sourceTree = "<group>"; };
+		A997E3D42E9C0C4500A87AD4 /* CountPill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountPill.swift; sourceTree = "<group>"; };
+		A997E3D62E9C0F9300A87AD4 /* FolderInputRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderInputRow.swift; sourceTree = "<group>"; };
 		A9BE46C42C00CC50003A586E /* CustomProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomProgressView.swift; sourceTree = "<group>"; };
 		A9BE46C82C00E031003A586E /* CustomProgressViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomProgressViewModel.swift; sourceTree = "<group>"; };
 		A9BE46CA2C00E054003A586E /* DiagonalStripesShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiagonalStripesShape.swift; sourceTree = "<group>"; };
@@ -220,10 +226,21 @@
 		A982F8A82E7A05E000377F26 /* TaskFolderPopupView */ = {
 			isa = PBXGroup;
 			children = (
+				A997E3D82E9C0F9C00A87AD4 /* Views */,
 				A982F8AE2E7A060900377F26 /* TaskFolderPopupView.swift */,
 				A982F8AD2E7A060900377F26 /* TaskFolderPopupViewModel.swift */,
 			);
 			path = TaskFolderPopupView;
+			sourceTree = "<group>";
+		};
+		A997E3D82E9C0F9C00A87AD4 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A997E3D62E9C0F9300A87AD4 /* FolderInputRow.swift */,
+				A997E3D42E9C0C4500A87AD4 /* CountPill.swift */,
+				A997E3D22E9C0C3B00A87AD4 /* FolderRow.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		A9BE46C32C00C968003A586E /* CalendarView */ = {
@@ -369,9 +386,11 @@
 				A904B8722E89D77A0047C016 /* AddTaskView.swift in Sources */,
 				A904B8732E89D77A0047C016 /* AddTaskViewModel.swift in Sources */,
 				A90ACDC42E96D81900FF7C44 /* AttachmentThumb.swift in Sources */,
+				A997E3D72E9C0F9300A87AD4 /* FolderInputRow.swift in Sources */,
 				A90ACDC52E96D81900FF7C44 /* CircleButton.swift in Sources */,
 				A90ACDC62E96D81900FF7C44 /* CircleCheckmarkToggleStyle.swift in Sources */,
 				A9E38C042E9BF5C800019E3C /* DB+CheckListItemManager.swift in Sources */,
+				A997E3D32E9C0C3B00A87AD4 /* FolderRow.swift in Sources */,
 				A90ACDC72E96D81900FF7C44 /* GrowingTextView.swift in Sources */,
 				A90ACDC82E96D81900FF7C44 /* PlaceholderTextField.swift in Sources */,
 				A92313662BFBDC0900528706 /* Persistence.swift in Sources */,
@@ -399,6 +418,7 @@
 				A9BE46D92C00E844003A586E /* SideArrowViewModel.swift in Sources */,
 				A9969C9B2E8C54AE00E04998 /* DB+TaskFolderManager.swift in Sources */,
 				A92313692BFBDC0900528706 /* TaskManager.xcdatamodeld in Sources */,
+				A997E3D52E9C0C4500A87AD4 /* CountPill.swift in Sources */,
 				A923135D2BFBDC0700528706 /* TaskManagerApp.swift in Sources */,
 				A904B8792E89D80E0047C016 /* ContentViewViewModel.swift in Sources */,
 				A904B87A2E89D80E0047C016 /* ContentView.swift in Sources */,

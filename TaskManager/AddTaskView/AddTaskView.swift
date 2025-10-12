@@ -167,8 +167,11 @@ struct AddTaskView: View {
     private var titleCard: some View {
         PlaceholderTextField(
             placeholder: "Заголовок",
-            placeholderFont: Fonts.titleTextFieldFont,
-            text: $vm.title, onSubmit: nil)
+            font: Fonts.titleTextFieldFont,
+            text: $vm.title,
+            onSubmit: nil,
+            placeholderColor: .gray.opacity(0.5),
+            textColor: .hex000101)
         .font(Fonts.titleTextFieldFont)
         .tint(.hex316AFD)
         .padding(16)
@@ -197,10 +200,13 @@ struct AddTaskView: View {
                         
                         PlaceholderTextField(
                             placeholder: "",
-                            placeholderFont: Fonts.checkboxFont,
-                            text: $item.text, onSubmit: {
+                            font: Fonts.checkboxFont,
+                            text: $item.text,
+                            onSubmit: {
                                 handleItemCommit(item: item)
-                            })
+                            },
+                            placeholderColor: .gray.opacity(0.5),
+                            textColor: .hex000101)
                         .frame(height: 44)
                         .strikethrough(item.isDone, color: .secondary)
                         .foregroundStyle(item.isDone ? .secondary : Color.hex000101)
@@ -229,11 +235,13 @@ struct AddTaskView: View {
                     .toggleStyle(CircleCheckmarkToggleStyle())
                 PlaceholderTextField(
                     placeholder: "Добавить пункт",
-                    placeholderFont: Fonts.checkboxFont,
+                    font: Fonts.checkboxFont,
                     text: $vm.newItemText,
                     onSubmit: {
                         handleNewItemCommit()
-                    })
+                    },
+                    placeholderColor: .gray.opacity(0.5),
+                    textColor: .hex000101)
                 .focused($isNewItemFieldFocused)
                 .onChange(of: isNewItemFieldFocused) { _, isFocused in
                     if isFocused {
