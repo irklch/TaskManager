@@ -109,15 +109,20 @@ struct AddTaskView: View {
             Spacer()
 
             Button {
-                vm.saveTask()
-                dismiss()
+                if vm.isButtonEnabled {
+                    vm.saveTask()
+                    dismiss()
+                }
             } label: {
                 Text("Сохранить")
                     .font(.system(size: 16, weight: .light))
                     .padding(.horizontal, 16).padding(.vertical, 10)
                     .background(Capsule().fill(Color.hex316AFD))
                     .foregroundColor(.white)
+                
             }
+            .disabled(vm.isButtonEnabled == false)
+            .opacity(vm.isButtonEnabled ? 1.0 : 0.5 )
         }
         .padding(.horizontal, 12)
     }

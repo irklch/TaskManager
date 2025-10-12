@@ -20,6 +20,9 @@ final class AddTaskViewModel: ObservableObject {
     
     private let context: NSManagedObjectContext
     private let folder: TaskFolderNonDB
+    var isButtonEnabled: Bool {
+        title != "" && details != ""
+    }
     
     init(context: NSManagedObjectContext, folder: TaskFolderNonDB) {
         self.context = context
