@@ -8,6 +8,7 @@ struct AddTaskView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var showPhotoPicker = false
     @State private var showFileImporter = false
+    @State private var selectedPhoto: PhotosPickerItem?
     @FocusState private var isNewItemFieldFocused: Bool
     @FocusState private var editingItemId: UUID?
 
@@ -31,19 +32,27 @@ struct AddTaskView: View {
 
             }
         }
-        .sheet(isPresented: $showPhotoPicker) {
-            // Заглушка: в проде — PhotosPicker
-            VStack(spacing: 20) {
-                Text("Здесь будет PhotosPicker")
-                Button("Добавить заглушку") {
-                    vm.attachments.append(.init(preview: Image(systemName: "photo.on.rectangle"), type: .image))
-                    showPhotoPicker = false
-                }
-            }.padding()
-        }
+        .photosPicker(
+            isPresented: $showPhotoPicker,
+            selection: $selectedPhoto,
+            matching: .images,
+            photoLibrary: .shared()
+        )
         .fileImporter(isPresented: $showFileImporter, allowedContentTypes: [.data], allowsMultipleSelection: false) { result in
             if case .success(_) = result {
                 vm.attachments.append(.init(preview: Image(systemName: "doc.fill"), type: .file))
+            }
+        }
+        .onChange(of: selectedPhoto) { newItem in
+            Task {
+                if let newItem = newItem {
+                    if let data = try? await newItem.loadTransferable(type: Data.self),
+                       let uiImage = UIImage(data: data) {
+                        await MainActor.run {
+                            vm.attachments.append(.init(preview: Image(uiImage: uiImage), type: .image))
+                        }
+                    }
+                }
             }
         }
         .navigationBarHidden(true)
@@ -133,11 +142,13 @@ struct AddTaskView: View {
                             Label("Удалить", systemImage: "trash")
                         }
                     }
+                    .transition(.opacity.combined(with: .move(edge: .top)))
                 }
             }
             .listStyle(.plain)
             .frame(height: CGFloat(vm.checklist.count * 44)) // Примерная высота
             .scrollDisabled(true)
+            .animation(.easeInOut(duration: 0.3), value: vm.checklist.count)
 
             HStack(spacing: 12) {
                 Toggle("", isOn: .constant(false))
@@ -150,6 +161,11 @@ struct AddTaskView: View {
                         handleNewItemCommit()
                     })
                 .focused($isNewItemFieldFocused)
+                .onChange(of: isNewItemFieldFocused) { isFocused in
+                    if isFocused {
+                        handleNewFieldFocused()
+                    }
+                }
             }
             .padding(.top, 6)
         }
@@ -191,10 +207,27 @@ struct AddTaskView: View {
     
     // MARK: - Helper Functions
     
+    private func handleNewFieldFocused() {
+        // Когда пользователь кликает на поле ввода, создаем новый пустой элемент с анимацией
+        let newItem = AddTaskViewModel.ChecklistItem(text: "", isDone: false)
+        
+        withAnimation(.easeInOut(duration: 0.3)) {
+            vm.checklist.append(newItem)
+        }
+        
+        // Очищаем поле ввода
+        vm.newItemText = ""
+        
+        // Небольшая задержка перед переключением фокуса для плавной анимации
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            editingItemId = newItem.id
+        }
+    }
+    
     private func handleNewItemCommit() {
         let text = vm.newItemText.trimmingCharacters(in: .whitespacesAndNewlines)
         vm.addChecklistItem()
-        isNewItemFieldFocused = text.isEmpty == false
+        isNewItemFieldFocused = false
     }
     
     private func handleItemCommit(item: AddTaskViewModel.ChecklistItem) {
@@ -202,11 +235,13 @@ struct AddTaskView: View {
         
         if trimmed.isEmpty {
             // Если пункт стал пустым - удаляем его
-            vm.delete(item: item)
+            withAnimation(.easeInOut(duration: 0.3)) {
+                vm.delete(item: item)
+            }
+        } else {
+            // Скрываем клавиатуру после редактирования существующего пункта
+            editingItemId = nil
         }
-        
-        // Скрываем клавиатуру после редактирования существующего пункта
-        editingItemId = nil
     }
 }
 
