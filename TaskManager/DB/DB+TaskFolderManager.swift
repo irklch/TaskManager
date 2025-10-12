@@ -28,9 +28,9 @@ extension DB {
             request.sortDescriptors = [NSSortDescriptor(keyPath: \TaskFolder.name, ascending: true)]
             do {
                 let folders = try context.fetch(request)
-                return folders.map { TaskFolderNonDB(model: $0) }
+                let nonDBFolders = folders.map { TaskFolderNonDB(model: $0) }
+                return nonDBFolders
             } catch {
-                print("Failed to fetch folders: \(error)")
                 return []
             }
         }
@@ -44,7 +44,6 @@ extension DB {
                 }
                 return .init(model: folder)
             } catch {
-                print("Failed to fetch selected folder: \(error)")
                 return .getTemplate()
             }
         }
@@ -58,7 +57,6 @@ extension DB {
                 }
                 return folder
             } catch {
-                print("Failed to fetch selected folder: \(error)")
                 return nil
             }
         }
@@ -92,7 +90,6 @@ extension DB {
             newFolder.id = item.id
             newFolder.name = item.name
             newFolder.isSelected = item.isSelected
-            // tasks будут добавлены автоматически через relationship TaskItem.folder
             DB.save(in: context)
         }
         
@@ -102,7 +99,6 @@ extension DB {
             
             do {
                 guard let folder = try context.fetch(request).first else {
-                    print("Failed to find folder with id: \(item.id)")
                     return
                 }
                 
@@ -115,7 +111,7 @@ extension DB {
                 DB.save(in: context)
                 
             } catch {
-                print("Failed to update folder: \(error)")
+                return
             }
         }
         
@@ -126,7 +122,6 @@ extension DB {
             
             do {
                 guard let folder = try context.fetch(request).first else {
-                    print("Failed to find folder with id: \(id)")
                     return
                 }
                 
@@ -137,29 +132,8 @@ extension DB {
                 
                 // Сохраняем изменения
                 DB.save(in: context)
-                
             } catch {
-                print("Failed to update folder: \(error)")
-            }
-        }
-        
-        static func change(items: [TaskFolderNonDB], in context: NSManagedObjectContext) {
-            let request: NSFetchRequest<TaskFolder> = TaskFolder.fetchRequest()
-            do {
-                let folders = try context.fetch(request)
-                for item in items {
-                    guard let selectedFolder = folders.first(where: { $0.id == item.id }) else {
-                        continue
-                    }
-                    selectedFolder.name = item.name
-                    selectedFolder.isSelected = item.isSelected
-                    // tasks обновляются автоматически через relationship
-                }
-                
-                DB.save(in: context)
-                
-            } catch {
-                print("Failed to update folder: \(error)")
+                return
             }
         }
     }

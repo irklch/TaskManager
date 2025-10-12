@@ -24,7 +24,7 @@ extension DB {
             do {
                 try context.save()
             } catch {
-                print("Failed to save task: \(error)")
+                return 
             }
             
         }

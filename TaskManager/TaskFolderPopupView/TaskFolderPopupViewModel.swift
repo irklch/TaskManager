@@ -34,6 +34,7 @@ final class TaskFolderPopupViewModel: ObservableObject {
             return nil
         }
         
+        
         // Снимаем выбор с текущей папки
         selectedFolder.isSelected = false
         DB.TaskFolderManager.change(item: selectedFolder, in: viewContext)
@@ -50,7 +51,8 @@ final class TaskFolderPopupViewModel: ObservableObject {
         reloadFolders()
         
         // Находим созданную папку в новом списке
-        return folders.first(where: { $0.id == newFolder.id })
+        let createdFolder = folders.first(where: { $0.id == newFolder.id })
+        return createdFolder
     }
     
     func selectFolder(currentFolder: TaskFolderNonDB, newFolder: TaskFolderNonDB) -> TaskFolderNonDB? {
@@ -64,12 +66,14 @@ final class TaskFolderPopupViewModel: ObservableObject {
         newFolder.isSelected = true
         
         // Сохраняем изменения в БД
-        DB.TaskFolderManager.change(items: [currentFolder, newFolder], in: viewContext)
+        DB.TaskFolderManager.change(item: currentFolder, in: viewContext)
+        DB.TaskFolderManager.change(item: newFolder, in: viewContext)
         
         // Перезагружаем список папок из БД
         reloadFolders()
         
         // Возвращаем обновлённую папку из нового списка
-        return folders.first(where: { $0.id == newFolder.id })
+        let updatedFolder = folders.first(where: { $0.id == newFolder.id })
+        return updatedFolder
     }
 }

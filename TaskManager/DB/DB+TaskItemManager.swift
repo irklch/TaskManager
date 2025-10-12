@@ -17,11 +17,8 @@ extension DB {
             
             do {
                 guard let dbFolder = try context.fetch(folderRequest).first else {
-                    print("❌ Folder not found in database with id: \(folder.id)")
                     return []
                 }
-                
-                print("✅ Found folder: '\(dbFolder.name ?? "Unknown")' with id: \(dbFolder.id?.uuidString ?? "nil")")
                 
                 // Теперь ищем задачи, связанные с этой папкой
                 let request: NSFetchRequest<TaskItem> = TaskItem.fetchRequest()
@@ -29,15 +26,12 @@ extension DB {
                 request.sortDescriptors = [NSSortDescriptor(keyPath: \TaskItem.createdAt, ascending: false)]
                 
                 let tasks = try context.fetch(request)
-                print("📋 Found \(tasks.count) tasks in folder '\(dbFolder.name ?? "Unknown")'")
                 
                 // Также проверяем через relationship
                 let tasksFromRelationship = (dbFolder.tasks?.allObjects as? [TaskItem]) ?? []
-                print("📋 Tasks from relationship: \(tasksFromRelationship.count)")
                 
                 return tasks.map({ .init(model: $0) })
             } catch {
-                print("❌ Failed to fetch tasks: \(error)")
                 return []
             }
         }
@@ -53,7 +47,6 @@ extension DB {
         ) {
             // Получаем существующую папку из БД
             guard let dbFolder = DB.TaskFolderManager.getFolder(in: context, with: folder.id) else {
-                print("❌ Failed to find folder with id: \(folder.id)")
                 return
             }
             
@@ -80,9 +73,8 @@ extension DB {
             
             do {
                 try context.save()
-                print("✅ Task '\(title)' saved successfully to folder '\(dbFolder.name ?? "")'")
             } catch {
-                print("❌ Failed to save task: \(error)")
+                return
             }
         }
     }

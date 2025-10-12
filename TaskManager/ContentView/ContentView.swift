@@ -13,17 +13,6 @@ struct ContentView: View {
     @StateObject private var viewModel: ContentViewViewModel = .init()
     @State var selectedFolder: TaskFolderNonDB
     
-//    private lazy var tabItems: [TabItemModel] =  [
-//        TabItemModel(
-//            icon: "list.clipboard",
-//            title: "Задачи",
-//            view: AnyView()),
-//        TabItemModel(
-//            icon: "calendar",
-//            title: "Календарь",
-//            view: AnyView(CalendarView()))
-//    ]
-    
     init(viewContext: NSManagedObjectContext) {
         self.viewContext = viewContext
         self.selectedFolder = DB.TaskFolderManager.getSelectedFolder(in: viewContext)
@@ -32,16 +21,6 @@ struct ContentView: View {
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
             TabView(selection: $viewModel.selectedIndex) {
-//                ForEach(self.tabItems) { tabItem in
-//                    tabItem.view
-//                        .tag(index)
-//                        .simultaneousGesture(
-//                            DragGesture()
-//                                .onChanged { value in
-//                                    viewModel.handleScrollGesture(translation: value.translation)
-//                                }
-//                        )
-//                }
                 TaskScreenView(selectedFolder: $selectedFolder)
                 CalendarView()
             }
