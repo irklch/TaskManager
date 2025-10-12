@@ -2,15 +2,20 @@
 import SwiftUI
 import PhotosUI
 import UniformTypeIdentifiers
+import CoreData
 
 struct AddTaskView: View {
-    @StateObject private var vm = AddTaskViewModel()
+    @StateObject private var vm: AddTaskViewModel
     @Environment(\.dismiss) private var dismiss
     @State private var showPhotoPicker = false
     @State private var showFileImporter = false
     @State private var selectedPhotos: [PhotosPickerItem] = []
     @FocusState private var isNewItemFieldFocused: Bool
     @FocusState private var editingItemId: UUID?
+    
+    init(context: NSManagedObjectContext, folder: TaskFolderNonDB) {
+        _vm = StateObject(wrappedValue: AddTaskViewModel(context: context, folder: folder))
+    }
 
     var body: some View {
         ZStack {
@@ -104,7 +109,7 @@ struct AddTaskView: View {
             Spacer()
 
             Button {
-                // save action
+                vm.saveTask()
                 dismiss()
             } label: {
                 Text("Сохранить")

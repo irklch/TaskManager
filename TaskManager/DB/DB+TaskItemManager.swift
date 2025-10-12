@@ -23,7 +23,8 @@ extension DB {
                 
                 // Теперь ищем задачи, связанные с этой папкой
                 let request: NSFetchRequest<TaskItem> = TaskItem.fetchRequest()
-                request.predicate = NSPredicate(format: "folder == %@", dbFolder)
+                guard let folderId = dbFolder.id else { return [] }
+                request.predicate = NSPredicate(format: "folderID == %@", folderId as CVarArg)
                 request.sortDescriptors = [NSSortDescriptor(keyPath: \TaskItem.createdAt, ascending: false)]
                 
                 return try context.fetch(request).map({ .init(model: $0) })
@@ -38,7 +39,8 @@ extension DB {
             title: String,
             description: String,
             imageData: Data?,
-            folder: TaskFolderNonDB,
+            folderID: UUID,
+            checklistItems: [CheckListItemNonDB],
             in context: NSManagedObjectContext
         ) {
             let newTask = TaskItem(context: context)
@@ -47,15 +49,25 @@ extension DB {
             newTask.taskDescription = description
             newTask.imageData = imageData
             newTask.createdAt = Date()
-            newTask.isCompleted = false // Для драфта но пока не нужно
-            newTask.folder = folder.getDBModel(in: context)
+            newTask.isCompleted = false
+            newTask.folderID = folderID
+            
+            // Создаем элементы чеклиста
+            let checklistItemsSet = NSMutableSet()
+            for item in checklistItems {
+                let checklistItem = ChecklistItem(context: context)
+                checklistItem.id = item.id
+                checklistItem.title = item.title
+                checklistItem.isDone = item.isDone
+                checklistItemsSet.add(checklistItem)
+            }
+            newTask.checklistItems = checklistItemsSet
             
             do {
                 try context.save()
             } catch {
                 print("Failed to save task: \(error)")
             }
-            
         }
     }
 }
@@ -67,17 +79,17 @@ struct TaskItemNonDB: Identifiable {
     let imageData: Data?
     let createdAt: Date
     let isCompleted: Bool
-    let folder: TaskFolderNonDB
+    let folderID: UUID
     let checkListItems: [CheckListItemNonDB]
     
-    init(id: UUID, title: String, taskDescription: String, imageData: Data, createdAt: Date, isCompleted: Bool, folder: TaskFolderNonDB, checkListItems: [CheckListItemNonDB]) {
+    init(id: UUID, title: String, taskDescription: String, imageData: Data, createdAt: Date, isCompleted: Bool, folderID: UUID, checkListItems: [CheckListItemNonDB]) {
         self.id = id
         self.title = title
         self.taskDescription = taskDescription
         self.imageData = imageData
         self.createdAt = createdAt
         self.isCompleted = isCompleted
-        self.folder = folder
+        self.folderID = folderID
         self.checkListItems = checkListItems
     }
     
@@ -88,16 +100,12 @@ struct TaskItemNonDB: Identifiable {
         self.imageData = model.imageData
         self.createdAt = model.createdAt ?? .init(timeIntervalSinceNow: .init())
         self.isCompleted = model.isCompleted
-        if let folder = model.folder {
-            self.folder = .init(model: folder)
-        } else {
-            self.folder = .getTemplate()
-        }
+        self.folderID = model.folderID ?? .init()
         let checkListItemModels = (model.checklistItems?.allObjects as? [ChecklistItem]) ?? []
         self.checkListItems = checkListItemModels.map({ .init(model: $0) })
     }
     
-    func getDBModel(context: NSManagedObjectContext) -> TaskItem {
+    func getDBModel() -> TaskItem {
         let model: TaskItem = .init()
         model.id = id
         model.title = title
@@ -105,7 +113,7 @@ struct TaskItemNonDB: Identifiable {
         model.imageData = imageData
         model.createdAt = createdAt
         model.isCompleted = isCompleted
-        model.folder = folder.getDBModel(in: context)
+        model.folderID = folderID
         model.checklistItems = NSSet(array: checkListItems.map({ $0.getDBModel() }))
         return model
     }

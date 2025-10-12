@@ -49,6 +49,28 @@ extension DB {
             }
         }
         
+        static func getFolder(in context: NSManagedObjectContext, with id: UUID) -> TaskFolder? {
+            let request: NSFetchRequest<TaskFolder> = TaskFolder.fetchRequest()
+            request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+            do {
+                guard let folder = try context.fetch(request).first else {
+                    return nil
+                }
+                return folder
+            } catch {
+                print("Failed to fetch selected folder: \(error)")
+                return nil
+            }
+        }
+        
+        static func getFolderNonDB(in context: NSManagedObjectContext, with id: UUID) -> TaskFolderNonDB {
+            if let model = getFolder(in: context, with: id) {
+                return .init(model: model)
+            } else {
+                return .getTemplate()
+            }
+        }
+        
         static func addNew(
             name: String,
             isSelected: Bool,
@@ -152,7 +174,7 @@ final class TaskFolderNonDB: Identifiable, Equatable {
         model.id = self.id
         model.name = self.name
         model.isSelected = self.isSelected
-        model.tasks = NSSet(array: tasks.map({ $0.getDBModel(context: context) }))
+        model.tasks = NSSet(array: tasks.map({ $0.getDBModel() }))
         return model
     }
 }

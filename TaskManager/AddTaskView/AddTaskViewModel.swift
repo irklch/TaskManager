@@ -17,6 +17,14 @@ final class AddTaskViewModel: ObservableObject {
     @Published var checklist: [ChecklistItem] = []
     @Published var newItemText: String = ""
     @Published var attachments: [Attachment] = []
+    
+    private let context: NSManagedObjectContext
+    private let folder: TaskFolderNonDB
+    
+    init(context: NSManagedObjectContext, folder: TaskFolderNonDB) {
+        self.context = context
+        self.folder = folder
+    }
 
     struct ChecklistItem: Identifiable, Hashable {
         let id = UUID()
@@ -50,5 +58,26 @@ final class AddTaskViewModel: ObservableObject {
 
     func delete(item: ChecklistItem) {
         checklist.removeAll{ $0.id == item.id }
+    }
+    
+    func saveTask() {
+        // Преобразуем checklist в CheckListItemNonDB
+        let checklistItemsNonDB = checklist.map { item in
+            CheckListItemNonDB(id: item.id, title: item.text, isDone: item.isDone)
+        }
+        
+        // Получаем данные первого изображения (если есть)
+        let imageData = attachments.first(where: { $0.type == .image })?.data
+        
+        // Сохраняем задачу в базу данных
+        DB.TaskItemManager.addNewTask(
+            id: UUID(),
+            title: title,
+            description: details,
+            imageData: imageData,
+            folderID: folder.id,
+            checklistItems: checklistItemsNonDB,
+            in: context
+        )
     }
 }
