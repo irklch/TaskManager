@@ -12,9 +12,11 @@ struct TaskScreenView: View {
     @State private var isFolderPopupVisible = false
     @Binding var selectedFolder: TaskFolderNonDB
     @Environment(\.managedObjectContext) private var viewContext
+    @State private var tasks: [TaskItemNonDB] = []
+    @State private var refreshTrigger = false
     
-    private func getTasks() -> [TaskItemNonDB] {
-        DB.TaskItemManager.getItemsFrom(folder: selectedFolder, in: viewContext)
+    private func loadTasks() {
+        tasks = DB.TaskItemManager.getItemsFrom(folder: selectedFolder, in: viewContext)
     }
     
     var body: some View {
@@ -28,14 +30,17 @@ struct TaskScreenView: View {
                     
 
                 HStack(spacing: Offset.screenBorderOffset) {
+                    let doneTasksCount = tasks.filter { $0.isCompleted }.count
+                    let inProgressTasksCount = tasks.filter { !$0.isCompleted }.count
+                    
                     TaskResultView(viewModel: .init(
-                        tasksCount: 8,
-                        doneTasksCount: 3,
+                        tasksCount: tasks.count,
+                        doneTasksCount: doneTasksCount,
                         resultType: .doneTasks))
 
                     TaskResultView(viewModel: .init(
-                        tasksCount: 5,
-                        doneTasksCount: 1,
+                        tasksCount: tasks.count,
+                        doneTasksCount: inProgressTasksCount,
                         resultType: .progressTasks))
                 }
                 .padding(
@@ -71,7 +76,7 @@ struct TaskScreenView: View {
                         alignment: .leading,
                         spacing: Offset.screenBorderOffset
                     ) {
-                        ForEach(getTasks()) { task in
+                        ForEach(tasks) { task in
                             TaskItemView(viewModel: .init(
                                 title: task.title,
                                 timeInterval: formatDate(task.createdAt),
@@ -91,6 +96,15 @@ struct TaskScreenView: View {
             .padding(.bottom, 150)
         }
         .background(Color.hexF2F2F2)
+        .onAppear {
+            loadTasks()
+        }
+        .onChange(of: selectedFolder.id) { _, _ in
+            loadTasks()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .taskAdded)) { _ in
+            loadTasks()
+        }
         .sheet(isPresented: $isFolderPopupVisible) {
             TaskFolderPopupView(
                 viewModel: .init(

@@ -46,7 +46,3 @@ private struct TextHeightPreferenceKey: PreferenceKey {
         value = nextValue()
     }
 }
-
-#Preview {
-    AddTaskView()
-}

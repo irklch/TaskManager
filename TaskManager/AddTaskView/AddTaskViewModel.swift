@@ -79,5 +79,12 @@ final class AddTaskViewModel: ObservableObject {
             checklistItems: checklistItemsNonDB,
             in: context
         )
+        
+        // Отправляем уведомление об добавлении задачи
+        NotificationCenter.default.post(name: .taskAdded, object: nil)
     }
+}
+
+extension Notification.Name {
+    static let taskAdded = Notification.Name("taskAdded")
 }
