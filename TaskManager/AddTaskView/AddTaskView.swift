@@ -43,13 +43,13 @@ struct AddTaskView: View {
             switch result {
             case .success(let urls):
                 for _ in urls {
-                    vm.attachments.append(.init(preview: Image(systemName: "doc.fill"), type: .file))
+                    vm.attachments.append(.init(preview: Image(systemName: "doc.text.fill"), type: .file))
                 }
             case .failure:
                 break
             }
         }
-        .onChange(of: selectedPhotos) { newItems in
+        .onChange(of: selectedPhotos) { _, newItems in
             Task {
                 for newItem in newItems {
                     if let data = try? await newItem.loadTransferable(type: Data.self),
@@ -171,7 +171,7 @@ struct AddTaskView: View {
                         handleNewItemCommit()
                     })
                 .focused($isNewItemFieldFocused)
-                .onChange(of: isNewItemFieldFocused) { isFocused in
+                .onChange(of: isNewItemFieldFocused) { _, isFocused in
                     if isFocused {
                         handleNewFieldFocused()
                     }
