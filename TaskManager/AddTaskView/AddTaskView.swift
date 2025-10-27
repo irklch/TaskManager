@@ -102,7 +102,7 @@ struct AddTaskView: View {
             Spacer()
             Spacer()
             
-            Text("Новая задача")
+            Text(vm.navBarTitle)
                 .font(.system(size: 20, weight: .regular))
                 .foregroundStyle(Color.hex000101)
 

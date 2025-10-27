@@ -21,12 +21,24 @@ final class AddTaskViewModel: ObservableObject {
     @Published var files: [Attachment]
     
     @Published var selectedPhotos: [PhotosPickerItem] = []
+    let navBarTitle: String
+    private let isNewTask: Bool
+    private let createdAt: Date
     
     init(taskInfo: TaskItemNonDB?) {
+        if taskInfo == nil {
+            self.isNewTask = true
+            self.navBarTitle = "Новая задача"
+        } else {
+            self.isNewTask = false
+            self.navBarTitle = "Редактирование"
+        }
+        
         self.id = taskInfo?.id ?? .init()
         self.title = taskInfo?.title ?? ""
         self.details = taskInfo?.taskDescription ?? ""
         self.checklist = taskInfo?.checkListItems ?? []
+        self.createdAt = taskInfo?.createdAt ?? Date()
         self.images = (taskInfo?.images ?? []).map({
             .init(
                 id: .init(),
@@ -60,20 +72,28 @@ final class AddTaskViewModel: ObservableObject {
     }
     
     func saveTask(folder: TaskFolderNonDB, context: NSManagedObjectContext) {
+        
         let model: TaskItemNonDB = .init(
-            id: .init(),
+            id: id,
             title: title,
             taskDescription: details,
-            createdAt: Date(),
+            createdAt: createdAt,
             isCompleted: checklist.contains(where: { $0.isDone == false }) == false,
             folderID: folder.id,
             checkListItems: checklist,
             images: images.map({ $0.data }),
             files: files.map({ $0.data }))
-        // Сохраняем задачу в базу данных
-        DB.TaskItemManager.addNewTask(
-            model: model,
-            in: context)
+        
+        if isNewTask {
+            // Сохраняем задачу в базу данных
+            DB.TaskItemManager.addNewTask(
+                model: model,
+                in: context)
+        } else {
+            DB.TaskItemManager.change(
+                item: model,
+                in: context)
+        }
         
         // Отправляем уведомление об добавлении задачи
         NotificationCenter.default.post(name: .taskAdded, object: nil)

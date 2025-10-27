@@ -45,8 +45,30 @@ extension DB {
             // Создаем новую задачу
             let newTask = model.getDBModel(folder: dbFolder, context: context)
             
+            DB.save(in: context)
+        }
+        
+        static func change(item: TaskItemNonDB, in context: NSManagedObjectContext) {
+            let request: NSFetchRequest<TaskItem> = TaskItem.fetchRequest()
+            request.predicate = NSPredicate(format: "id == %@", item.id as CVarArg)
+            
             do {
-                try context.save()
+                guard let model = try context.fetch(request).first,
+                let dbFolder = DB.TaskFolderManager.getFolder(in: context, with: item.folderID) else {
+                    return
+                }
+                
+                model.title = item.title
+                model.taskDescription = item.taskDescription
+                model.isCompleted = item.isCompleted
+                model.folder = dbFolder
+                model.checklistItems = NSSet(array: item.checkListItems.map({ $0.getDBModel(in: context) }))
+                model.images = NSSet(array: item.images.map({ $0.getDBModel(context: context) }))
+                model.files = NSSet(array: item.files.map({ $0.getDBModel(context: context) }))
+                
+                // Сохраняем изменения
+                DB.save(in: context)
+                
             } catch {
                 return
             }
