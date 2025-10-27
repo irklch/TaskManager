@@ -33,8 +33,8 @@ extension DB {
 
 struct CheckListItemNonDB: Identifiable {
     let id: UUID
-    let title: String
-    let isDone: Bool
+    var title: String
+    var isDone: Bool
     
     init(id: UUID, title: String, isDone: Bool) {
         self.id = id
