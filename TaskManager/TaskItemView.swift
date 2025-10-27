@@ -8,11 +8,11 @@
 import SwiftUI
 
 final class TaskItemViewModel: ObservableObject {
-    let sideArrowViewModel: SideArrowViewModel
+    let sideArrowViewModel: SideArrowViewModel?
     let title: String
     let timeInterval: String
     let description: String
-    let itemType: ItemType
+    let progress: ProgressModel?
     let style: Style
 
     @Published var isDone: Bool
@@ -21,25 +21,20 @@ final class TaskItemViewModel: ObservableObject {
         title: String,
         timeInterval: String,
         description: String,
-        itemType: ItemType,
+        progress: ProgressModel?,
         isDone: Bool,
         style: Style,
-        sideArrowViewModel: SideArrowViewModel
+        sideArrowViewModel: SideArrowViewModel?
     ) {
         self.title = title
         self.timeInterval = timeInterval
         self.description = description
-        self.itemType = itemType
+        self.progress = progress
         self.isDone = isDone
         self.style = style
         self.sideArrowViewModel = sideArrowViewModel
     }
-
-    enum ItemType {
-        case progress(ProgressModel)
-        case checkbox
-    }
-
+    
     struct ProgressModel {
         let progressViewModel: CustomProgressViewModel
         let percentText: String
@@ -85,11 +80,17 @@ struct TaskItemView: View {
         ZStack(alignment: .topTrailing) {
 
             VStack(alignment: .leading) {
-                Text(viewModel.title)
-                    .font(.system(size: 20))
-                    .fontWeight(.regular)
-                    .foregroundColor(viewModel.style.textColor)
-                    .strikethrough(viewModel.isDone)
+                HStack {
+                    Text(viewModel.title)
+                        .frame(maxWidth: .infinity)
+                        .font(.system(size: 20))
+                        .fontWeight(.regular)
+                        .foregroundColor(viewModel.style.textColor)
+                        .strikethrough(viewModel.isDone)
+                    if viewModel.sideArrowViewModel == nil {
+                        checkboxView
+                    }
+                }.frame(maxWidth: .infinity)
 
                 Text(viewModel.timeInterval)
                     .font(.subheadline)
@@ -100,33 +101,31 @@ struct TaskItemView: View {
                     .font(.subheadline)
                     .foregroundColor(viewModel.style.textColor)
                     .font(.system(size: 14))
-                switch viewModel.itemType {
-                case .progress(let progressModel):
+                
+                if let progressModel = viewModel.progress {
                     getProgressView(model: progressModel)
-                case .checkbox:
-                    getCheckboxView()
                 }
             }
             .padding(18)
             .background(viewModel.style.backgroundColor)
             .cornerRadius(28)
 
-            SideArrowView(viewModel: viewModel.sideArrowViewModel)
-            .padding(4)
+            if let sideArrowViewModel = viewModel.sideArrowViewModel {
+                SideArrowView(viewModel: sideArrowViewModel)
+                    .padding(4)
+            }
         }
     }
 
-    
-
-    private func getCheckboxView() -> some View {
-        return GeometryReader(content: { geometry in
+    private var checkboxView: some View {
+        GeometryReader(content: { geometry in
             HStack(alignment: .center) {
                 Button(action: {
                     withAnimation(nil) {
                         viewModel.isDone.toggle()
                     }
                 }) {
-
+                    
                     Image(systemName: viewModel.isDone ? "checkmark" : "checkmark")
                         .font(.system(size: 15))
                         .foregroundColor(viewModel.isDone ? .hexF2F2F2 : .white)
@@ -148,11 +147,6 @@ struct TaskItemView: View {
                         )
                 }
                 .buttonStyle(NoHighlightButtonStyle())
-
-                Text(viewModel.isDone ? "Готово" : "Нажмите, чтобы завершить")
-                    .foregroundStyle(.hex000101)
-                    .font(.title3)
-                    .padding(.leading, 4)
             }
             .frame(width: geometry.size.width, height: geometry.size.height, alignment: .leading)
         })
@@ -183,9 +177,7 @@ struct TaskItemView: View {
     }
 }
 
-//#Preview {
-//    ContentView()
-//}
+
 struct NoHighlightButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label

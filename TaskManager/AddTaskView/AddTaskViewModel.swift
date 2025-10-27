@@ -21,19 +21,11 @@ final class AddTaskViewModel: ObservableObject {
     @Published var files: [Attachment]
     
     @Published var selectedPhotos: [PhotosPickerItem] = []
-    let navBarTitle: String
     private let isNewTask: Bool
     private let createdAt: Date
     
     init(taskInfo: TaskItemNonDB?) {
-        if taskInfo == nil {
-            self.isNewTask = true
-            self.navBarTitle = "Новая задача"
-        } else {
-            self.isNewTask = false
-            self.navBarTitle = "Редактирование"
-        }
-        
+        self.isNewTask = taskInfo == nil
         self.id = taskInfo?.id ?? .init()
         self.title = taskInfo?.title ?? ""
         self.details = taskInfo?.taskDescription ?? ""
@@ -78,7 +70,7 @@ final class AddTaskViewModel: ObservableObject {
             title: title,
             taskDescription: details,
             createdAt: createdAt,
-            isCompleted: checklist.contains(where: { $0.isDone == false }) == false,
+            isCompleted: false,
             folderID: folder.id,
             checkListItems: checklist,
             images: images.map({ $0.data }),

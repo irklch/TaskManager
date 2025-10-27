@@ -83,16 +83,16 @@ class CalendarViewModel: ObservableObject {
                 title: title,
                 timeInterval: timeInterval,
                 description: description,
-                itemType: .progress(.init(
+                progress: .init(
                     progressViewModel: .init(
                         tasksCount: 13,
                         doneTasksCount: 7,
-                        doneTasksColor: .white))),
+                        doneTasksColor: .white)),
                 isDone: false,
                 style: .grayStyle,
                 sideArrowViewModel: .init(
-                    backgroundColor: .hex000101,
-                    arrowColor: .hexF2F2F2)
+                    backgroundColor: .white,
+                    arrowColor: .hex000101)
             )
         }
     }

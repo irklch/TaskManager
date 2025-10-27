@@ -71,16 +71,15 @@ struct TaskScreenView: View {
             spacing: Offset.screenBorderOffset
         ) {
             ForEach(tasks) { task in
+                
                 TaskItemView(viewModel: .init(
                     title: task.title,
                     timeInterval: formatDate(task.createdAt),
                     description: task.taskDescription,
-                    itemType: .checkbox,
+                    progress: task.checkListItems.count > 0 ? .init(progressViewModel: .init(tasksCount: task.checkListItems.count, doneTasksCount: task.checkListItems.reduce(0, { $0 + ($1.isDone ? 1 : 0) }), doneTasksColor: .hex316AFD)) : nil,
                     isDone: task.isCompleted,
                     style: .whiteStyle,
-                    sideArrowViewModel: .init(
-                        backgroundColor: .hexF2F2F2,
-                        arrowColor: .hex000101)
+                    sideArrowViewModel: nil
                 )).onTapGesture {
                     visibleTaskItem = task
                 }

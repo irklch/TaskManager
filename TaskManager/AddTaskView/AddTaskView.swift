@@ -100,13 +100,6 @@ struct AddTaskView: View {
                 .font(.system(size: 16, weight: .light))
 
             Spacer()
-            Spacer()
-            
-            Text(vm.navBarTitle)
-                .font(.system(size: 20, weight: .regular))
-                .foregroundStyle(Color.hex000101)
-
-            Spacer()
 
             Button {
                 if vm.isButtonEnabled {
