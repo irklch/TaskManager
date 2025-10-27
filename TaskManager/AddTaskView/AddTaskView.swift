@@ -5,11 +5,10 @@ import UniformTypeIdentifiers
 import CoreData
 
 struct AddTaskView: View {
-    @StateObject private var vm: AddTaskViewModel = .init()
+    @StateObject private var vm: AddTaskViewModel
     @Environment(\.dismiss) private var dismiss
     @State private var showPhotoPicker = false
     @State private var showFileImporter = false
-    @State private var selectedPhotos: [PhotosPickerItem] = []
     @FocusState private var isNewItemFieldFocused: Bool
     @FocusState private var editingItemId: UUID?
     @State private var isFolderPopupVisible = false
@@ -17,7 +16,8 @@ struct AddTaskView: View {
     @State private var selectedFolder: TaskFolderNonDB
     @Binding private var parentSelectedFolder: TaskFolderNonDB
     
-    init(context: NSManagedObjectContext, folder: Binding<TaskFolderNonDB>) {
+    init(context: NSManagedObjectContext, folder: Binding<TaskFolderNonDB>, taskInfo: TaskItemNonDB? = nil) {
+        _vm = .init(wrappedValue: .init(taskInfo: taskInfo))
         self.context = context
         self._parentSelectedFolder = folder
         self._selectedFolder = State(initialValue: folder.wrappedValue)
@@ -46,52 +46,19 @@ struct AddTaskView: View {
         }
         .photosPicker(
             isPresented: $showPhotoPicker,
-            selection: $selectedPhotos,
+            selection: $vm.selectedPhotos,
             maxSelectionCount: nil,
             matching: .images,
             photoLibrary: .shared()
         )
         .fileImporter(isPresented: $showFileImporter, allowedContentTypes: [.data], allowsMultipleSelection: true) { result in
-            switch result {
-            case .success(let urls):
-                for url in urls {
-                    // Начинаем безопасный доступ к файлу
-                    guard url.startAccessingSecurityScopedResource() else {
-                        continue
-                    }
-                    
-                    defer {
-                        url.stopAccessingSecurityScopedResource()
-                    }
-                    
-                    // Загружаем данные файла
-                    if let fileData = try? Data(contentsOf: url) {
-                        vm.attachments.append(.init(
-                            preview: Image(systemName: "doc.text.fill"),
-                            data: fileData))
-                    }
-                }
-            case .failure:
-                break
+            guard case .success(let urls) = result else {
+                return
             }
+            vm.appendFiles(urls: urls)
         }
-        .onChange(of: selectedPhotos) { _, newItems in
-            Task {
-                for newItem in newItems {
-                    if let data = try? await newItem.loadTransferable(type: Data.self),
-                       let uiImage = UIImage(data: data) {
-                        await MainActor.run {
-                            vm.attachments.append(.init(
-                                preview: Image(uiImage: uiImage),
-                                data: data))
-                        }
-                    }
-                }
-                // Очищаем выбор после обработки
-                await MainActor.run {
-                    selectedPhotos.removeAll()
-                }
-            }
+        .onChange(of: vm.selectedPhotos) { _, newItems in
+            vm.appendImages(newItems: newItems)
         }
         .navigationBarHidden(true)
         .sheet(isPresented: $isFolderPopupVisible) {
@@ -199,7 +166,7 @@ struct AddTaskView: View {
                         PlaceholderTextField(
                             placeholder: "",
                             font: Fonts.checkboxFont,
-                            text: $item.text,
+                            text: $item.title,
                             onSubmit: {
                                 handleItemCommit(item: item)
                             },
@@ -257,7 +224,7 @@ struct AddTaskView: View {
         VStack(alignment: .leading, spacing: 8) {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 12) {
-                    ForEach(vm.attachments) { att in
+                    ForEach(vm.images + vm.files) { att in
                         AttachmentThumb(image: att.preview)
                     }
                 }
@@ -289,7 +256,7 @@ struct AddTaskView: View {
     
     private func handleNewFieldFocused() {
         // Когда пользователь кликает на поле ввода, создаем новый пустой элемент с анимацией
-        let newItem = AddTaskViewModel.ChecklistItem(text: "", isDone: false)
+        let newItem = CheckListItemNonDB(id: .init(), title: "", isDone: false)
         
         withAnimation(.easeInOut(duration: 0.3)) {
             vm.checklist.append(newItem)
@@ -309,8 +276,8 @@ struct AddTaskView: View {
         isNewItemFieldFocused = false
     }
     
-    private func handleItemCommit(item: AddTaskViewModel.ChecklistItem) {
-        let trimmed = item.text.trimmingCharacters(in: .whitespacesAndNewlines)
+    private func handleItemCommit(item: CheckListItemNonDB) {
+        let trimmed = item.title.trimmingCharacters(in: .whitespacesAndNewlines)
         
         if trimmed.isEmpty {
             // Если пункт стал пустым - удаляем его

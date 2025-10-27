@@ -14,6 +14,7 @@ struct TaskScreenView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @State private var tasks: [TaskItemNonDB] = []
     @State private var refreshTrigger = false
+    @State private var visibleTaskItem: TaskItemNonDB?
     
     private func loadTasks() {
         tasks = DB.TaskItemManager.getItemsFrom(folder: selectedFolder, in: viewContext)
@@ -80,7 +81,9 @@ struct TaskScreenView: View {
                     sideArrowViewModel: .init(
                         backgroundColor: .hexF2F2F2,
                         arrowColor: .hex000101)
-                ))
+                )).onTapGesture {
+                    visibleTaskItem = task
+                }
             }
         }
         .padding(
@@ -126,6 +129,9 @@ struct TaskScreenView: View {
             .presentationDetents([.height(300), .large])
             .presentationDragIndicator(.visible)
             .presentationBackground(.regularMaterial)
+        }
+        .fullScreenCover(item: $visibleTaskItem) { item in
+            AddTaskView(context: viewContext, folder: $selectedFolder, taskInfo: item)
         }
     }
     private func formatDate(_ date: Date) -> String {
