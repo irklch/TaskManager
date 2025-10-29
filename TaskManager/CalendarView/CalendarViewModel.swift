@@ -61,8 +61,10 @@ class CalendarViewModel: ObservableObject {
     
     func getSelectedDateName() -> String {
         let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ru_RU")
         formatter.dateFormat = "EEEE"
-        return formatter.string(from: getSelectedDate())
+        let dayName = formatter.string(from: getSelectedDate())
+        return dayName.prefix(1).uppercased() + dayName.dropFirst()
     }
     
     func getTasksCount() -> String {
@@ -127,8 +129,10 @@ struct DateFormat: Hashable {
         let calendar = Calendar.current
         let todateDay = calendar.date(byAdding: .day, value: index, to: today)!
         let dateMonthFormatter = DateFormatter()
+        dateMonthFormatter.locale = Locale(identifier: "ru_RU")
         dateMonthFormatter.dateFormat = "dd MMMM"
         let dayFormatter = DateFormatter()
+        dayFormatter.locale = Locale(identifier: "ru_RU")
         dayFormatter.dateFormat = "dd"
         self.number = dayFormatter.string(from: todateDay)
         self.numberWithMonth = dateMonthFormatter.string(from: todateDay)
