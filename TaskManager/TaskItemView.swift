@@ -25,6 +25,7 @@ struct TaskItemView: View {
                         .fontWeight(.regular)
                         .foregroundColor(viewModel.style.textColor)
                         .strikethrough(viewModel.isDone)
+                        .padding(.trailing, viewModel.sideArrowViewModel != nil ? 62 : 0)
                     if viewModel.sideArrowViewModel == nil {
                         checkboxView
                     }
