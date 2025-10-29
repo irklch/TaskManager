@@ -166,8 +166,7 @@ struct AddTaskView: View {
                             placeholderColor: .gray.opacity(0.5),
                             textColor: .hex000101)
                         .frame(height: 44)
-                        .strikethrough(item.isDone, color: .secondary)
-                        .foregroundStyle(item.isDone ? .secondary : Color.hex000101)
+                        .strikethrough(item.isDone, color: .black)
                         .focused($editingItemId, equals: item.id)
                     }
                     .listRowBackground(Color.clear)

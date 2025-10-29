@@ -51,6 +51,7 @@
 		A9BE46D72C00E831003A586E /* SideArrowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9BE46D62C00E831003A586E /* SideArrowView.swift */; };
 		A9BE46D92C00E844003A586E /* SideArrowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9BE46D82C00E844003A586E /* SideArrowViewModel.swift */; };
 		A9C3EFFA2E8C4BD700D20289 /* DB.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C3EFF92E8C4BD700D20289 /* DB.swift */; };
+		A9E1C2042EB0127B00AE7AFB /* TaskItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E1C2032EB0127B00AE7AFB /* TaskItemViewModel.swift */; };
 		A9E38C042E9BF5C800019E3C /* DB+CheckListItemManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E38C032E9BF5C800019E3C /* DB+CheckListItemManager.swift */; };
 /* End PBXBuildFile section */
 
@@ -100,6 +101,7 @@
 		A9BE46D62C00E831003A586E /* SideArrowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideArrowView.swift; sourceTree = "<group>"; };
 		A9BE46D82C00E844003A586E /* SideArrowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideArrowViewModel.swift; sourceTree = "<group>"; };
 		A9C3EFF92E8C4BD700D20289 /* DB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DB.swift; sourceTree = "<group>"; };
+		A9E1C2032EB0127B00AE7AFB /* TaskItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskItemViewModel.swift; sourceTree = "<group>"; };
 		A9E38C032E9BF5C800019E3C /* DB+CheckListItemManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DB+CheckListItemManager.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -284,6 +286,7 @@
 			isa = PBXGroup;
 			children = (
 				A9BE46D32C00E194003A586E /* TaskItemView.swift */,
+				A9E1C2032EB0127B00AE7AFB /* TaskItemViewModel.swift */,
 			);
 			name = TaskItemView;
 			sourceTree = "<group>";
@@ -418,6 +421,7 @@
 				A9969C9B2E8C54AE00E04998 /* DB+TaskFolderManager.swift in Sources */,
 				A92313692BFBDC0900528706 /* TaskManager.xcdatamodeld in Sources */,
 				A997E3D52E9C0C4500A87AD4 /* CountPill.swift in Sources */,
+				A9E1C2042EB0127B00AE7AFB /* TaskItemViewModel.swift in Sources */,
 				A923135D2BFBDC0700528706 /* TaskManagerApp.swift in Sources */,
 				A904B8792E89D80E0047C016 /* ContentViewViewModel.swift in Sources */,
 				A971DB042EAF8A540072D328 /* DB+FileManager.swift in Sources */,

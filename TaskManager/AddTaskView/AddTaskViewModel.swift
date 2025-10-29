@@ -23,6 +23,7 @@ final class AddTaskViewModel: ObservableObject {
     @Published var selectedPhotos: [PhotosPickerItem] = []
     private let isNewTask: Bool
     private let createdAt: Date
+    private let isCompleted: Bool
     
     init(taskInfo: TaskItemNonDB?) {
         self.isNewTask = taskInfo == nil
@@ -31,6 +32,7 @@ final class AddTaskViewModel: ObservableObject {
         self.details = taskInfo?.taskDescription ?? ""
         self.checklist = taskInfo?.checkListItems ?? []
         self.createdAt = taskInfo?.createdAt ?? Date()
+        self.isCompleted = taskInfo?.isCompleted ?? false
         self.images = (taskInfo?.images ?? []).map({
             .init(
                 id: .init(),
@@ -64,13 +66,12 @@ final class AddTaskViewModel: ObservableObject {
     }
     
     func saveTask(folder: TaskFolderNonDB, context: NSManagedObjectContext) {
-        
         let model: TaskItemNonDB = .init(
             id: id,
             title: title,
             taskDescription: details,
             createdAt: createdAt,
-            isCompleted: false,
+            isCompleted: isCompleted,
             folderID: folder.id,
             checkListItems: checklist,
             images: images.map({ $0.data }),

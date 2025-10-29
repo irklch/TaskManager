@@ -92,7 +92,8 @@ class CalendarViewModel: ObservableObject {
                 style: .grayStyle,
                 sideArrowViewModel: .init(
                     backgroundColor: .white,
-                    arrowColor: .hex000101)
+                    arrowColor: .hex000101),
+                onChangeDoneCheckbox: nil
             )
         }
     }

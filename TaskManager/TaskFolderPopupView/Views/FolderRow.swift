@@ -15,7 +15,7 @@ struct FolderRow: View {
         HStack(alignment: .center, spacing: 14) {
             // иконка
             ZStack {
-                Circle().fill(isSelected ? .white.opacity(0.18) : .hexF2F2F2)
+//                Circle().fill(isSelected ? .white.opacity(0.18) : .hexF2F2F2)
                 Image(systemName: "folder.fill")
                     .font(.system(size: 20, weight: .light))
                     .foregroundColor(isSelected ? .white : .hex316AFD)
@@ -37,13 +37,15 @@ struct FolderRow: View {
             // индикатор выбранной
             if isSelected {
                 Image(systemName: "checkmark.circle.fill")
-                    .font(.system(size: 20, weight: .semibold))
+                    .font(.system(size: 16, weight: .semibold))
+                    .frame(width: 16, height: 16)
                     .foregroundColor(.white)
-                    .padding(.leading, 4)
-                    .transition(.scale)
+//                    .padding(.leading, 4)
+//                    .transition(.scale)
             } else {
                 Image(systemName: "chevron.right")
                     .font(.system(size: 16, weight: .semibold))
+                    .frame(width: 16, height: 16)
                     .foregroundColor(.hex000101)
                     .opacity(0.9)
             }

@@ -30,7 +30,7 @@ struct TaskScreenView: View {
     private var resultHeaderView: some View {
         HStack(spacing: Offset.screenBorderOffset) {
             let doneTasksCount = tasks.filter { $0.isCompleted }.count
-            let inProgressTasksCount = tasks.filter { !$0.isCompleted }.count
+            let inProgressTasksCount = tasks.filter { $0.checkListItems.contains(where: { $0.isDone }) }.count
             
             TaskResultView(viewModel: .init(
                 tasksCount: tasks.count,
@@ -71,7 +71,6 @@ struct TaskScreenView: View {
             spacing: Offset.screenBorderOffset
         ) {
             ForEach(tasks) { task in
-                
                 TaskItemView(viewModel: .init(
                     title: task.title,
                     timeInterval: formatDate(task.createdAt),
@@ -79,7 +78,8 @@ struct TaskScreenView: View {
                     progress: task.checkListItems.count > 0 ? .init(progressViewModel: .init(tasksCount: task.checkListItems.count, doneTasksCount: task.checkListItems.reduce(0, { $0 + ($1.isDone ? 1 : 0) }), doneTasksColor: .hex316AFD)) : nil,
                     isDone: task.isCompleted,
                     style: .whiteStyle,
-                    sideArrowViewModel: nil
+                    sideArrowViewModel: task.checkListItems.count > 0 ? .init(backgroundColor: .hexF2F2F2, arrowColor: .hex000101) : nil,
+                    onChangeDoneCheckbox: { changeTaskDoneState(task: task, isDone: $0) }
                 )).onTapGesture {
                     visibleTaskItem = task
                 }
@@ -88,6 +88,13 @@ struct TaskScreenView: View {
         .padding(
             .horizontal,
             Offset.screenBorderOffset)
+    }
+    
+    private func changeTaskDoneState(task: TaskItemNonDB, isDone: Bool) {
+        var changedTask = task
+        changedTask.isCompleted = isDone
+        DB.TaskItemManager.change(item: changedTask, in: viewContext)
+        loadTasks()
     }
     
     var body: some View {

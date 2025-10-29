@@ -78,14 +78,14 @@ extension DB {
 
 struct TaskItemNonDB: Identifiable {
     let id: UUID
-    let title: String
-    let taskDescription: String
-    let createdAt: Date
-    let isCompleted: Bool
-    let folderID: UUID
-    let checkListItems: [CheckListItemNonDB]
-    let images: [FileNonDB]
-    let files: [FileNonDB]
+    var title: String
+    var taskDescription: String
+    var createdAt: Date
+    var isCompleted: Bool
+    var folderID: UUID
+    var checkListItems: [CheckListItemNonDB]
+    var images: [FileNonDB]
+    var files: [FileNonDB]
     
     init(
         id: UUID,
