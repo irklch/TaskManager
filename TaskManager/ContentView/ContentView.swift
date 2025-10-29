@@ -22,7 +22,9 @@ struct ContentView: View {
         ZStack(alignment: .bottomTrailing) {
             TabView(selection: $viewModel.selectedIndex) {
                 TaskScreenView(selectedFolder: $selectedFolder)
+                    .tag(0)
                 CalendarView()
+                    .tag(1)
             }
             .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
             .animation(.easeInOut(duration: 0.3), value: viewModel.selectedIndex)

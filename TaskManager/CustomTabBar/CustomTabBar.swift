@@ -120,9 +120,7 @@ struct CustomTabBar: View {
         )
         
         return Button(action: {
-            withAnimation(.easeInOut(duration: 0.3)) {
-                viewModel.selectedIndex = index
-            }
+            viewModel.selectedIndex = index
         }) {
             tabContent
         }
