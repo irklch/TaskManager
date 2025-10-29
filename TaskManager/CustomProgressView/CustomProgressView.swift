@@ -18,14 +18,19 @@ struct CustomProgressView: View {
 
     var body: some View {
         GeometryReader { geometry in
-            let colorWidth = geometry.size.width * viewModel.doneTasksPercent
-            let diagonalStripesWidth = geometry.size.width - colorWidth
+            let availableWidth = geometry.size.width.isFinite && geometry.size.width > 0 ? geometry.size.width : 0
+            let percent = viewModel.doneTasksPercent.isFinite ? max(0, min(1, viewModel.doneTasksPercent)) : 0
+            let colorWidth = max(ceil(availableWidth * percent), 0)
+            let diagonalStripesWidth = max(ceil(availableWidth - colorWidth), 0)
+            
+            let safeColorWidth = colorWidth.isFinite ? colorWidth : 0
+            let safeDiagonalStripesWidth = diagonalStripesWidth.isFinite ? diagonalStripesWidth : 0
             HStack(spacing: 0) {
                 RoundedRectangle(cornerSize: .init(
                     width: Offset.viewHeight,
                     height: Offset.viewHeight))
                 .fill(viewModel.doneTasksColor)
-                .frame(width: colorWidth, height: Offset.viewHeight)
+                .frame(width: safeColorWidth, height: Offset.viewHeight)
                 .padding(.trailing, 2)
                 DiagonalStripesShape()
                     .stroke(style: 
@@ -38,7 +43,7 @@ struct CustomProgressView: View {
                             cornerRadius: Offset.viewHeight))
                     .padding(.leading, 2)
                     .frame(
-                        width: diagonalStripesWidth,
+                        width: safeDiagonalStripesWidth,
                         height: Offset.viewHeight)
             }
         }

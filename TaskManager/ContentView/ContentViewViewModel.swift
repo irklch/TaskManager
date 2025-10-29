@@ -11,7 +11,7 @@ import Combine
 
 @MainActor
 class ContentViewViewModel: ObservableObject {
-    @Published var selectedIndex = 0
+    @Published var selectedIndex = 1
     @Published var isTabBarVisible = true
     @Published var showAddTask = false
     
